@@ -1,0 +1,292 @@
+{
+ "POIs": [
+    {
+      "sid": "pyramid01",
+      "lat": 48.8608,
+      "lon": 2.29601,
+      "alt": 8.0,
+      "shape": "pyramid",
+      "color": "AA0000",
+      "icon": "logo_dma"
+    },
+    {
+      "sid": "pyramid02",
+      "lat": 48.8608,
+      "lon": 2.29601,
+      "alt": 2.0,
+      "shape": "pyramid",
+      "color": "0000AA",
+	  "icon": "logo_ebusiness" 
+    },
+   {
+     "sid": "pyramid03",
+     "lat": 48.8604,
+     "lon": 2.29601,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid04",
+     "lat": 48.8604,
+     "lon": 2.29601,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "0000AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid05",
+     "lat": 48.8606,
+     "lon": 2.29631,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid06",
+     "lat": 48.8606,
+     "lon": 2.29631,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "0000AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid07",
+     "lat": 48.8606,
+     "lon": 2.29571,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid08",
+     "lat": 48.8606,
+     "lon": 2.29571,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "0000AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid09",
+     "lat": 48.86074,
+     "lon": 2.29580,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid10",
+     "lat": 48.86074,
+     "lon": 2.29580,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "0000AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid11",
+     "lat": 48.86046,
+     "lon": 2.29622,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid12",
+     "lat": 48.86046,
+     "lon": 2.29622,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "0000AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid13",
+     "lat": 48.86074,
+     "lon": 2.29622,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid14",
+     "lat": 48.86074,
+     "lon": 2.29622,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "0000AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid15",
+     "lat": 48.86046,
+     "lon": 2.29580,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid16",
+     "lat": 48.86046,
+     "lon": 2.29580,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "0000AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid17",
+     "lat": 48.860676,
+     "lon": 2.295733,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid18",
+     "lat": 48.860676,
+     "lon": 2.295733,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid19",
+     "lat": 48.860524,
+     "lon": 2.296283,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid20",
+     "lat": 48.860524,
+     "lon": 2.296283,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid21",
+     "lat": 48.860676,
+     "lon": 2.296283,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid22",
+     "lat": 48.860676,
+     "lon": 2.296283,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid23",
+     "lat": 48.860524,
+     "lon": 2.295733,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid24",
+     "lat": 48.860524,
+     "lon": 2.295733,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid25",
+     "lat": 48.860785,
+     "lon": 2.295895,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid26",
+     "lat": 48.860785,
+     "lon": 2.295895,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid27",
+     "lat": 48.860415,
+     "lon": 2.296125,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid28",
+     "lat": 48.860415,
+     "lon": 2.296125,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid29",
+     "lat": 48.860785,
+     "lon": 2.296125,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid30",
+     "lat": 48.860785,
+     "lon": 2.296125,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pyramid31",
+     "lat": 48.860415,
+     "lon": 2.295895,
+     "alt": 8.0,
+     "shape": "pyramid",
+     "color": "AA0000",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pyramid32",
+     "lat": 48.860415,
+     "lon": 2.295895,
+     "alt": 2.0,
+     "shape": "pyramid",
+     "color": "EE3399",
+     "icon": "logo_ebusiness"
+   }
+  ]
+}

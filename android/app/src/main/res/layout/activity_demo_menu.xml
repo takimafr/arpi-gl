@@ -1,0 +1,177 @@
+<!--
+  ~ Copyright (C) 2015  eBusiness Information
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_vertical_margin"
+    tools:context="com.excilys.mapglengine.activity.DemoMenuActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_material_light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                <Button
+                    android:id="@+id/button_osmTileProviderDemo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/osmTileProviderTextView"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="startTileProviderDemoActivity"
+                    android:text="@string/button_osm_tile_provider_demo" />
+
+                <TextView
+                    android:id="@+id/osmTileProviderTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/description_osm_tile_provider_demo"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                <Button
+                    android:id="@+id/button_odsPoiProviderDemo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/odsPoiProviderTextView"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="startPoiProviderDemoActivity"
+                    android:text="@string/button_ods_poi_provider_demo" />
+
+                <TextView
+                    android:id="@+id/odsPoiProviderTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/description_ods_poi_provider_demo"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                <Button
+                    android:id="@+id/button_arDemo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/arDemoTextView"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="startArDemoActivity"
+                    android:text="@string/button_ar_trigger_demo" />
+
+                <TextView
+                    android:id="@+id/arDemoTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/description_ar_trigger_demo"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                <Button
+                    android:id="@+id/button_skyboxDemo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/skybox_demo_text_view"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="startSkyboxDemoActivity"
+                    android:text="@string/button_skybox_demo" />
+
+                <TextView
+                    android:id="@+id/skybox_demo_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/description_skybox_demo"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                <Button
+                    android:id="@+id/button_offlineDemo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/offline_demo_text"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="startOfflineDemoActivity"
+                    android:text="@string/button_offline_map" />
+
+                <TextView
+                    android:id="@+id/offline_demo_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/description_offline_demo"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                <Button
+                    android:id="@+id/button_customMarkersDemo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/custommarker_demo_text"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="startCustomMarkerDemoActivity"
+                    android:text="@string/button_custommarker_map" />
+
+                <TextView
+                    android:id="@+id/custommarker_demo_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/description_custommarker_demo"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

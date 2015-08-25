@@ -1,0 +1,192 @@
+{
+ "POIs": [
+    {
+      "sid": "pin01",
+      "lat": 48.8608,
+      "lon": 2.29601,
+      "alt": 3.0,
+      "shape": "sphere",
+      "color": "AA0000",
+      "icon": "sphere-mapping"
+    },
+    {
+      "sid": "pin02",
+      "lat": 48.8604,
+      "lon": 2.29601,
+      "alt": 3.0,
+      "shape": "pyramid",
+      "color": "0000AA",
+	  "icon": "logo_dma"
+    },
+   {
+     "sid": "pin03",
+     "lat": 48.8606,
+     "lon": 2.29631,
+     "alt": 3.0,
+     "shape": "pyramid",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pin04",
+     "lat": 48.8606,
+     "lon": 2.29571,
+     "alt": 3.0,
+     "shape": "pyramid",
+     "icon": "logo_dma"
+   },
+   {
+     "sid": "pin05",
+     "lat": 48.86074,
+     "lon": 2.29622,
+     "alt": 3.0,
+     "shape": "pin",
+     "color": "FF0000",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pin06",
+     "lat": 48.86046,
+     "lon": 2.29622,
+     "alt": 3.0,
+     "shape": "cube",
+     "color": "AA5500",
+     "icon": "cube-mapping"
+   },
+   {
+     "sid": "sphere01",
+     "lat": 48.86056,
+     "lon": 2.29580,
+     "alt": 3.0,
+     "shape": "sphere",
+     "color": "0055AA",
+     "icon": "sphere-mapping"
+   },
+   {
+     "sid": "pin07",
+     "lat": 48.86074,
+     "lon": 2.29580,
+     "alt": 3.0,
+     "shape": "balloon",
+     "color": "FF0000",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pin08",
+     "lat": 48.86046,
+     "lon": 2.29580,
+     "alt": 3.0,
+     "shape": "balloon",
+     "color": "0055AA",
+     "icon": "logo_ebusiness"
+   },
+   {
+     "sid": "pin09",
+     "lat": 48.8608,
+     "lon": 2.29653,
+     "alt": 3.0,
+     "shape": "pin",
+     "color": "1155FF",
+     "icon": "restaurant"
+   },
+   {
+     "sid": "pin10",
+     "lat": 48.8604,
+     "lon": 2.29653,
+     "alt": 3.0,
+     "shape": "pin",
+     "color": "AA5500",
+     "icon": "monument"
+   },
+   {
+     "sid": "pin11",
+     "lat": 48.8608,
+     "lon": 2.29549,
+     "alt": 3.0,
+     "shape": "pin",
+     "color": "55FF00",
+     "icon": "bred"
+   },
+   {
+     "sid": "pin12",
+     "lat": 48.8604,
+     "lon": 2.29549,
+     "alt": 3.0,
+     "shape": "pin",
+     "color": "AA5500",
+     "icon": "coffee"
+   },
+   {
+     "sid": "pin13",
+     "lat": 48.86094,
+     "lon": 2.29631,
+     "alt": 3.0,
+     "shape": "balloon",
+     "color": "FF00AA",
+     "icon": "monument"
+   },
+   {
+     "sid": "pin14",
+     "lat": 48.86026,
+     "lon": 2.29631,
+     "alt": 3.0,
+     "shape": "cube",
+     "color": "0055FF",
+     "icon": "cube-mapping"
+   },
+   {
+     "sid": "pin15",
+     "lat": 48.86094,
+     "lon": 2.29571,
+     "alt": 3.0,
+     "shape": "balloon",
+     "color": "AAFF00",
+     "icon": "coffee"
+   },
+   {
+     "sid": "pin16",
+     "lat": 48.86026,
+     "lon": 2.29571,
+     "alt": 3.0,
+     "shape": "pin",
+     "color": "00FFFF",
+     "icon": "restaurant"
+   },
+   {
+     "sid": "pin17",
+     "lat": 48.860281,
+     "lon": 2.295702,
+     "alt": 5.0,
+     "shape": "pin",
+     "color": "000088",
+     "icon": "restaurant"
+   },
+   {
+     "sid": "sphere18",
+     "lat": 48.860133,
+     "lon": 2.295978,
+     "alt": 5.0,
+     "shape": "sphere",
+     "color": "00AA00",
+     "icon": "sphere-mapping"
+   },
+   {
+     "sid": "pin19",
+     "lat": 48.860177,
+     "lon": 2.295483,
+     "alt": 5.0,
+     "shape": "cube",
+     "color": "00AA88",
+     "icon": "cube-mapping"
+   },
+   {
+     "sid": "sphere02",
+     "lat": 48.860637,
+     "lon": 2.295250,
+     "alt": 5.0,
+     "shape": "balloon",
+     "color": "00AA88",
+     "icon": "restaurant"
+   }
+  ]
+}
+

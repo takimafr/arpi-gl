@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015  eBusiness Information
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <!-- GLOBALS -->
+    <string name="app_name">Arpi Gl Demo</string>
+    <string name="title_activity_demo">Arpi Gl Demo</string>
+
+    <!-- SplashScreen -->
+    <string name="splashscreen_message">Loading...</string>
+    <string name="splash_screen_edited_by"><![CDATA[Edited by <font color=\"#1565C0\">eBusiness Information</font>]]></string>
+    <string name="splash_screen_powered_by"><![CDATA[Powered by <font color=\"#1565C0\">DesignMyApp</font>]]></string>
+
+    <!-- Menu activity -->
+    <string name="button_osm_tile_provider_demo">Custom TileProvider</string>
+    <string name="button_ods_poi_provider_demo">Custom PoiProvider</string>
+    <string name="button_ar_trigger_demo">Use of Gravity Trigger</string>
+    <string name="button_skybox_demo">Custom Skybox</string>
+    <string name="button_offline_map">Offline Map</string>
+    <string name="button_custommarker_map" >Custom markers</string>
+
+
+    <string name="description_osm_tile_provider_demo">Uses a TileProvider which fetches tiles from Google Maps</string>
+    <string name="description_ods_poi_provider_demo">Uses a PoiProvider which fetches pois from OpenDataSoft repositories and Google Places.</string>
+    <string name="description_ar_trigger_demo">Uses a Gravity Trigger to show or hide the 3D view (rise your device and show, lower it and hide).</string>
+    <string name="description_skybox_demo">Show a custom skybox around the view.</string>
+    <string name="description_offline_demo">Show a completely offline map.</string>
+    <string name="description_custommarker_demo">Place POIs of custom shapes and icons all around the scene</string>
+
+
+    <!-- Dummy fragment for gravity trigger -->
+    <string name="raise_phone">Raise your phone up to trigger the 3D View</string>
+
+    <!-- Skybox demo action button -->
+    <string name="button_change_skybox">Change Skybox</string>
+
+
+</resources>
