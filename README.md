@@ -109,7 +109,7 @@ We have implemented one provider: the OpenStreetMap tile provider. However, you 
 By implementing the TileProvider interface, you can define your own tile provider and use it instead of ours.
 
 ### Custom POI Providers
-When you have your own Geo API, it would not be faire to force your model to look like our POI model. Therefore, you can easily implement your own PoiProvider and provide a custom POIMapper for it.  
+When you have your own Geo API, it would not be fair to force your model to look like our POI model. Therefore, you can easily implement your own PoiProvider and provide a custom POIMapper for it.  
 See the Multiple PoiProviders sample for more details.
 
 ### Offline Tiles
@@ -131,7 +131,7 @@ See the Offline Providers sample for more details.
 When you launch the app, your 3D Markers may have different shapes, different icons and different colors.
 
 #### Custom Icons
-To add your own icon, simply put it into the **assets/arpigl/textures/yourIcon.png** folder.  
+To add your own icon, simply put it into the **assets/arpigl/texture/icon/yourIcon.png** folder.  
 Then, use **poi.setIcon("yourIcon.png");** in your java code.  
 #### IMPORTANT
 Note that the icon image dimensions need to be a power of two, and in PNG format. PNG transparency is supported.
@@ -139,6 +139,7 @@ Note that the icon image dimensions need to be a power of two, and in PNG format
 #### Custom Shapes
 We built custom meshes that should do the trick for most of your uses. However, you may like to have your own shapes for your markers.  
 You can create your own meshes and use them anywhere into your app.
+**N.B.: Only the Wavefront .obj format is supported. You must provide vertex positions (v) and texture mapping (vt). The library generates smooth normals at runtime, but if you provide vertex normals (vn) they will be interpreted as flat normals at rendering time. Long story short: your mesh is smooth -> do not provide normals, your mesh is flat -> provide normals**
 
 #### Custom Colors
 Your Marker color can be easily modified using the **poi.setColor("FF0000");** method.  
@@ -154,10 +155,12 @@ The archive should respect the following data structure:
 .
 |
 -arpigl                    # the archive should contain an arpigl folder containing your custom resources.
+ ├── mesh                  # contains your custom meshes as .obj files
  ├── pois                  # contains JSON files for your offline Pois.
  └── texture               
-     ├── cubemap           # contains your skyboxes subfolders.
-     │                     #     skybox images (back, bottom, front...) are stored in cubemap/TheSkyboxName/{}.png.
+     ├── cubemap
+     │   └── skybox        # contains your skyboxes subfolders.
+     │                     #     skybox images (back, bottom, front...) are stored in cubemap/skybox/TheSkyboxName/{}.png.
      ├── icon              # contains texture files, in '.png' format. Dimensions must be a power of 2.
      └── tiles             # contains offline tiles.
 ```
@@ -165,12 +168,12 @@ The archive should respect the following data structure:
 ## Code Samples
 The `app` module contains all the code samples you can dream of to get you started:
 
-* [Custom TileProvider](android/mapgl/app/src/main/java/mobi/designmyapp/arpigl/demo/customtileprovider/TileProviderDemoActivity.java)
-* [Multiple PoiProviders](android/mapgl/app/src/main/java/mobi/designmyapp/arpigl/demo/custompoiproviders/PoiProviderDemoActivity.java)
-* [Auto GravityTrigger](android/mapgl/app/src/main/java/mobi/designmyapp/arpigl/demo/sensortrigger/SensorTriggerDemoActivity.java)
-* [Custom Skybox](android/mapgl/app/src/main/java/mobi/designmyapp/arpigl/demo/customskybox/SkyboxDemoActivity.java)
-* [Offline Providers](android/mapgl/app/src/main/java/mobi/designmyapp/arpigl/demo/offlineproviders/OfflineDemoActivity.java)
-* [Custom Markers: Shapes, icons, colors](android/mapgl/app/src/main/java/mobi/designmyapp/arpigl/demo/custommarkers/CustomMarkersDemoActivity.java)
+* [Custom TileProvider](android/app/src/main/java/mobi/designmyapp/arpigl/demo/customtileprovider/TileProviderDemoActivity.java)
+* [Multiple PoiProviders](android/app/src/main/java/mobi/designmyapp/arpigl/demo/custompoiproviders/PoiProviderDemoActivity.java)
+* [Auto GravityTrigger](android/app/src/main/java/mobi/designmyapp/arpigl/demo/sensortrigger/SensorTriggerDemoActivity.java)
+* [Custom Skybox](android/app/src/main/java/mobi/designmyapp/arpigl/demo/customskybox/SkyboxDemoActivity.java)
+* [Offline Providers](android/app/src/main/java/mobi/designmyapp/arpigl/demo/offlineproviders/OfflineDemoActivity.java)
+* [Custom Markers: Shapes, icons, colors](android/app/src/main/java/mobi/designmyapp/arpigl/demo/custommarkers/CustomMarkersDemoActivity.java)
 
 ## Proguard
 The library has native callbacks and requires its packages not to be obfuscated.
