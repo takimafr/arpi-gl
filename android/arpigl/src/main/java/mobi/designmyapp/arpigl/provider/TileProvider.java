@@ -16,11 +16,16 @@
 
 package mobi.designmyapp.arpigl.provider;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import mobi.designmyapp.arpigl.event.TileEvent;
 import mobi.designmyapp.arpigl.listener.TileEventListener;
 import mobi.designmyapp.arpigl.model.Tile;
 
 public abstract class TileProvider extends Provider<Tile.Id, TileEvent, TileEventListener> {
+
+    Queue<TileEvent> eventsOnHold = new ConcurrentLinkedQueue<>();
 
     /* ***
      * CONSTRUCTOR
@@ -29,4 +34,23 @@ public abstract class TileProvider extends Provider<Tile.Id, TileEvent, TileEven
         super(uri);
     }
 
+    @Override
+    protected void postEvent(TileEvent event) {
+        if (mEventBus.hasSubscriberForEvent(TileEvent.class)) {
+            super.postEvent(event);
+        } else {
+            eventsOnHold.add(event);
+        }
+    }
+
+    @Override
+    public void register(TileEventListener listener) {
+        super.register(listener);
+        if (!eventsOnHold.isEmpty()) {
+            TileEvent event;
+            while ((event = eventsOnHold.poll()) != null) {
+                mEventBus.post(event);
+            }
+        }
+    }
 }

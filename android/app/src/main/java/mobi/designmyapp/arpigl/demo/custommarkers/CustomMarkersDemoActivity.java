@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import mobi.designmyapp.arpigl.ArpiGlInstaller;
 import mobi.designmyapp.arpigl.demo.R;
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlController;
+import mobi.designmyapp.arpigl.engine.ArpiGlController;
 import mobi.designmyapp.arpigl.provider.impl.AssetsStoragePoiProvider;
 import mobi.designmyapp.arpigl.ui.ArpiGlFragment;
 

@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlController;
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlEngine;
+import mobi.designmyapp.arpigl.engine.ArpiGlController;
+import mobi.designmyapp.arpigl.engine.Engine;
 
 /**
  * Installation tool for the {@link ArpiGlController} to be usable. The
@@ -84,6 +84,8 @@ public final class ArpiGlInstaller {
      * Directory where resource files will be installed on internal storage.
      */
     public static final String INSTALLATION_DIR = "arpigl";
+
+    public static final String TEXTURE_ICONS_SUBDIR = "texture/icon";
     /**
      * User may provide this additional zip to install its own file.
      */
@@ -521,20 +523,20 @@ public final class ArpiGlInstaller {
     }
 
     /**
-     * Can be notified on {@link ArpiGlEngine}'s installation progress.
+     * Can be notified on {@link Engine}'s installation progress.
      *
      * @author Nicolas THIREION.
      */
     public interface SetupListener {
         /**
-         * Called when {@link ArpiGlEngine}' s installation finished.
+         * Called when {@link Engine}' s installation finished.
          *
          * @param success true if the installation succeed.
          */
         void onInstallationFinish(boolean success);
 
         /**
-         * Called when {@link ArpiGlEngine}' s installation goes on.
+         * Called when {@link Engine}' s installation goes on.
          *
          * @param progress current installation progress.
          */

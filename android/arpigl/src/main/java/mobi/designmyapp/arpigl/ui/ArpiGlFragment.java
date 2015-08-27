@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -31,15 +32,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.HashSet;
-
 import mobi.designmyapp.arpigl.ArpiGlInstaller;
+import mobi.designmyapp.arpigl.R;
 import mobi.designmyapp.arpigl.engine.Engine;
-import mobi.designmyapp.arpigl.engine.impl.AbstractEngineController;
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlEngine;
 import mobi.designmyapp.arpigl.provider.LocationProvider;
 import mobi.designmyapp.arpigl.provider.impl.FusedLocationProvider;
-import mobi.designmyapp.arpigl.R;
 
 /**
  * Uses an {@link ArpiGlView} to display a map with POIs. Creates and manages
@@ -73,10 +70,7 @@ public final class ArpiGlFragment extends Fragment {
     /* ***
      * ATTRIBUTES
      */
-    /**
-     * dispatch location events.
-     */
-    private final MLocationDispatcher mLocationDisaptcher = new MLocationDispatcher();
+
     /**
      * View where GL scene will be drawn.
      */
@@ -89,6 +83,7 @@ public final class ArpiGlFragment extends Fragment {
      * The location provider.
      */
     private LocationProvider mLocationProvider;
+
     private boolean mAskedForGps = false;
 
     // startup value, keep to false
@@ -104,9 +99,6 @@ public final class ArpiGlFragment extends Fragment {
         // init attributes
         mContext = getActivity().getApplicationContext();
 
-        // init location provider
-        mLocationProvider = FusedLocationProvider.getInstance(mContext);
-
         // load layout.
         wView = (ArpiGlView) rootView.findViewById(R.id.arpigl_glview);
 
@@ -117,8 +109,9 @@ public final class ArpiGlFragment extends Fragment {
         }
 
         // create the engine
-        mEngine = new ArpiGlEngine(mContext);
+        mEngine = new Engine(mContext);
 
+        mLocationProvider = FusedLocationProvider.getInstance(mContext);
         // finally, set the engine as the renderer for our view.
         wView.setRenderer(mEngine.getRenderer());
         setUserLocationEnabled(DEFAULT_TRACK_LOCATION);
@@ -130,7 +123,7 @@ public final class ArpiGlFragment extends Fragment {
     public void onPause() {
         super.onPause();
         wView.onPause();
-        mLocationProvider.unregisterListener(mLocationDisaptcher);
+        mLocationProvider.setListeningEnabled(false);
     }
 
     @Override
@@ -141,9 +134,10 @@ public final class ArpiGlFragment extends Fragment {
 
         if (mLocationTracking) {
             if (mLocationProvider.isAvailable()) {
-                if (mLocationProvider.isEnabled()) {
-                    mLocationProvider.registerListener(mLocationDisaptcher);
-                } else if (!mAskedForGps) {
+                if (!mLocationProvider.isListening()) {
+                    mLocationProvider.setListeningEnabled(true);
+                }
+                if (!mAskedForGps && !mLocationProvider.isGpsEnabled()) {
                     showEnableGpsIntent();
                 }
             } else {
@@ -159,22 +153,20 @@ public final class ArpiGlFragment extends Fragment {
         if (hidden) { //pause the OpenGL thread
             wView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
             if (mLocationTracking) {
-                mLocationProvider.unregisterListener(mLocationDisaptcher);
+                mLocationProvider.setListeningEnabled(false);
             }
         } else { //resume the OpenGL thread
             wView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
             if (mLocationTracking) {
-                mLocationProvider.registerListener(mLocationDisaptcher);
+                mLocationProvider.setListeningEnabled(true);
             }
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ENABLE_GPS) {
-            if (mLocationProvider.isEnabled()) {
-                mLocationProvider.registerListener(mLocationDisaptcher);
-            }
+        if (requestCode == REQUEST_ENABLE_GPS && mLocationTracking) {
+            mLocationProvider.setListeningEnabled(true);
         }
     }
 
@@ -196,12 +188,19 @@ public final class ArpiGlFragment extends Fragment {
      */
     public void setUserLocationEnabled(boolean locationTracking) {
         if (!locationTracking && mLocationTracking) {
-            mLocationProvider.unregisterListener(mLocationDisaptcher);
+            mLocationProvider.setListeningEnabled(false);
         } else if (locationTracking && !mLocationTracking) {
-            mLocationProvider.registerListener(mLocationDisaptcher);
+            mLocationProvider.setListeningEnabled(true);
             // Set the last know location as the position for the user camera
             Location lastLocation = mLocationProvider.getLastKnownLocation();
+
+            if (lastLocation == null) {
+                lastLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+                lastLocation.setLatitude(0);
+                lastLocation.setLongitude(0);
+            }
             mEngine.setCameraPosition(lastLocation.getLatitude(), lastLocation.getLongitude());
+
         }
         mLocationTracking = locationTracking;
     }
@@ -210,9 +209,6 @@ public final class ArpiGlFragment extends Fragment {
      * PROTECTED METHODS
      */
 
-    /**
-     * @return the {@link AbstractEngineController} that manages this fragment.
-     */
     public Engine getEngine() {
         return mEngine;
     }
@@ -246,65 +242,10 @@ public final class ArpiGlFragment extends Fragment {
         return mLocationProvider;
     }
 
-    public void addLocationListener(LocationListener listener) {
-        mLocationDisaptcher.add(listener);
+    public void setLocationProvider(LocationProvider provider) {
+        for (LocationListener l : mLocationProvider.getListeners()) {
+            provider.registerListener(l);
+        }
+        this.mLocationProvider = provider;
     }
-
-    public void removeLocationListener(LocationListener listener) {
-        mLocationDisaptcher.remove(listener);
-
-    }
-
-    private class MLocationDispatcher implements LocationListener {
-
-        private final HashSet<LocationListener> mListeners = new HashSet<LocationListener>();
-
-        public void add(LocationListener listener) {
-            if (!mListeners.contains(listener)) {
-                mListeners.add(listener);
-            }
-        }
-
-        public void remove(LocationListener listener) {
-            mListeners.remove(listener);
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-            synchronized (mListeners) {
-                for (LocationListener listener : mListeners) {
-                    listener.onLocationChanged(location);
-                }
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            synchronized (mListeners) {
-                for (LocationListener listener : mListeners) {
-                    listener.onStatusChanged(provider, status, extras);
-                }
-            }
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            synchronized (mListeners) {
-                for (LocationListener listener : mListeners) {
-                    listener.onProviderEnabled(provider);
-                }
-            }
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            synchronized (mListeners) {
-                for (LocationListener listener : mListeners) {
-                    listener.onProviderDisabled(provider);
-                }
-            }
-        }
-
-    }
-
 }

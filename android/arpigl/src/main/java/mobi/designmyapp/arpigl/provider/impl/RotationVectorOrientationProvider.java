@@ -73,11 +73,7 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
             0.0f, 0.0f, 0.0f, 1.0f
     };
     /**
-     * this instance.
-     */
-    private static RotationVectorOrientationProvider mInstance;
-    /**
-     * application context.
+     * activity
      */
     private final Activity mActivity;
     /**
@@ -121,7 +117,7 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
         mRotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         // init listeners list
-        mListeners = new LinkedList<OrientationListener>();
+        mListeners = new LinkedList<>();
     }
 
     /**
@@ -131,14 +127,7 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
      * @return the RotationVectorOrientationProvider instance.
      */
     public static RotationVectorOrientationProvider getInstance(Activity activity) {
-        if (mInstance == null) {
-            synchronized (RotationVectorOrientationProvider.class) {
-                if (mInstance == null) {
-                    mInstance = new RotationVectorOrientationProvider(activity);
-                }
-            }
-        }
-        return mInstance;
+        return new RotationVectorOrientationProvider(activity);
     }
 
     @Override
@@ -221,9 +210,6 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
         @Override
         public void onSensorChanged(final SensorEvent event) {
 
-            //            // final int currentScreenOrientation =
-            //            // mContext.getResources().getConfiguration().orientation;
-            //            // if event came from ROTATION_VECTOR : handle it.
             if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
                 synchronized (mRotationMatrix) {
 

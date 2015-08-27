@@ -27,15 +27,24 @@ import de.greenrobot.event.EventBus;
  */
 public abstract class Provider<I, E, L> {
 
-    private final String mUri;
+    private String mUri;
     /* ***
      * ATTRIBUTES
      */
-    private EventBus mEventBus;
+    protected EventBus mEventBus;
 
     /* ***
      * CONSTRUCTOR
      */
+
+
+    /**
+     * Instantiates a new provider.
+     *
+     */
+    public Provider() {
+        mEventBus = new EventBus();
+    }
 
     /**
      * Instantiates a new provider.
@@ -43,8 +52,8 @@ public abstract class Provider<I, E, L> {
      * @param uri the uri of datasource that feed this provider.
      */
     public Provider(final String uri) {
-        mUri = uri;
-        mEventBus = new EventBus();
+        this();
+        this.mUri = uri;
     }
 
     /* ***
@@ -78,7 +87,7 @@ public abstract class Provider<I, E, L> {
      *
      * @param event the event to post
      */
-    protected final void postEvent(E event) {
+    protected void postEvent(E event) {
         mEventBus.post(event);
     }
 
@@ -88,7 +97,7 @@ public abstract class Provider<I, E, L> {
      *
      * @param listener the listener to register
      */
-    public final void register(L listener) {
+    public void register(L listener) {
         if (!mEventBus.isRegistered(listener)) {
             mEventBus.register(listener);
         }
@@ -100,7 +109,7 @@ public abstract class Provider<I, E, L> {
      *
      * @param listener the listener to unregister
      */
-    public final void unregister(L listener) {
+    public void unregister(L listener) {
         if (mEventBus.isRegistered(listener)) {
             mEventBus.unregister(listener);
         }

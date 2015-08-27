@@ -21,7 +21,7 @@ package mobi.designmyapp.arpigl.model;
 
 import android.graphics.Color;
 
-import mobi.designmyapp.arpigl.engine.EngineController;
+import mobi.designmyapp.arpigl.engine.Controller;
 
 /**
  * Note that a poi is considered equal in regard of its Id.
@@ -226,7 +226,7 @@ public final class Poi {
      * @param engine the engine controller.
      * @return the PoiEditor
      */
-    public PoiEditor edit(EngineController engine) {
+    public PoiEditor edit(Controller engine) {
         return new PoiEditor(this, engine);
     }
 

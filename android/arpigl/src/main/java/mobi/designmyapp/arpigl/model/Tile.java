@@ -21,11 +21,11 @@ import java.util.Arrays;
 public final class Tile {
 
     private byte[] mImageData;
-    private Tile.Id mTileId;
+    private Id mTileId;
 
     public Tile(byte[] data, int x, int y, int z) {
         mImageData = data;
-        mTileId = new Tile.Id(x, y, z);
+        mTileId = new Id(x, y, z);
     }
 
     public Tile(byte[] data, Id tid) {
@@ -36,7 +36,7 @@ public final class Tile {
         return mImageData;
     }
 
-    public Tile.Id getId() {
+    public Id getId() {
         return mTileId;
     }
 

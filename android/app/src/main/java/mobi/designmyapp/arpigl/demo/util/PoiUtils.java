@@ -1,6 +1,6 @@
 package mobi.designmyapp.arpigl.demo.util;
 
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlController;
+import mobi.designmyapp.arpigl.engine.ArpiGlController;
 import mobi.designmyapp.arpigl.model.Poi;
 import mobi.designmyapp.arpigl.model.Shape;
 import android.graphics.Color;

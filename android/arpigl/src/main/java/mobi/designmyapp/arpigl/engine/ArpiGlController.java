@@ -14,17 +14,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mobi.designmyapp.arpigl.engine.impl;
+package mobi.designmyapp.arpigl.engine;
+
+import android.app.Activity;
+import android.app.Application.ActivityLifecycleCallbacks;
+import android.hardware.SensorEvent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
-import mobi.designmyapp.arpigl.engine.Engine;
-import mobi.designmyapp.arpigl.engine.EngineController;
-import mobi.designmyapp.arpigl.engine.TileMapCache;
 import mobi.designmyapp.arpigl.event.PoiEvent;
 import mobi.designmyapp.arpigl.event.TileEvent;
+
 import mobi.designmyapp.arpigl.listener.EngineListener;
 import mobi.designmyapp.arpigl.listener.OrientationListener;
 import mobi.designmyapp.arpigl.listener.PoiEventListener;
@@ -38,21 +44,14 @@ import mobi.designmyapp.arpigl.provider.TileProvider;
 import mobi.designmyapp.arpigl.provider.impl.RotationVectorOrientationProvider;
 import mobi.designmyapp.arpigl.ui.ArpiGlFragment;
 import mobi.designmyapp.arpigl.util.ProjectionUtils;
-import android.app.Activity;
-import android.app.Application;
-import android.app.Application.ActivityLifecycleCallbacks;
-import android.hardware.SensorEvent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.os.Bundle;
-import android.util.Log;
 
 /**
  * Controls the DMA engine. Allows to add or remove some POIs.
  *
  * @author Nicolas THIERION.
  */
-public final class ArpiGlController extends AbstractEngineController implements EngineController {
+public final class ArpiGlController implements Controller {
+
 
     /* ***
      * CONSTANTS
@@ -89,12 +88,7 @@ public final class ArpiGlController extends AbstractEngineController implements 
     /**
      * delegates operations to this controller.
      */
-    private final Engine mEngine;
     private final OrientationListener mOrientationListener = new ControllerOrientationListener();
-
-    private int mLastX;
-    private int mLastY;
-
     /* ***
      * PROVIDERS
      */
@@ -103,11 +97,11 @@ public final class ArpiGlController extends AbstractEngineController implements 
      * LOCKS
      */
     private final Object sProvider;
+    private int mLastX;
+    private int mLastY;
+    private boolean mLoaded;
     private TileMapCache mTileMap;
-    /**
-     * we get device location from this provider.
-     */
-    private LocationProvider mLocationProvider;
+
     /**
      * we get device orientation from this provider.
      */
@@ -126,6 +120,11 @@ public final class ArpiGlController extends AbstractEngineController implements 
     private TileEventListener mTileEventListener = new ControllerTileEventListener();
     private EngineListener mEngineCallbacks = new ControllerEngineListener();
     private PoiEventListener mPoiEventListener = new ControllerPoiEventListener();
+    /* ***
+         * ATTRIBUTES
+         */
+    private Engine mEngine;
+    private double[] mCameraPosition = new double[3];
 
     /* ***
      * CONSTRUCTORS
@@ -137,18 +136,13 @@ public final class ArpiGlController extends AbstractEngineController implements 
      * @param fragment the fragment to control.
      */
     public ArpiGlController(ArpiGlFragment fragment) {
-        super(fragment.getEngine());
         mFragment = fragment;
         sProvider = new Object();
         mEngine = mFragment.getEngine();
 
         Activity activity = mFragment.getActivity();
         mActivityContext = new WeakReference<>(activity);
-        activity.getApplication().registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
 
-        // init location provider
-        mLocationProvider = mFragment.getLocationProvider();
-        mFragment.addLocationListener(mLocationListener);
         mTileMap = new TileMapCache(mEngine.getInstallationDir() + "/texture/tiles/provided/", TILE_CACHE_SIZE);
 
         // init OrientationProvider
@@ -156,10 +150,17 @@ public final class ArpiGlController extends AbstractEngineController implements 
 
         // register callback to be notified when the native engine needs us to
         // fetch new tiles.
-        mEngine.setNativeCallbacks(mEngineCallbacks);
+        mEngine.setNativeEngineListener(mEngineCallbacks);
 
-        setCameraPosition(mLocationProvider.getLatitude(), mLocationProvider.getLongitude(), DEFAULT_ALTITUDE);
+        Location lastLocation = mFragment.getLocationProvider().getLastKnownLocation();
+        if (lastLocation == null) {
+            setCameraPosition(0, 0, DEFAULT_ALTITUDE);
+        } else {
+            setCameraPosition(lastLocation.getLatitude(), lastLocation.getLongitude(), DEFAULT_ALTITUDE);
+        }
 
+        activity.getApplication().registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+        mActivityLifecycleCallbacks.onActivityResumed(activity);
     }
 
     /* ***
@@ -185,7 +186,6 @@ public final class ArpiGlController extends AbstractEngineController implements 
 
             mTileProvider = tileProvider;
             if (tileProvider != null) {
-
                 // listen to given provider
                 tileProvider.register(mTileEventListener);
             }
@@ -232,7 +232,16 @@ public final class ArpiGlController extends AbstractEngineController implements 
      * @return the location provider
      */
     public LocationProvider getLocationProvider() {
-        return mLocationProvider;
+        return mFragment.getLocationProvider();
+    }
+
+    /**
+     * Sets the location provider
+     *
+     * @param provider the location provider
+     */
+    public void setLocationProvider(LocationProvider provider) {
+        mFragment.setLocationProvider(provider);
     }
 
     /**
@@ -252,13 +261,16 @@ public final class ArpiGlController extends AbstractEngineController implements 
 
     @Override
     public void setCameraPosition(double lat, double lon, double alt) {
-        super.setCameraPosition(lat, lon, alt);
+        mEngine.setCameraPosition(lat, lon, alt);
+        mCameraPosition[0] = lat;
+        mCameraPosition[1] = lon;
+        mCameraPosition[2] = alt;
 
         int x = ProjectionUtils.lng2tilex(lon, MAP_ZOOM);
         int y = ProjectionUtils.lat2tiley(lat, MAP_ZOOM);
 
         synchronized (sProvider) {
-            if (mLastX == x && mLastY == y) {
+            if (mLastX == x && mLastY == y && mLoaded) {
                 return;
             }
 
@@ -267,6 +279,7 @@ public final class ArpiGlController extends AbstractEngineController implements 
             }
             for (PoiProvider provider : mPoiProvider) {
                 if (provider != null) {
+                    mLoaded = false;
                     provider.fetch(new Tile.Id(x, y, MAP_ZOOM));
                 }
             }
@@ -276,10 +289,64 @@ public final class ArpiGlController extends AbstractEngineController implements 
         }
     }
 
+    public double[] getCameraPosition() {
+        return mCameraPosition;
+    }
+
+    @Override
+    public final boolean isInstalled() {
+        return mEngine.isInstalled();
+    }
+
+    @Override
+    public final void addPoi(Poi poi) {
+        mEngine.addPoi(poi);
+    }
+
+    @Override
+    public final void removePoi(Poi poi) throws IllegalStateException {
+        mEngine.removePoi(poi);
+    }
+
+    @Override
+    public void setPoiPosition(String sid, double lat, double lng, double alt) {
+        mEngine.setPoiPosition(sid, lat, lng, alt);
+    }
+
+    @Override
+    public void setPoiColor(String sid, int color) {
+        mEngine.setPoiColor(sid, color);
+    }
+
+    @Override
+    public final void setOrigin(double latitude, double longitude) {
+        mEngine.setOrigin(latitude, longitude);
+    }
+
+    @Override
+    public void setSkyBox(String sid) {
+        mEngine.setSkyBox(sid);
+    }
+
+    @Override
+    public void setSkyBoxEnabled(boolean enabled) {
+        mEngine.setSkyBoxEnabled(enabled);
+    }
+
+    @Override
+    public final float[] getCameraRotationMatrix() {
+        return mEngine.getCameraRotationMatrix();
+    }
+
+    @Override
+    public final void setCameraRotation(float[] rotationMatrix) {
+        mEngine.setCameraRotation(rotationMatrix);
+    }
+
     /* ***
      * PRIVATE CLASSES
      */
-    private class ActivityCallbacks implements Application.ActivityLifecycleCallbacks {
+    private class ActivityCallbacks implements ActivityLifecycleCallbacks {
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -295,7 +362,7 @@ public final class ArpiGlController extends AbstractEngineController implements 
                 return;
             }
 
-            mFragment.addLocationListener(mLocationListener);
+            mFragment.getLocationProvider().registerListener(mLocationListener);
             mOrientationProvider.registerListener(mOrientationListener);
 
             if (mTileProvider != null) {
@@ -316,7 +383,7 @@ public final class ArpiGlController extends AbstractEngineController implements 
             }
 
             mOrientationProvider.unregisterListener(mOrientationListener);
-            mFragment.removeLocationListener(mLocationListener);
+            mFragment.getLocationProvider().unregisterListener(mLocationListener);
 
             if (mTileProvider != null) {
                 mTileProvider.unregister(mTileEventListener);
@@ -363,6 +430,7 @@ public final class ArpiGlController extends AbstractEngineController implements 
     private class ControllerPoiEventListener implements PoiEventListener {
         @Override
         public void onEvent(PoiEvent event) {
+            mLoaded = true;
             // tell the engine that it can now load these pois.
             for (Poi poi : event.getPois()) {
                 mEngine.addPoi(poi);
@@ -377,7 +445,7 @@ public final class ArpiGlController extends AbstractEngineController implements 
      *
      * @author Nicolas THIERION
      */
-    private class ControllerEngineListener extends AbstractEngineListener {
+    private class ControllerEngineListener implements EngineListener {
 
         @Override
         public void onTileRequest(int x, int y, int z) {
@@ -395,8 +463,6 @@ public final class ArpiGlController extends AbstractEngineController implements 
                 Log.w(TAG, "requesting tiles, but no tile provider was set.");
             }
         }
-
-
     }
 
     private class ControllerOrientationListener implements OrientationListener {
@@ -424,6 +490,7 @@ public final class ArpiGlController extends AbstractEngineController implements 
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
+
         }
 
         @Override

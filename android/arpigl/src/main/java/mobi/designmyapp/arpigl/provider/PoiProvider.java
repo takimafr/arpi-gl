@@ -48,6 +48,17 @@ public abstract class PoiProvider<T> extends Provider<Id, PoiEvent, PoiEventList
      * Create a new {@link PoiProvider}, given the {@link PoiMapper} to use to
      * create pois.
      *
+     * @param poiMapperClass the {@link PoiMapper} class.
+     */
+    public PoiProvider(Class<? extends PoiMapper<T>> poiMapperClass) {
+        super();
+        mPoiMapper = poiMapperClass;
+    }
+
+    /**
+     * Create a new {@link PoiProvider}, given the {@link PoiMapper} to use to
+     * create pois.
+     *
      * @param uri            Uri from where to fetch pois.
      * @param poiMapperClass the {@link PoiMapper} class.
      */

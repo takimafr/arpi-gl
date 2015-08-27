@@ -16,7 +16,7 @@
 
 package mobi.designmyapp.arpigl.model;
 
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlController;
+import mobi.designmyapp.arpigl.engine.ArpiGlController;
 
 /**
  * Identifies built-in shapes available in the DMA

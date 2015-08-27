@@ -24,9 +24,8 @@ import mobi.designmyapp.arpigl.model.Poi;
  * interface of native class dma::geo::GeoEngine.
  *
  * @author Nicolas THIERION.
- * @version 0.2.3 - Changelog : removed exit codes in return values.
  */
-public interface EngineController {
+public interface Controller {
 
     /**
      * Add a new Point of interest inside the scene, at the location defined for

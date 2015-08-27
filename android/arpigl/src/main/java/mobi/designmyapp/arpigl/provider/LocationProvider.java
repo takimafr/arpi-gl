@@ -19,6 +19,9 @@ package mobi.designmyapp.arpigl.provider;
 import android.location.Location;
 import android.location.LocationListener;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Provides a location.
  */
@@ -30,19 +33,14 @@ public interface LocationProvider {
     boolean isAvailable();
 
     /**
-     * @return true if this provider is currently enabled.
+     * @return true if this device has Gps enabled.
      */
-    boolean isEnabled();
+    boolean isGpsEnabled();
 
     /**
-     * @return the current latitude
+     * @return true if this provider is currently listening.
      */
-    double getLatitude();
-
-    /**
-     * @return the current longitude
-     */
-    double getLongitude();
+    boolean isListening();
 
     /**
      * Add the given listener to be notified when position changes. Should
@@ -60,6 +58,18 @@ public interface LocationProvider {
      * @param listener listener to unregister
      */
     void unregisterListener(LocationListener listener);
+
+    /**
+     * Retrieve available listeners.
+     * @return the list of listeners
+     */
+    Collection<LocationListener> getListeners();
+
+    /**
+     * Enable listening to new locations
+     * @param enabled boolean value
+     */
+    void setListeningEnabled(boolean enabled);
 
     /**
      * @return the last known location.

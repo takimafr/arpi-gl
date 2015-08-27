@@ -22,7 +22,7 @@ import mobi.designmyapp.arpigl.demo.customskybox.SkyboxDemoActivity;
 import mobi.designmyapp.arpigl.demo.customtileprovider.TileProviderDemoActivity;
 import mobi.designmyapp.arpigl.demo.offlineproviders.OfflineDemoActivity;
 import mobi.designmyapp.arpigl.demo.sensortrigger.SensorTriggerDemoActivity;
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlController;
+import mobi.designmyapp.arpigl.engine.ArpiGlController;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

@@ -16,8 +16,6 @@
 
 package mobi.designmyapp.arpigl;
 
-import android.content.Context;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import mobi.designmyapp.arpigl.engine.impl.ArpiGlController;
+import mobi.designmyapp.arpigl.engine.ArpiGlController;
 import mobi.designmyapp.arpigl.mapper.DefaultInputStreamPoiMapper;
 import mobi.designmyapp.arpigl.mapper.DefaultPoiJsonMapper;
 import mobi.designmyapp.arpigl.mapper.PoiMapper;

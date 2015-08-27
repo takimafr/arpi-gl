@@ -16,20 +16,20 @@
 
 package mobi.designmyapp.arpigl.model;
 
-import mobi.designmyapp.arpigl.engine.EngineController;
+import mobi.designmyapp.arpigl.engine.Controller;
 
 /**
  * Created by Loïc Ortola on 10/08/2015.
  */
 class PoiEditor {
 
-    private EngineController mEngineController;
+    private Controller mController;
     private Poi poi;
     private Poi.Builder tmpPoi;
 
-    public PoiEditor(Poi poi, EngineController engineController) {
+    public PoiEditor(Poi poi, Controller controller) {
         this.poi = poi;
-        mEngineController = engineController;
+        mController = controller;
         tmpPoi = new Poi.Builder().fromPoi(poi);
     }
 
@@ -141,7 +141,7 @@ class PoiEditor {
         poi.mLatitude = tmpPoi.mLatitude;
         poi.mLongitude = tmpPoi.mLongitude;
         poi.mAltitude = tmpPoi.mAltitude;
-        mEngineController.setPoiPosition(tmpPoi.mPoiId, tmpPoi.mLatitude, tmpPoi.mLongitude, tmpPoi.mAltitude);
-        mEngineController.setPoiColor(tmpPoi.mPoiId, tmpPoi.mColor);
+        mController.setPoiPosition(tmpPoi.mPoiId, tmpPoi.mLatitude, tmpPoi.mLongitude, tmpPoi.mAltitude);
+        mController.setPoiColor(tmpPoi.mPoiId, tmpPoi.mColor);
     }
 }

@@ -16,12 +16,6 @@
 
 package mobi.designmyapp.arpigl.listener;
 
-
-/**
- * Equivalent interface of native class dma::geo::GeoEngineCallbacks.
- * This class provides a way to execute additional tasks on several Engine events.
- * IE : fetch resource from a data provider when the engine request a Tile or a Poi.
- */
 public interface EngineListener {
 
     /**
