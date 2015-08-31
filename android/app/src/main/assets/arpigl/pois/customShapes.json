@@ -186,6 +186,15 @@
      "shape": "balloon",
      "color": "00AA88",
      "icon": "restaurant"
+   },
+   {
+     "sid": "sphere02",
+     "lat": 48.86053,
+     "lon": 2.295250,
+     "alt": 5.0,
+     "shape": "note",
+     "color": "CC0052",
+     "icon": "note"
    }
   ]
 }

@@ -30,7 +30,7 @@ public interface Shape {
 
 
     enum Default implements Shape {
-        BALLOON("balloon"), CUBE("cube"), PYRAMID("pyramid"), SPHERE("sphere");
+        BALLOON("balloon"), CUBE("cube"), PYRAMID("pyramid"), SPHERE("sphere"), NOTE("note");
 
         private String mSid;
 
