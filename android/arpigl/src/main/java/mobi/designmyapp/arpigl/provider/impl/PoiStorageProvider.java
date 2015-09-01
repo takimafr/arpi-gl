@@ -52,7 +52,7 @@ public class PoiStorageProvider extends PoiProvider<InputStream> {
      * @param path root folder where poi are stored by tiles
      */
     public PoiStorageProvider(File path, Class<? extends PoiMapper<InputStream>> mapperClass) {
-        super(path.getAbsolutePath(), mapperClass);
+        super(mapperClass);
         mPath = path;
     }
 

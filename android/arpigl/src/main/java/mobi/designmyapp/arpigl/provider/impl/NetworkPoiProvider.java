@@ -69,6 +69,7 @@ public class NetworkPoiProvider extends PoiProvider<InputStream> {
 
     private Map<Tile.Id, Set<Poi>> mPoiCache;
     private UriParser mParser;
+    private String mUri;
 
     /**
      * Custom loader for network pois.
@@ -88,8 +89,8 @@ public class NetworkPoiProvider extends PoiProvider<InputStream> {
 
 
     public NetworkPoiProvider(String url, Class<? extends PoiMapper<InputStream>> poiMapperClass) {
-        super(url, poiMapperClass);
-
+        super(poiMapperClass);
+        mUri = url;
         mPoiCache = new LinkedHashMap<Tile.Id, Set<Poi>>() {
             private static final long serialVersionUID = 4251618832889955850L;
             private static final int MAX_ENTRIES = 25;
@@ -139,7 +140,7 @@ public class NetworkPoiProvider extends PoiProvider<InputStream> {
             InputStream is;
             try {
 
-                String location = mParser.parse(ids[0], getUri());
+                String location = mParser.parse(ids[0], mUri);
 
                 URL url = new URL(location);
 

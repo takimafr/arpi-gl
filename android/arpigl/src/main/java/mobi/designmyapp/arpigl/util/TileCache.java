@@ -20,33 +20,41 @@ import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import mobi.designmyapp.arpigl.mapper.Mapper;
 import mobi.designmyapp.arpigl.model.Tile;
 
-public final class TileCache {
+public final class TileCache<T> {
 
     private static final String TAG = TileCache.class.getSimpleName();
     private static final Pattern FILE_PATTERN = Pattern.compile("(\\d+)/(\\d+)/(\\d+)\\.png$");
 
-    private String mDirPath;
-    private int mSize;
+    private String mTileCacheRoot;
     private CachedLinkedHashSet<Tile.Id> mManagedTiles;
+    private Pattern mPattern;
+    private String mExtension;
 
-    public TileCache(String dirPath, int size) {
-        mDirPath = dirPath;
-        if (mDirPath.charAt(mDirPath.length() - 1) != '/') {
-            mDirPath = mDirPath + "/";
+    public TileCache(String tileCacheRoot, Pattern pattern, String extension, int size) {
+        mTileCacheRoot = tileCacheRoot;
+        if (mTileCacheRoot.charAt(mTileCacheRoot.length() - 1) != '/') {
+            mTileCacheRoot = mTileCacheRoot + "/";
         }
-        mSize = size;
-        mManagedTiles = new CachedLinkedHashSet<>(mSize);
-        mTraverseTiles();
+        mManagedTiles = new CachedLinkedHashSet<>(size);
+        mPattern = pattern;
+        mExtension = extension;
+        traverseTiles();
+    }
+
+    public TileCache(String tileCacheRoot, String extension, int size) {
+        this(tileCacheRoot, FILE_PATTERN, extension, size);
     }
 
     /**
@@ -62,24 +70,22 @@ public final class TileCache {
      *
      * @param id identifies the tile to refresh
      */
-    public void refresh(Tile.Id id) {
-        mManagedTiles.refresh(id);
+    public void moveLast(Tile.Id id) {
+        mManagedTiles.offer(id);
     }
 
     /**
      * Adds the given tile to the cache.
      *
-     * @param tile the tile to add
+     * @param data the tile data to save as a file
      * @return true, if successful
      */
-    public boolean add(Tile tile) {
-        Tile.Id id = tile.getId();
+    public boolean put(Tile.Id id, byte[] data) {
         int x = id.x;
         int y = id.y;
         int z = id.z;
-        byte[] data = tile.getData();
 
-        File file = new File(mGetTilePath(x, y, z));
+        File file = new File(getTilePath(x, y, z));
 
         if (!file.exists()) {
             file.getParentFile().mkdirs();
@@ -101,7 +107,6 @@ public final class TileCache {
             return false;
         } catch (IOException e) {
             Log.e(TAG, "Error while writing " + file.getPath());
-            e.printStackTrace();
             return false;
         } finally {
             if (os != null) {
@@ -113,54 +118,79 @@ public final class TileCache {
             }
         }
 
-        Tile.Id removedId = mManagedTiles.push(new Tile.Id(x, y, z));
-        if (removedId != null) {
-            deleteTileFile(removedId);
-            mShrink();
+        if (mManagedTiles.isFull()) {
+            Tile.Id oldestTile = mManagedTiles.poll();
+            deleteTileFile(oldestTile);
         }
+        return mManagedTiles.offer(id);
+    }
 
-        return true;
+    /**
+     * Retrieve the Tile Cached File
+     * @param id the tile id
+     * @return the cached tile file
+     */
+    public File get(Tile.Id id) {
+        if (!mManagedTiles.contains(id)) {
+            throw new IllegalArgumentException("Cannot retrieve tile from cache.");
+        }
+        File f = new File(getTilePath(id.x, id.y, id.z));
+        return f;
+    }
 
+    /**
+     * Retrieve the Tile Cached File
+     * @param id the tile id
+     * @return the cached tile file
+     */
+    public T get(Tile.Id id, Mapper<T, InputStream> mapper) {
+        if (!mManagedTiles.contains(id)) {
+            throw new IllegalArgumentException("Cannot retrieve tile from cache.");
+        }
+        File f = new File(getTilePath(id.x, id.y, id.z));
+        try {
+            return mapper.convert(new FileInputStream(f));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Error retrieving file from cache: " + e.getMessage());
+        }
+        return null;
     }
 
 
-    private String mGetTilePath(int x, int y, int z) {
-        return mDirPath + z + "/" + x + "/" + y + ".png";
-    }
 
-    private void mShrink() {
-        List<Tile.Id> deleted = mManagedTiles.shrink(mSize - mSize / 4);
-        for (Tile.Id id : deleted) {
-            deleteTileFile(id);
-        }
+
+    private String getTilePath(int x, int y, int z) {
+        return mTileCacheRoot + z + "/" + x + "/" + y + "." + mExtension;
     }
 
     private void deleteTileFile(Tile.Id id) {
-        File file = new File(mGetTilePath(id.x, id.y, id.z));
+        File file = new File(getTilePath(id.x, id.y, id.z));
         file.delete();
     }
 
-    private void mTraverseTiles() {
-        mTraverseTiles(new File(mDirPath));
+    private void traverseTiles() {
+        traverseTiles(new File(mTileCacheRoot));
     }
 
-    private void mTraverseTiles(File dir) {
+    private void traverseTiles(File dir) {
         if (dir.exists()) {
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (file.isDirectory()) {
-                    mTraverseTiles(file);
+                    traverseTiles(file);
                 } else {
                     String filename = file.getPath();
-                    Matcher m = FILE_PATTERN.matcher(filename);
+                    Matcher m = mPattern.matcher(filename);
                     if (m.find()) {
                         int z = Integer.valueOf(m.group(1));
                         int x = Integer.valueOf(m.group(2));
                         int y = Integer.valueOf(m.group(3));
-                        Tile.Id removed = mManagedTiles.push(new Tile.Id(x, y, z));
-                        if (removed != null) {
-                            deleteTileFile(removed);
+                        Tile.Id id = new Tile.Id(x, y, z);
+                        if (mManagedTiles.isFull()) {
+                            Tile.Id oldestTile = mManagedTiles.poll();
+                            deleteTileFile(oldestTile);
                         }
+                        mManagedTiles.offer(id);
                     }
                 }
             }

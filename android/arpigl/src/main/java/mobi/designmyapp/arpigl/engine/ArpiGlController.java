@@ -43,7 +43,9 @@ import mobi.designmyapp.arpigl.provider.PoiProvider;
 import mobi.designmyapp.arpigl.provider.TileProvider;
 import mobi.designmyapp.arpigl.provider.impl.RotationVectorOrientationProvider;
 import mobi.designmyapp.arpigl.ui.ArpiGlFragment;
+import mobi.designmyapp.arpigl.util.InternalBus;
 import mobi.designmyapp.arpigl.util.ProjectionUtils;
+import mobi.designmyapp.arpigl.util.TileCache;
 
 /**
  * Controls the DMA engine. Allows to add or remove some POIs.
@@ -67,6 +69,7 @@ public final class ArpiGlController implements Controller {
      * debug tag.
      */
     private static final String TAG = ArpiGlController.class.getSimpleName();
+    public static final String DEFAULT_TILE_CACHE_DIR = "/texture/tiles/provided";
     private static final int TILE_CACHE_SIZE = 125;
 
     /* ***
@@ -96,11 +99,11 @@ public final class ArpiGlController implements Controller {
     /* ***
      * LOCKS
      */
-    private final Object sProvider;
+    private final Object mLock;
     private int mLastX;
     private int mLastY;
     private boolean mLoaded;
-    private TileMapCache mTileMap;
+    private TileCache mTileCache;
 
     /**
      * we get device orientation from this provider.
@@ -114,6 +117,8 @@ public final class ArpiGlController implements Controller {
      * we fetch pois from this provider to feed the Engine.
      */
     private List<PoiProvider<?>> mPoiProvider = new LinkedList<>();
+
+    private InternalBus mEventBus;
     /* ***
      * LISTENERS
      */
@@ -137,13 +142,13 @@ public final class ArpiGlController implements Controller {
      */
     public ArpiGlController(ArpiGlFragment fragment) {
         mFragment = fragment;
-        sProvider = new Object();
+        mLock = new Object();
         mEngine = mFragment.getEngine();
 
         Activity activity = mFragment.getActivity();
         mActivityContext = new WeakReference<>(activity);
 
-        mTileMap = new TileMapCache(mEngine.getInstallationDir() + "/texture/tiles/provided/", TILE_CACHE_SIZE);
+        mTileCache = new TileCache(mEngine.getInstallationDir() + DEFAULT_TILE_CACHE_DIR, "png", TILE_CACHE_SIZE);
 
         // init OrientationProvider
         mOrientationProvider = RotationVectorOrientationProvider.getInstance(activity);
@@ -161,6 +166,9 @@ public final class ArpiGlController implements Controller {
 
         activity.getApplication().registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
         mActivityLifecycleCallbacks.onActivityResumed(activity);
+
+        mEventBus = InternalBus.getInstance();
+        mEventBus.register(mPoiEventListener);
     }
 
     /* ***
@@ -174,7 +182,7 @@ public final class ArpiGlController implements Controller {
      * @param tileProvider the new tile provider
      */
     public void setTileProvider(TileProvider tileProvider) {
-        synchronized (sProvider) {
+        synchronized (mLock) {
             if (tileProvider == mTileProvider) {
                 return;
             }
@@ -199,16 +207,13 @@ public final class ArpiGlController implements Controller {
      * @param poiProvider the new poi provider
      */
     public void addPoiProvider(PoiProvider<?> poiProvider) {
-        synchronized (sProvider) {
+        synchronized (mLock) {
             if (poiProvider == mPoiProvider) {
                 return;
             }
 
             if (poiProvider != null && !mPoiProvider.contains(poiProvider)) {
                 mPoiProvider.add(poiProvider);
-
-                // listen to given provider
-                poiProvider.register(mPoiEventListener);
             }
         }
     }
@@ -219,9 +224,8 @@ public final class ArpiGlController implements Controller {
      * @param poiProvider the poi provider to remove.
      */
     public void removePoiProvider(PoiProvider<?> poiProvider) {
-        synchronized (sProvider) {
+        synchronized (mLock) {
             // stop listening the provider
-            poiProvider.unregister(mPoiEventListener);
             mPoiProvider.remove(poiProvider);
         }
     }
@@ -269,14 +273,18 @@ public final class ArpiGlController implements Controller {
         int x = ProjectionUtils.lng2tilex(lon, MAP_ZOOM);
         int y = ProjectionUtils.lat2tiley(lat, MAP_ZOOM);
 
-        synchronized (sProvider) {
+        synchronized (mLock) {
             if (mLastX == x && mLastY == y && mLoaded) {
                 return;
             }
 
-            if (mTileProvider != null) {
-                mTileMap.updateCache(x, y, MAP_ZOOM);
+            Tile.Id tile = new Tile.Id(x, y, MAP_ZOOM);
+            // Our tile exists, move to head of queue
+            if (mTileCache.contains(tile)) {
+                mTileCache.moveLast(tile);
             }
+
+            // Warning: this calls all poi providers each time the camera is moved. This means caching should be implemented on PoiProviders
             for (PoiProvider provider : mPoiProvider) {
                 if (provider != null) {
                     mLoaded = false;
@@ -371,7 +379,7 @@ public final class ArpiGlController implements Controller {
 
             for (PoiProvider provider : mPoiProvider) {
                 if (provider != null) {
-                    provider.register(mPoiEventListener);
+                    mEventBus.register(mPoiEventListener);
                 }
             }
         }
@@ -391,7 +399,7 @@ public final class ArpiGlController implements Controller {
 
             for (PoiProvider provider : mPoiProvider) {
                 if (provider != null) {
-                    provider.unregister(mPoiEventListener);
+                    mEventBus.unregister(mPoiEventListener);
                 }
             }
         }
@@ -420,7 +428,8 @@ public final class ArpiGlController implements Controller {
             // put the received tile in cache.
             Tile tile = event.tile;
             Tile.Id id = tile.getId();
-            mTileMap.add(tile);
+
+            mTileCache.put(tile.getId(), tile.getData());
 
             // tell the engine that it can now load this tile.
             mEngine.notifyTileAvailable(id.x, id.y, id.z);
@@ -449,7 +458,7 @@ public final class ArpiGlController implements Controller {
 
         @Override
         public void onTileRequest(int x, int y, int z) {
-            synchronized (sProvider) {
+            synchronized (mLock) {
                 Tile.Id tid = new Tile.Id(x, y, z);
                 // fetch the requested tile
                 fetchTile(tid);

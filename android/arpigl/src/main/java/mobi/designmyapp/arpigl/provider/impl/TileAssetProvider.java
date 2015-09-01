@@ -33,9 +33,10 @@ public class TileAssetProvider extends TileProvider {
     private static final String TAG = TileAssetProvider.class.getSimpleName();
 
     private Context mContext;
+    private String mUri;
 
     public TileAssetProvider(Context context, String path) {
-        super(path);
+        mUri = path;
         mContext = context;
     }
 
@@ -45,7 +46,7 @@ public class TileAssetProvider extends TileProvider {
         int y = tid.y;
         int z = tid.z;
 
-        String filepath = getUri() + "/" + z + "/" + x + "/" + y + ".png";
+        String filepath = mUri + "/" + z + "/" + x + "/" + y + ".png";
         try {
             InputStream is = mContext.getAssets().open(filepath);
             byte[] data = IOUtils.read(is);

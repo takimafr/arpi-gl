@@ -22,35 +22,40 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import mobi.designmyapp.arpigl.event.TileEvent;
 import mobi.designmyapp.arpigl.listener.TileEventListener;
 import mobi.designmyapp.arpigl.model.Tile;
+import mobi.designmyapp.arpigl.util.InternalBus;
 
-public abstract class TileProvider extends Provider<Tile.Id, TileEvent, TileEventListener> {
+public abstract class TileProvider {
 
     Queue<TileEvent> eventsOnHold = new ConcurrentLinkedQueue<>();
-
-    /* ***
-     * CONSTRUCTOR
+    InternalBus mEventBus;
+    /**
+     * Default Constructor.
      */
-    public TileProvider(String uri) {
-        super(uri);
+    public TileProvider() {
+        mEventBus = InternalBus.getInstance();
     }
 
-    @Override
     protected void postEvent(TileEvent event) {
-        if (mEventBus.hasSubscriberForEvent(TileEvent.class)) {
-            super.postEvent(event);
+        if (mEventBus.hasObservers(TileEvent.class)) {
+            mEventBus.post(event);
         } else {
             eventsOnHold.add(event);
         }
     }
 
-    @Override
+    public abstract void fetch(Tile.Id tid);
+
     public void register(TileEventListener listener) {
-        super.register(listener);
+        mEventBus.register(listener);
         if (!eventsOnHold.isEmpty()) {
             TileEvent event;
             while ((event = eventsOnHold.poll()) != null) {
                 mEventBus.post(event);
             }
         }
+    }
+
+    public void unregister(TileEventListener listener) {
+        mEventBus.unregister(listener);
     }
 }

@@ -109,11 +109,10 @@ public final class Engine implements Controller {
         // set the installation path, where resource assets are (will be)
         // copied.
         final StringBuilder filesDirBuilder = new StringBuilder();
-        filesDirBuilder.append(context.getFilesDir().getAbsolutePath());
-        if (filesDirBuilder.charAt(filesDirBuilder.length() - 1) != '/') {
-            filesDirBuilder.append('/');
-        }
-        filesDirBuilder.append(RESOURCES_FOLDER);
+        filesDirBuilder
+                .append(context.getFilesDir().getAbsolutePath())
+                .append('/')
+                .append(RESOURCES_FOLDER);
         mInstallationDir = filesDirBuilder.toString();
 
         mNativeInstanceAddr = newEngine(mInstallationDir);

@@ -16,57 +16,84 @@
 
 package mobi.designmyapp.arpigl.util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Queue;
 
-public class CachedLinkedHashSet<E> extends LinkedHashSet<E> {
+public class CachedLinkedHashSet<E> extends LinkedHashSet<E> implements Queue<E> {
 
     private E mLast;
-    private int mSize;
+    private int mCapacity;
 
     public CachedLinkedHashSet(int size) {
         super(size);
-        this.mSize = size;
+        this.mCapacity = size;
     }
 
-    public final E push(E e) {
+    private final boolean moveToTail(E object) {
+        super.remove(object);
+        return super.add(object);
+    }
+
+    @Override
+    public boolean offer(E e) {
         mLast = e;
+        boolean result = false;
+        // If element exists
         if (!super.add(e)) {
-            refresh(e);
-            return null;
+            result = moveToTail(e);
         }
-        if (size() == mSize + 1) {
-            return shrink(mSize).get(0);
+        if (size() > mCapacity) {
+            throw new IndexOutOfBoundsException();
+        }
+        return result;
+    }
+
+    @Override
+    public E remove() {
+        E element = poll();
+        if (element == null) {
+            throw new NoSuchElementException();
+        }
+        return element;
+    }
+
+    @Override
+    public E poll() {
+        Iterator<E> it = super.iterator();
+        if (it.hasNext()) {
+            E element = it.next();
+            it.remove();
+            return element;
         }
         return null;
     }
 
-    public final E getLast() {
-        return mLast;
-    }
-
-    public final void refresh(E object) {
-        super.remove(object);
-        super.add(object);
-    }
-
-    public final List<E> shrink(int n) {
-        List<E> deleted = new ArrayList<>();
-
-        int overflow = size() - n;
-
-        Iterator<E> it = this.iterator();
-        while (it.hasNext()) {
-            if (overflow == 0) {
-                break;
-            }
-            deleted.add(it.next());
-            it.remove();
-            --overflow;
+    @Override
+    public E element() {
+        E element = poll();
+        if (element == null) {
+            throw new NoSuchElementException();
         }
-        return deleted;
+        return element;
     }
 
+    @Override
+    public E peek() {
+        Iterator<E> it = super.iterator();
+        if (it.hasNext()) {
+            E element = it.next();
+            return element;
+        }
+        return null;
+    }
+
+    public int getCapacity() {
+        return mCapacity;
+    }
+
+    public boolean isFull() {
+        return size() >= mCapacity;
+    }
 }

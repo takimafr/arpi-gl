@@ -62,13 +62,15 @@ public abstract class NetworkTileProvider extends TileProvider {
             TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
 
     private UriParser mParser;
+    private String mUri;
 
     public interface UriParser {
         String parse(Tile.Id tile, String uri);
     }
 
     public NetworkTileProvider(String url) {
-        super(url);
+        super();
+        mUri = url;
         mParser = new UriParser() {
             @Override
             public String parse(Tile.Id tile, String uri) {
@@ -96,7 +98,7 @@ public abstract class NetworkTileProvider extends TileProvider {
             InputStream is;
             try {
                 Tile.Id id = ids[0];
-                String location = mParser.parse(id, getUri());
+                String location = mParser.parse(id, mUri);
 
                 URL url = new URL(location);
                 HttpURLConnection conn;

@@ -19,12 +19,11 @@ package mobi.designmyapp.arpigl.provider;
 import java.util.HashSet;
 import java.util.Set;
 
-import mobi.designmyapp.arpigl.event.PoiEvent;
 import mobi.designmyapp.arpigl.exception.PoiMapperException;
-import mobi.designmyapp.arpigl.listener.PoiEventListener;
 import mobi.designmyapp.arpigl.mapper.PoiMapper;
 import mobi.designmyapp.arpigl.model.Poi;
 import mobi.designmyapp.arpigl.model.Tile.Id;
+import mobi.designmyapp.arpigl.util.InternalBus;
 
 /**
  * A PoiProvider provide some {@link Poi} out of a
@@ -33,16 +32,24 @@ import mobi.designmyapp.arpigl.model.Tile.Id;
  * @param <T> the datasource type.
  * @author Nicolas THIERION.
  */
-public abstract class PoiProvider<T> extends Provider<Id, PoiEvent, PoiEventListener> {
+public abstract class PoiProvider<T> {
 
     /**
      * The poi mapper.
      */
     private Class<? extends PoiMapper<T>> mPoiMapper;
+    private InternalBus mEventBus;
 
     /* ***
      * CONSTRUCTOR
      */
+
+    /**
+     * Default Constructor.
+     */
+    public PoiProvider() {
+        mEventBus = InternalBus.getInstance();
+    }
 
     /**
      * Create a new {@link PoiProvider}, given the {@link PoiMapper} to use to
@@ -51,42 +58,23 @@ public abstract class PoiProvider<T> extends Provider<Id, PoiEvent, PoiEventList
      * @param poiMapperClass the {@link PoiMapper} class.
      */
     public PoiProvider(Class<? extends PoiMapper<T>> poiMapperClass) {
-        super();
+        this();
         mPoiMapper = poiMapperClass;
     }
 
-    /**
-     * Create a new {@link PoiProvider}, given the {@link PoiMapper} to use to
-     * create pois.
-     *
-     * @param uri            Uri from where to fetch pois.
-     * @param poiMapperClass the {@link PoiMapper} class.
-     */
-    public PoiProvider(String uri, Class<? extends PoiMapper<T>> poiMapperClass) {
-        super(uri);
-        mPoiMapper = poiMapperClass;
-    }
-
-    /**
-     * Create a new {@link PoiProvider}, given the {@link PoiMapper} to use to
-     * create pois.
-     *
-     * @param uri Uri from where to fetch pois.
-     */
-    public PoiProvider(String uri) {
-        super(uri);
-    }
 
     /* ***
      * ABSTRACT METHODS
      */
 
-    @Override
     public abstract void fetch(Id tid);
 
     /* ***
-     * PUBLIC METHODS
+     * PROTECTED METHODS
      */
+    protected final void postEvent(Object event) {
+        mEventBus.post(event);
+    }
 
     protected final Set<Poi> convert(T datasource) throws PoiMapperException {
         Set<Poi> res = new HashSet<>();
@@ -99,5 +87,7 @@ public abstract class PoiProvider<T> extends Provider<Id, PoiEvent, PoiEventList
         }
         return res;
     }
+
+
 
 }
