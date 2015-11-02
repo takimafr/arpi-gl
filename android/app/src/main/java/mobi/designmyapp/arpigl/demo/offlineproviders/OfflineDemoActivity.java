@@ -26,6 +26,7 @@ import java.io.IOException;
 import mobi.designmyapp.arpigl.ArpiGlInstaller;
 import mobi.designmyapp.arpigl.engine.ArpiGlController;
 import mobi.designmyapp.arpigl.provider.impl.AssetsStoragePoiProvider;
+import mobi.designmyapp.arpigl.provider.impl.TileAssetProvider;
 import mobi.designmyapp.arpigl.ui.ArpiGlFragment;
 import mobi.designmyapp.arpigl.demo.R;
 
@@ -73,6 +74,7 @@ public class OfflineDemoActivity extends AppCompatActivity {
         // Add the assets poi storage provider which fetches pois from the offline offlinePois.json file, provided in assets/res
         arpiController.addPoiProvider(new AssetsStoragePoiProvider(this, "offlinePois"));
 
+        arpiController.setTileProvider(new TileAssetProvider("offline-demo"));
     }
 
     @Override

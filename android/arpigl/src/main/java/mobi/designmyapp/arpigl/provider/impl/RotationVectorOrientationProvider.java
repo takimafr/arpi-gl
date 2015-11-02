@@ -50,27 +50,13 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
     /* ***
      * PARAMS
      */
-    private static final int SENSOR_LISTENING_RATE = SensorManager.SENSOR_DELAY_GAME; // 40
-    // *
-    // 1000;
-    // //40
-    // ms
+    private static final int SENSOR_LISTENING_RATE = SensorManager.SENSOR_DELAY_GAME;
 
     private static final float[] IDENTITY = {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-    };
-
-    /* ***
-     * ATTRIBUTES
-     */
-    private static final float[] DEVICE_TO_OGL_ROTATION = {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
     };
     /**
      * activity
@@ -92,8 +78,8 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
      * the current rotation matrix.
      */
     private final float[] mRotationMatrix = Arrays.copyOf(
-            IDENTITY,
-            IDENTITY.length);
+        IDENTITY,
+        IDENTITY.length);
     private final float[] mTmpMatrix = new float[IDENTITY.length];
     /**
      * will listen to rotation vector events.
@@ -156,7 +142,7 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
             if (mListeners.size() == 1) {
                 Log.v(TAG, "waking up listening to ROTATION_VECTOR");
                 mSensorManager.registerListener(mSensorListener, mRotationVectorSensor,
-                        SENSOR_LISTENING_RATE);
+                    SENSOR_LISTENING_RATE);
             }
         }
     }
@@ -164,9 +150,7 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
     @Override
     public void unregisterListener(OrientationListener listener) {
         synchronized (mListeners) {
-
             mListeners.remove(listener);
-
             // if listeners is empty, wake up listening.
             if (mListeners.isEmpty()) {
                 Log.v(TAG, "stop listening to ROTATION_VECTOR");
@@ -180,7 +164,6 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
      */
     private void mNotifyListeners(SensorEvent event) {
         synchronized (mListeners) {
-
             for (final OrientationListener listener : mListeners) {
                 listener.onOrientationChanged(event);
             }
@@ -212,51 +195,32 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
 
             if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
                 synchronized (mRotationMatrix) {
-
                     SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
-                }
-                final int mScreenRotation = mActivity.getWindowManager().getDefaultDisplay()
+
+                    final int mScreenRotation = mActivity.getWindowManager().getDefaultDisplay()
                         .getRotation();
-                int axisX = 0, axisY = 0;
 
-                switch (mScreenRotation) {
-                    case Surface.ROTATION_0:
-                        axisX = SensorManager.AXIS_X;
-                        axisY = SensorManager.AXIS_Y;
-                        break;
+                    switch (mScreenRotation) {
+                        case Surface.ROTATION_90:
+                            // x => y   &&    y => -x
+                            SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, mTmpMatrix);
+                            System.arraycopy(mTmpMatrix, 0, mRotationMatrix, 0, mTmpMatrix.length);
+                            break;
+                        case Surface.ROTATION_270:
+                            // x => -y   &&    y => x
+                            SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X, mTmpMatrix);
+                            System.arraycopy(mTmpMatrix, 0, mRotationMatrix, 0, mTmpMatrix.length);
+                            break;
+                        default:
+                            break;
+                    }
 
-                    case Surface.ROTATION_90:
-                        axisX = SensorManager.AXIS_Y;
-                        axisY = SensorManager.AXIS_MINUS_X;
-                        break;
+                    // Rotation of 90 degrees about x axis
+                    Matrix.rotateM(mRotationMatrix, 0, 90, 1, 0, 0);
 
-                    case Surface.ROTATION_180:
-                        axisX = SensorManager.AXIS_MINUS_X;
-                        axisY = SensorManager.AXIS_MINUS_Y;
-                        break;
-
-                    case Surface.ROTATION_270:
-                        axisX = SensorManager.AXIS_MINUS_Y;
-                        axisY = SensorManager.AXIS_X;
-                        break;
-
-                    default:
-                        break;
+                    // we just got a new value. Update 'new' flag.
+                    mHasNewValue = true;
                 }
-
-                SensorManager.remapCoordinateSystem(mRotationMatrix, axisX, axisY, mTmpMatrix);
-
-                Matrix.multiplyMM(mTmpMatrix, 0, Arrays.copyOf(mTmpMatrix, mTmpMatrix.length), 0,
-                        DEVICE_TO_OGL_ROTATION, 0);
-                // same as
-                // Matrix.rotateM(mRotationMatrix, 0, 90, 1, 0, 0);
-
-                synchronized (mRotationMatrix) {
-                    System.arraycopy(mTmpMatrix, 0, mRotationMatrix, 0, mTmpMatrix.length);
-                }
-
-                // we just got a new value. Update 'new' flag.
-                mHasNewValue = true;
 
                 // finally, throw the event to listeners.
                 mNotifyListeners(event);
@@ -270,5 +234,4 @@ public final class RotationVectorOrientationProvider implements OrientationProvi
         }
     }
 
-    ;
 }

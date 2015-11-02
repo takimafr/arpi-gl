@@ -16,47 +16,29 @@
 
 package mobi.designmyapp.arpigl.provider.impl;
 
-import android.content.Context;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import mobi.designmyapp.arpigl.event.TileEvent;
 import mobi.designmyapp.arpigl.model.Tile;
 import mobi.designmyapp.arpigl.provider.TileProvider;
-import mobi.designmyapp.arpigl.util.IOUtils;
 
 public class TileAssetProvider extends TileProvider {
 
     private static final String TAG = TileAssetProvider.class.getSimpleName();
 
-    private Context mContext;
-    private String mUri;
-
-    public TileAssetProvider(Context context, String path) {
-        mUri = path;
-        mContext = context;
+    public TileAssetProvider(String path) {
+        super(path);
     }
 
     @Override
     public final void fetch(Tile.Id tid) {
-        int x = tid.x;
-        int y = tid.y;
-        int z = tid.z;
+        // Nothing to do since tiles are installed at the right location, the engine will find them automatically
+        // However if a tile is missing we can't do anything but log a message
+        Log.d(TAG, String.format("Tile (%d, %d, %d) asked but not found", tid.x, tid.y, tid.z));
+    }
 
-        String filepath = mUri + "/" + z + "/" + x + "/" + y + ".png";
-        try {
-            InputStream is = mContext.getAssets().open(filepath);
-            byte[] data = IOUtils.read(is);
-            postEvent(new TileEvent(new Tile(data, tid)));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "File " + filepath + " not found");
-        } catch (IOException e) {
-            Log.e(TAG, String.format("Error while fetching tile (%d, %d, %d)", x, y, z));
-            e.printStackTrace();
-        }
+    @Override
+    public String getNamespace() {
+        return mUri;
     }
 
 }

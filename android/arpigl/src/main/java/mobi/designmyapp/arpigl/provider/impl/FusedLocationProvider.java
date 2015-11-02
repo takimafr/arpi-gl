@@ -249,11 +249,6 @@ public final class FusedLocationProvider implements LocationProvider {
         return mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION);
     }
 
-    @Override
-    public boolean isGpsEnabled() {
-        return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
     /* ***
      * LISTENERS STUFF
      */

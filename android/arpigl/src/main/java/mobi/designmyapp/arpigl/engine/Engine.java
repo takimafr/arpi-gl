@@ -46,6 +46,9 @@ public final class Engine implements Controller {
      * Debug tag.
      */
     private static final String TAG = Engine.class.getSimpleName();
+
+    private static final double DEFAULT_CAMERA_ALTITUDE = 5.0;
+
     /**
      * Native .so library name.
      */
@@ -72,9 +75,9 @@ public final class Engine implements Controller {
      */
     private final Context mContext;
     /**
-     * current camera.
+     * current camera position.
      */
-    private final Camera mCurrentCamera = new Camera();
+    private double[] mCameraPosition = new double[] {0.0, 0.0, DEFAULT_CAMERA_ALTITUDE};
     /**
      * Renderer for android's GLSurfaceView that uses this Engine as Rendering
      * engine.
@@ -120,7 +123,6 @@ public final class Engine implements Controller {
         // register native callbacks
         setEngineListener(mNativeInstanceAddr, mNativeListener.getNativeAddr());
 
-        setCameraPosition(0.0, 0.0, 5.0);
     }
 
     /* ***
@@ -142,8 +144,8 @@ public final class Engine implements Controller {
 
     /**
      * Initialize the engine. Be careful to have a valid openGL context opened &
-     * binded before calling this method. Otherwise, the method will fail. Be
-     * carefull to call {@link #setSurfaceSize(int, int)} to create a valid
+     * bound before calling this method. Otherwise, the method will fail. Be
+     * careful to call {@link #setSurfaceSize(int, int)} to create a valid
      * drawing surface.
      *
      * @return true if initialized properly, false otherwise.
@@ -153,51 +155,9 @@ public final class Engine implements Controller {
         return init(mNativeInstanceAddr);
     }
 
-    /**
-     * Pauses the engine & disconnect the bridge.
-     */
-    public void pause() {
-        if (isInstalled() && isInit()) {
-            // Has to be called from Rendered thread
-            Log.v(TAG, "wipe...");
-            wipe(mNativeInstanceAddr);
-            Log.v(TAG, "wipe done");
-
-        }
-    }
-
-    /**
-     * Resume the engine, & reconnect the bridge.
-     */
-    public void resume() {
-        if (isInstalled()) {
-            // as we probably lost openGL context, we need to re-upload
-            // resources from CPU memory to GPU memory.
-            if (isInit()) {
-                refresh();
-            }
-        }
-    }
-
     /* ***
      * API METHODS
      */
-
-    /**
-     * Clean all GPU resources.
-     */
-    public void wipe() {
-        if (isInit()) {
-            Log.v(TAG, "Wiping engine");
-            wipe();
-            Log.v(TAG, "Engine wiped");
-        } else {
-            Log.w(TAG, "wipe but bridge is not init");
-            if (BuildConfig.DEBUG) {
-                throwIfNotInit("wipe()");
-            }
-        }
-    }
 
     /**
      * Refreshes all OpenGL resources. The OpenGL context needs to be refreshed
@@ -236,7 +196,7 @@ public final class Engine implements Controller {
         float b = (Color.blue(color) / maxShade);
 
         addPoi(mNativeInstanceAddr, poi.getId(), poi.getShapeId(), poi.getIconId(), r, g, b, poi.getLatitude(),
-            poi.getLongitude(), poi.getAltitude());
+                poi.getLongitude(), poi.getAltitude());
     }
 
     @Override
@@ -269,9 +229,33 @@ public final class Engine implements Controller {
         notifyTileAvailable(mNativeInstanceAddr, x, y, z);
     }
 
+    /**
+     * Changes the zoom level
+     * offset must be between [-1.0, 1.0]
+     * if |offset| > 1.0f this will clamp the value to 1.0 -1.0
+     * a positive offset will zoom in
+     * a negative offset will zoom out
+     */
+    public void zoom(float offset) {
+        zoom(mNativeInstanceAddr, offset);
+    }
+
+    /**
+     * Selects the closest poi from the camera at the screen coordinate (x, y)
+     * @param x the x screen coordinate
+     * @param y the y screen coordinate
+     */
+    public void selectPoi(int x, int y) {
+        selectPoi(mNativeInstanceAddr, x, y);
+    }
+
     /* ***
      * GETTERS
      */
+
+    public double[] getCameraPosition() {
+        return mCameraPosition;
+    }
 
     /**
      * Checks if is inits the.
@@ -311,16 +295,6 @@ public final class Engine implements Controller {
         return mRenderer;
     }
 
-    @Override
-    public float[] getCameraRotationMatrix() {
-        synchronized (mCurrentCamera) {
-            final float[] cachedMatrix = mCurrentCamera.cachedRotationMatrix;
-            final float[] matrix = mCurrentCamera.rotationMatrix;
-            System.arraycopy(matrix, 0, cachedMatrix, 0, matrix.length);
-            return cachedMatrix;
-        }
-    }
-
     /* ***
      * SETTERS
      */
@@ -352,20 +326,25 @@ public final class Engine implements Controller {
 
     @Override
     public void setCameraRotation(float[] rotationMatrix) {
-        synchronized (mCurrentCamera) {
-            System.arraycopy(rotationMatrix, 0, mCurrentCamera.rotationMatrix, 0, rotationMatrix.length);
-            setCameraRotation(mNativeInstanceAddr, rotationMatrix);
-        }
+        setCameraRotation(mNativeInstanceAddr, rotationMatrix);
+    }
+
+    @Override
+    public void setCameraPosition(double lat, double lng, double alt, boolean animated) {
+        mCameraPosition[0] = lat;
+        mCameraPosition[1] = lng;
+        mCameraPosition[2] = alt;
+        setCameraPosition(mNativeInstanceAddr, lat, lng, alt, animated);
     }
 
     @Override
     public void setCameraPosition(double lat, double lon, double alt) {
-        setCameraPosition3d(mNativeInstanceAddr, lat, lon, alt);
+        setCameraPosition(lat, lon, alt, true);
     }
 
     @Override
     public void setCameraPosition(double lat, double lon) {
-        setCameraPosition2d(mNativeInstanceAddr, lat, lon);
+        setCameraPosition(lat, lon, mCameraPosition[2]);
     }
 
     @Override
@@ -381,6 +360,10 @@ public final class Engine implements Controller {
     @Override
     public void setSkyBoxEnabled(boolean enabled) {
         setSkyBoxEnabled(mNativeInstanceAddr, enabled);
+    }
+
+    public void setTileNamespace(String namespace) {
+        setTileNamespace(mNativeInstanceAddr, namespace);
     }
 
     /**
@@ -427,17 +410,6 @@ public final class Engine implements Controller {
         }
     }
 
-    private static class Camera {
-
-        /**
-         * current rotation matrix.
-         */
-        private final float[] rotationMatrix = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-
-        private final float[] cachedRotationMatrix = new float[rotationMatrix.length];
-    }
-
     /**
      * Use this rendering engine as a renderer for android's GLSurfaceView.
      */
@@ -455,7 +427,7 @@ public final class Engine implements Controller {
          */
         @Override
         public final void onDrawFrame(GL10 gl) {
-            setCameraRotation(mCurrentCamera.rotationMatrix);
+            //setCameraRotation(mCurrentCamera.rotationMatrix);
             step();
         }
 
@@ -480,7 +452,6 @@ public final class Engine implements Controller {
                 }
             } else {
                 mEngine.refresh();
-                mEngine.refresh(); // FIXME refresh twice due to an unknown bug
             }
             Log.v(TAG, "onSurfaceCreated done");
         }
@@ -589,10 +560,16 @@ public final class Engine implements Controller {
 
     private native void setCameraPosition2d(long nativeInstanceAddr, double lat, double lon);
 
-    private native void setCameraPosition3d(long nativeInstanceAddr, double lat, double lon, double alt);
+    private native void setCameraPosition(long nativeInstanceAddr, double lat, double lon, double alt, boolean animated);
+
+    private native void zoom(long nativeInstanceAddr, float offset);
 
     private native void setOrigin(long nativeInstanceAddr, double lat, double lon);
 
     private native void notifyTileAvailable(long nativeInstanceAddr, int x, int y, int z);
+
+    private native void setTileNamespace(long nativeInstanceAddr, String namespace);
+
+    private native void selectPoi(long nativeInstanceAddr, int x, int y);
 
 }

@@ -33,11 +33,6 @@ public interface LocationProvider {
     boolean isAvailable();
 
     /**
-     * @return true if this device has Gps enabled.
-     */
-    boolean isGpsEnabled();
-
-    /**
      * @return true if this provider is currently listening.
      */
     boolean isListening();

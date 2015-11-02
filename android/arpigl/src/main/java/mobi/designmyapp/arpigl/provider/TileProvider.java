@@ -28,10 +28,14 @@ public abstract class TileProvider {
 
     Queue<TileEvent> eventsOnHold = new ConcurrentLinkedQueue<>();
     InternalBus mEventBus;
+
+    protected String mUri;
+
     /**
      * Default Constructor.
      */
-    public TileProvider() {
+    public TileProvider(String uri) {
+        mUri = uri;
         mEventBus = InternalBus.getInstance();
     }
 
@@ -44,6 +48,8 @@ public abstract class TileProvider {
     }
 
     public abstract void fetch(Tile.Id tid);
+
+    public abstract String getNamespace();
 
     public void register(TileEventListener listener) {
         mEventBus.register(listener);
@@ -58,4 +64,5 @@ public abstract class TileProvider {
     public void unregister(TileEventListener listener) {
         mEventBus.unregister(listener);
     }
+
 }

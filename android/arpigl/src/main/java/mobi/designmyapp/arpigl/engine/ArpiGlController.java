@@ -23,6 +23,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.View;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
@@ -30,7 +34,6 @@ import java.util.List;
 
 import mobi.designmyapp.arpigl.event.PoiEvent;
 import mobi.designmyapp.arpigl.event.TileEvent;
-
 import mobi.designmyapp.arpigl.listener.EngineListener;
 import mobi.designmyapp.arpigl.listener.OrientationListener;
 import mobi.designmyapp.arpigl.listener.PoiEventListener;
@@ -59,18 +62,18 @@ public final class ArpiGlController implements Controller {
      * CONSTANTS
      */
     /**
-     * Zoom level of tiles diplayed on the 3D view.
+     * Zoom level of tiles displayed on the 3D view.
      */
     public static final int MAP_ZOOM = 19;
 
-    public static final double DEFAULT_ALTITUDE = 5.0;
+    private static final float MIN_ALTITUDE = 1.0f;
+    private static final float MAX_ALTITUDE = 15.0f;
 
     /**
      * debug tag.
      */
     private static final String TAG = ArpiGlController.class.getSimpleName();
-    public static final String DEFAULT_TILE_CACHE_DIR = "/texture/tiles/provided";
-    private static final int TILE_CACHE_SIZE = 125;
+    private static final int TILE_CACHE_SIZE = 250;
 
     /* ***
      * ATTRIBUTES
@@ -116,9 +119,12 @@ public final class ArpiGlController implements Controller {
     /**
      * we fetch pois from this provider to feed the Engine.
      */
-    private List<PoiProvider<?>> mPoiProvider = new LinkedList<>();
+    private List<PoiProvider<?>> mPoiProviders = new LinkedList<>();
 
     private InternalBus mEventBus;
+    private ScaleGestureDetector mScaleGestureDetector;
+    private GestureDetector mGestureDetector;
+
     /* ***
      * LISTENERS
      */
@@ -129,7 +135,6 @@ public final class ArpiGlController implements Controller {
          * ATTRIBUTES
          */
     private Engine mEngine;
-    private double[] mCameraPosition = new double[3];
 
     /* ***
      * CONSTRUCTORS
@@ -148,7 +153,7 @@ public final class ArpiGlController implements Controller {
         Activity activity = mFragment.getActivity();
         mActivityContext = new WeakReference<>(activity);
 
-        mTileCache = new TileCache(mEngine.getInstallationDir() + DEFAULT_TILE_CACHE_DIR, "png", TILE_CACHE_SIZE);
+        mFragment.getLocationProvider().registerListener(mLocationListener);
 
         // init OrientationProvider
         mOrientationProvider = RotationVectorOrientationProvider.getInstance(activity);
@@ -157,18 +162,48 @@ public final class ArpiGlController implements Controller {
         // fetch new tiles.
         mEngine.setNativeEngineListener(mEngineCallbacks);
 
-        Location lastLocation = mFragment.getLocationProvider().getLastKnownLocation();
-        if (lastLocation == null) {
-            setCameraPosition(0, 0, DEFAULT_ALTITUDE);
-        } else {
-            setCameraPosition(lastLocation.getLatitude(), lastLocation.getLongitude(), DEFAULT_ALTITUDE);
-        }
-
         activity.getApplication().registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
         mActivityLifecycleCallbacks.onActivityResumed(activity);
 
         mEventBus = InternalBus.getInstance();
-        mEventBus.register(mPoiEventListener);
+
+        // setup gesture detectors
+        mGestureDetector = new GestureDetector(mActivityContext.get(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                double[] cameraPosition = mEngine.getCameraPosition();
+                float offset = - distanceY * 0.01f;
+                double alt = cameraPosition[2] + offset;
+                setCameraPosition(cameraPosition[0], cameraPosition[1], Math.min(Math.max(MIN_ALTITUDE, alt), MAX_ALTITUDE), false);
+                return true;
+            }
+        });
+
+        // handle scale gesture for zoom
+        mScaleGestureDetector = new ScaleGestureDetector(mActivityContext.get(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                float scale = detector.getScaleFactor();
+                mEngine.zoom(scale - 1.0f);
+                return true;
+            }
+        });
+
+        mFragment.getArpiGlView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mScaleGestureDetector.onTouchEvent(motionEvent);
+                mGestureDetector.onTouchEvent(motionEvent);
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mEngine.selectPoi((int) motionEvent.getX(), (int) motionEvent.getY());
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
     }
 
     /* ***
@@ -194,8 +229,14 @@ public final class ArpiGlController implements Controller {
 
             mTileProvider = tileProvider;
             if (tileProvider != null) {
+                String namespace = tileProvider.getNamespace();
+                mTileCache = new TileCache(mEngine.getInstallationDir() + "/texture/tiles/" + namespace + "/", "png", TILE_CACHE_SIZE);
+                mEngine.setTileNamespace(namespace);
                 // listen to given provider
                 tileProvider.register(mTileEventListener);
+            } else {
+                mTileCache = null;
+                mEngine.setTileNamespace("");
             }
         }
     }
@@ -208,12 +249,11 @@ public final class ArpiGlController implements Controller {
      */
     public void addPoiProvider(PoiProvider<?> poiProvider) {
         synchronized (mLock) {
-            if (poiProvider == mPoiProvider) {
-                return;
-            }
+            if (poiProvider != null && !mPoiProviders.contains(poiProvider)) {
+                mPoiProviders.add(poiProvider);
 
-            if (poiProvider != null && !mPoiProvider.contains(poiProvider)) {
-                mPoiProvider.add(poiProvider);
+                // listen to given provider
+                mEventBus.register(mPoiEventListener);
             }
         }
     }
@@ -226,7 +266,8 @@ public final class ArpiGlController implements Controller {
     public void removePoiProvider(PoiProvider<?> poiProvider) {
         synchronized (mLock) {
             // stop listening the provider
-            mPoiProvider.remove(poiProvider);
+            mEventBus.unregister(mPoiEventListener);
+            mPoiProviders.remove(poiProvider);
         }
     }
 
@@ -260,15 +301,17 @@ public final class ArpiGlController implements Controller {
 
     @Override
     public void setCameraPosition(double lat, double lon) {
-        setCameraPosition(lat, lon, getCameraPosition()[2]);
+        setCameraPosition(lat, lon, mEngine.getCameraPosition()[2]);
     }
 
     @Override
-    public void setCameraPosition(double lat, double lon, double alt) {
-        mEngine.setCameraPosition(lat, lon, alt);
-        mCameraPosition[0] = lat;
-        mCameraPosition[1] = lon;
-        mCameraPosition[2] = alt;
+    public void setCameraPosition(double lat, double lng, double alt) {
+        setCameraPosition(lat, lng, alt, true);
+    }
+
+    @Override
+    public void setCameraPosition(double lat, double lon, double alt, boolean animated) {
+        mEngine.setCameraPosition(lat, lon, alt, animated);
 
         int x = ProjectionUtils.lng2tilex(lon, MAP_ZOOM);
         int y = ProjectionUtils.lat2tiley(lat, MAP_ZOOM);
@@ -280,12 +323,12 @@ public final class ArpiGlController implements Controller {
 
             Tile.Id tile = new Tile.Id(x, y, MAP_ZOOM);
             // Our tile exists, move to head of queue
-            if (mTileCache.contains(tile)) {
+            if (mTileCache != null && mTileCache.contains(tile)) {
                 mTileCache.moveLast(tile);
             }
 
             // Warning: this calls all poi providers each time the camera is moved. This means caching should be implemented on PoiProviders
-            for (PoiProvider provider : mPoiProvider) {
+            for (PoiProvider provider : mPoiProviders) {
                 if (provider != null) {
                     mLoaded = false;
                     provider.fetch(new Tile.Id(x, y, MAP_ZOOM));
@@ -295,10 +338,6 @@ public final class ArpiGlController implements Controller {
             mLastX = x;
             mLastY = y;
         }
-    }
-
-    public double[] getCameraPosition() {
-        return mCameraPosition;
     }
 
     @Override
@@ -341,10 +380,6 @@ public final class ArpiGlController implements Controller {
         mEngine.setSkyBoxEnabled(enabled);
     }
 
-    @Override
-    public final float[] getCameraRotationMatrix() {
-        return mEngine.getCameraRotationMatrix();
-    }
 
     @Override
     public final void setCameraRotation(float[] rotationMatrix) {
@@ -374,10 +409,10 @@ public final class ArpiGlController implements Controller {
             mOrientationProvider.registerListener(mOrientationListener);
 
             if (mTileProvider != null) {
-                mTileProvider.register(mTileEventListener);
+                mEventBus.register(mTileEventListener);
             }
 
-            for (PoiProvider provider : mPoiProvider) {
+            for (PoiProvider provider : mPoiProviders) {
                 if (provider != null) {
                     mEventBus.register(mPoiEventListener);
                 }
@@ -394,10 +429,10 @@ public final class ArpiGlController implements Controller {
             mFragment.getLocationProvider().unregisterListener(mLocationListener);
 
             if (mTileProvider != null) {
-                mTileProvider.unregister(mTileEventListener);
+                mEventBus.unregister(mTileEventListener);
             }
 
-            for (PoiProvider provider : mPoiProvider) {
+            for (PoiProvider provider : mPoiProviders) {
                 if (provider != null) {
                     mEventBus.unregister(mPoiEventListener);
                 }
@@ -429,7 +464,9 @@ public final class ArpiGlController implements Controller {
             Tile tile = event.tile;
             Tile.Id id = tile.getId();
 
-            mTileCache.put(tile.getId(), tile.getData());
+            if (mTileCache != null) {
+                mTileCache.put(tile.getId(), tile.getData());
+            }
 
             // tell the engine that it can now load this tile.
             mEngine.notifyTileAvailable(id.x, id.y, id.z);
@@ -499,7 +536,6 @@ public final class ArpiGlController implements Controller {
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-
         }
 
         @Override

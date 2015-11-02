@@ -21,7 +21,7 @@ import mobi.designmyapp.arpigl.model.Poi;
 
 /**
  * List of action to perform on the engine. Provide the same (or equivalent)
- * interface of native class dma::geo::GeoEngine.
+ * interface of native class arpi::geo::GeoEngine.
  *
  * @author Nicolas THIERION.
  */
@@ -66,6 +66,15 @@ public interface Controller {
 
     /**
      * Set the position of the camera.
+     * @param lat camera latitude
+     * @param lng camera longitude
+     * @param alt camera altitude
+     * @param animated positioning animation
+     */
+    void setCameraPosition(double lat, double lng, double alt, boolean animated);
+
+    /**
+     * Set the position of the camera.
      *
      * @param lat camera latitude
      * @param lon camera longitude
@@ -105,15 +114,6 @@ public interface Controller {
      * @param enabled if the skybox is enabled
      */
     void setSkyBoxEnabled(boolean enabled);
-
-    /**
-     * Modifying the returned value doesn't make any change on actual camera
-     * rotation. You should call {@link #setCameraRotation(float[])} to make the
-     * changes to take effect.
-     *
-     * @return a copy of the current rotation matrix of the 3D scene.
-     */
-    float[] getCameraRotationMatrix();
 
     /**
      * set the rotation matrix to apply a rotation on the 3D scene.

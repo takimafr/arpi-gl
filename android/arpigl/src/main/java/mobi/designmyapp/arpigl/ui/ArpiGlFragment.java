@@ -74,7 +74,7 @@ public final class ArpiGlFragment extends Fragment {
     /**
      * View where GL scene will be drawn.
      */
-    private ArpiGlView wView;
+    private ArpiGlView mArpiGlView;
     /**
      * ArpiGl engine.
      */
@@ -85,6 +85,7 @@ public final class ArpiGlFragment extends Fragment {
     private LocationProvider mLocationProvider;
 
     private boolean mAskedForGps = false;
+    private boolean mOpenGpsSettings = true;
 
     // startup value, keep to false
     private boolean mLocationTracking = false;
@@ -100,7 +101,7 @@ public final class ArpiGlFragment extends Fragment {
         mContext = getActivity().getApplicationContext();
 
         // load layout.
-        wView = (ArpiGlView) rootView.findViewById(R.id.arpigl_glview);
+        mArpiGlView = (ArpiGlView) rootView.findViewById(R.id.arpigl_glview);
 
         // install the engine if not installed
         final ArpiGlInstaller installer = ArpiGlInstaller.getInstance(mContext);
@@ -113,7 +114,7 @@ public final class ArpiGlFragment extends Fragment {
 
         mLocationProvider = FusedLocationProvider.getInstance(mContext);
         // finally, set the engine as the renderer for our view.
-        wView.setRenderer(mEngine.getRenderer());
+        mArpiGlView.setRenderer(mEngine.getRenderer());
         setUserLocationEnabled(DEFAULT_TRACK_LOCATION);
 
         return rootView;
@@ -122,23 +123,25 @@ public final class ArpiGlFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        wView.onPause();
+        mArpiGlView.onPause();
         mLocationProvider.setListeningEnabled(false);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        wView.onResume();
-        //mEngine.resume();
+        mArpiGlView.onResume();
 
         if (mLocationTracking) {
             if (mLocationProvider.isAvailable()) {
                 if (!mLocationProvider.isListening()) {
+                    if (mOpenGpsSettings) {
+                        showEnableGpsIntent();
+                    } else {
+                        Toast.makeText(mContext, R.string.location_turn_on_toast, Toast.LENGTH_LONG).show();
+                    }
+                } else {
                     mLocationProvider.setListeningEnabled(true);
-                }
-                if (!mAskedForGps && !mLocationProvider.isGpsEnabled()) {
-                    showEnableGpsIntent();
                 }
             } else {
                 mShowNoLocationError();
@@ -151,12 +154,12 @@ public final class ArpiGlFragment extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (hidden) { //pause the OpenGL thread
-            wView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            mArpiGlView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
             if (mLocationTracking) {
                 mLocationProvider.setListeningEnabled(false);
             }
         } else { //resume the OpenGL thread
-            wView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+            mArpiGlView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
             if (mLocationTracking) {
                 mLocationProvider.setListeningEnabled(true);
             }
@@ -211,6 +214,10 @@ public final class ArpiGlFragment extends Fragment {
 
     public Engine getEngine() {
         return mEngine;
+    }
+
+    public ArpiGlView getArpiGlView() {
+        return mArpiGlView;
     }
 
     private void mShowNoLocationError() {

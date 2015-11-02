@@ -31,7 +31,7 @@ public class CachedLinkedHashSet<E> extends LinkedHashSet<E> implements Queue<E>
         this.mCapacity = size;
     }
 
-    private final boolean moveToTail(E object) {
+    private boolean moveToTail(E object) {
         super.remove(object);
         return super.add(object);
     }

@@ -106,7 +106,7 @@ public class InternalBus {
                     } catch (IllegalAccessException e) {
                         Log.e(TAG, "Cannot invoke onEvent method! Illegal Access");
                     } catch (InvocationTargetException e) {
-                        Log.e(TAG, "Cannot invoke onEvent method! Invocation Target Exception occured");
+                        Log.e(TAG, "Cannot invoke onEvent method! Invocation Target Exception occurred");
                     }
                 }
             }

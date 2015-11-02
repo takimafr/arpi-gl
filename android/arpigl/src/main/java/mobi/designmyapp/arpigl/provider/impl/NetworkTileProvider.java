@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -62,15 +63,13 @@ public abstract class NetworkTileProvider extends TileProvider {
             TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
 
     private UriParser mParser;
-    private String mUri;
 
     public interface UriParser {
         String parse(Tile.Id tile, String uri);
     }
 
     public NetworkTileProvider(String url) {
-        super();
-        mUri = url;
+        super(url);
         mParser = new UriParser() {
             @Override
             public String parse(Tile.Id tile, String uri) {
@@ -85,6 +84,11 @@ public abstract class NetworkTileProvider extends TileProvider {
     @Override
     public final void fetch(Tile.Id id) {
         new DownloadTileTask().executeOnExecutor(EXECUTOR, id);
+    }
+
+    @Override
+    public String getNamespace() {
+        return UUID.nameUUIDFromBytes(mUri.getBytes()).toString();
     }
 
     public void setUriParser(UriParser parser) {

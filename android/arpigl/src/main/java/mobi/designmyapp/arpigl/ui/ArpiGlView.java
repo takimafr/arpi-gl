@@ -117,8 +117,7 @@ public class ArpiGlView extends GLSurfaceView {
         mInitGlContext();
     }
 
-
-    /* ***
+/* ***
      * PRIVATE FUNCTIONS
      */
 
