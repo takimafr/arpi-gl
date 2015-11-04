@@ -132,9 +132,6 @@ public final class FusedLocationProvider implements LocationProvider {
         if (!isGpsLocationAvailable()) {
             Log.w(TAG, "no GPS-based location provider available for this device.");
         }
-
-        // finally, retrieve the fused location from last known position
-        mCurrentLocation = getLastKnownFusedLocation();
     }
 
     /**
@@ -307,7 +304,8 @@ public final class FusedLocationProvider implements LocationProvider {
 
                 Log.v(TAG, "waking up listening to NETWORK_PROVIDER");
             }
-
+            // finally, retrieve the fused location from last known position
+            mCurrentLocation = getLastKnownFusedLocation();
 
         } else {
             mLocationManager.removeUpdates(mLocationlistener);

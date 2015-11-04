@@ -16,7 +16,12 @@
 
 package mobi.designmyapp.arpigl.demo.customtileprovider;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import org.json.JSONException;
@@ -34,6 +39,11 @@ import mobi.designmyapp.arpigl.ui.ArpiGlFragment;
  * The default behaviour is to load tiles from your application assets.
  */
 public class TileProviderDemoActivity extends AppCompatActivity {
+
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
+    private static final double PARIS_CENTER_LAT = 48.8554;
+    private static final double PARIS_CENTER_LONG = 2.3474;
 
     private ArpiGlController arpiController;
 
@@ -55,6 +65,14 @@ public class TileProviderDemoActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_demo);
 
+        // This demo uses the location feature. Since 6.0 we have to check permissions at runtime.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+
         // Get the arpi fragment.
         ArpiGlFragment arpiGlFragment = (ArpiGlFragment) getFragmentManager().findFragmentById(R.id.engine_fragment);
 
@@ -64,13 +82,18 @@ public class TileProviderDemoActivity extends AppCompatActivity {
         // Add a Google Maps tile provider to the controller
         // NB: This ApiKey is displayed for demo purposes only.
         arpiController.setTileProvider(new GoogleMapsTileProvider("AIzaSyBULbG_upfRjG5nrh9x5MSaBbc6lIWilHU"));
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Enable user location
-        arpiController.setUserLocationEnabled(true);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            arpiController.setUserLocationEnabled(true);
+        } else {
+            arpiController.setUserLocationEnabled(false);
+            arpiController.setCameraPosition(PARIS_CENTER_LAT, PARIS_CENTER_LONG);
+        }
     }
 }
