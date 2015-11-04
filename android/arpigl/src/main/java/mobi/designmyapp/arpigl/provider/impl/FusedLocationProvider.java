@@ -93,7 +93,7 @@ public final class FusedLocationProvider implements LocationProvider {
     private final MultiLocationListener mLocationlistener = new MultiLocationListener() {
         @Override
         protected boolean shouldNotify(Location location) {
-            if (isBestLocation(mCurrentLocation, location)) {
+            if (isBestLocation(location, mCurrentLocation)) {
                 mCurrentLocation = location;
                 return true;
             }

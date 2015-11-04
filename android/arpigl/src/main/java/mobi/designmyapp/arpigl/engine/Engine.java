@@ -167,11 +167,10 @@ public final class Engine implements Controller {
     public void refresh() {
         throwIfNotInstalled("refresh()");
         if (isInit()) {
-            Log.v(TAG, "refresh...");
             refresh(mNativeInstanceAddr);
-            Log.v(TAG, "refresh done");
+            updateTileDiffuseMaps(mNativeInstanceAddr);
         } else {
-            Log.w(TAG, "refresh but bridge is not init");
+            Log.w(TAG, "refresh but engine is not init");
             if (BuildConfig.DEBUG) {
                 throwIfNotInit("refresh()");
             }
@@ -427,7 +426,6 @@ public final class Engine implements Controller {
          */
         @Override
         public final void onDrawFrame(GL10 gl) {
-            //setCameraRotation(mCurrentCamera.rotationMatrix);
             step();
         }
 
@@ -569,6 +567,8 @@ public final class Engine implements Controller {
     private native void notifyTileAvailable(long nativeInstanceAddr, int x, int y, int z);
 
     private native void setTileNamespace(long nativeInstanceAddr, String namespace);
+
+    private native void updateTileDiffuseMaps(long nativeInstanceAddr);
 
     private native void selectPoi(long nativeInstanceAddr, int x, int y);
 

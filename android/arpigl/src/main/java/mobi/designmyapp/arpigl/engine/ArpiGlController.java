@@ -40,7 +40,6 @@ import mobi.designmyapp.arpigl.listener.PoiEventListener;
 import mobi.designmyapp.arpigl.listener.TileEventListener;
 import mobi.designmyapp.arpigl.model.Poi;
 import mobi.designmyapp.arpigl.model.Tile;
-import mobi.designmyapp.arpigl.provider.LocationProvider;
 import mobi.designmyapp.arpigl.provider.OrientationProvider;
 import mobi.designmyapp.arpigl.provider.PoiProvider;
 import mobi.designmyapp.arpigl.provider.TileProvider;
@@ -103,6 +102,7 @@ public final class ArpiGlController implements Controller {
      * LOCKS
      */
     private final Object mLock;
+
     private int mLastX;
     private int mLastY;
     private boolean mLoaded;
@@ -152,8 +152,6 @@ public final class ArpiGlController implements Controller {
 
         Activity activity = mFragment.getActivity();
         mActivityContext = new WeakReference<>(activity);
-
-        mFragment.getLocationProvider().registerListener(mLocationListener);
 
         // init OrientationProvider
         mOrientationProvider = RotationVectorOrientationProvider.getInstance(activity);
@@ -271,23 +269,6 @@ public final class ArpiGlController implements Controller {
         }
     }
 
-    /**
-     * Gets the location provider.
-     *
-     * @return the location provider
-     */
-    public LocationProvider getLocationProvider() {
-        return mFragment.getLocationProvider();
-    }
-
-    /**
-     * Sets the location provider
-     *
-     * @param provider the location provider
-     */
-    public void setLocationProvider(LocationProvider provider) {
-        mFragment.setLocationProvider(provider);
-    }
 
     /**
      * Enable or disable Location tracking. When enabled, the view will be
@@ -527,7 +508,6 @@ public final class ArpiGlController implements Controller {
 
         @Override
         public void onLocationChanged(Location location) {
-
             // update camera position
             double lat = location.getLatitude();
             double lng = location.getLongitude();

@@ -58,7 +58,7 @@ public abstract class NetworkTileProvider extends TileProvider {
         }
     };
     private static final BlockingQueue<Runnable> sPoolWorkQueue =
-            new LinkedBlockingQueue<Runnable>(128);
+            new LinkedBlockingQueue<>(128);
     private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
 
