@@ -372,6 +372,10 @@ public final class Engine implements Controller {
         step(mNativeInstanceAddr);
     }
 
+    public void updateTileDiffuseMaps() {
+        updateTileDiffuseMaps(mNativeInstanceAddr);
+    }
+
     @Override
     public boolean isInstalled() {
         if (mInstalled) {

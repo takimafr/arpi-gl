@@ -219,6 +219,7 @@ public final class FusedLocationProvider implements LocationProvider {
     /**
      * @return true if the network location provider is available.
      */
+    @Override
     public boolean isNetworkLocationAvailable() {
         return mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
@@ -226,6 +227,7 @@ public final class FusedLocationProvider implements LocationProvider {
     /**
      * @return true if the GPS location provider is available.
      */
+    @Override
     public boolean isGpsLocationAvailable() {
         return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }

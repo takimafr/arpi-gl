@@ -18,7 +18,7 @@
 <resources>
 
     <!--  LOCATION -->
-    <string name="location_turn_on_toast">Please turn gps on.</string>
+    <string name="location_turn_on_toast">Please turn location on.</string>
     
     <!--  ERRORS -->
     <string name="error_no_gps_available_title">Your device doesn\'t have GPS.</string>

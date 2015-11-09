@@ -17,16 +17,21 @@
 package mobi.designmyapp.arpigl.ui;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,11 +89,13 @@ public final class ArpiGlFragment extends Fragment {
      */
     private LocationProvider mLocationProvider;
 
-    private boolean mAskedForGps = false;
-    private boolean mOpenGpsSettings = true;
+    private boolean mOpenLocationSettings = true;
 
     // startup value, keep to false
     private boolean mLocationTracking = false;
+
+    private NetworkStateBroadcastReceiver mNetworkStateBroadcastReceiver;
+    private LocationStateBroadcastReceiver mLocationStateBroadcastReceiver;
 
     /* ***
      * FRAGMENT Overrides
@@ -117,6 +124,9 @@ public final class ArpiGlFragment extends Fragment {
         mArpiGlView.setRenderer(mEngine.getRenderer());
         setUserLocationEnabled(DEFAULT_TRACK_LOCATION);
 
+        mNetworkStateBroadcastReceiver = new NetworkStateBroadcastReceiver();
+        mLocationStateBroadcastReceiver = new LocationStateBroadcastReceiver();
+
         return rootView;
     }
 
@@ -125,6 +135,8 @@ public final class ArpiGlFragment extends Fragment {
         super.onPause();
         mArpiGlView.onPause();
         mLocationProvider.setListeningEnabled(false);
+        mContext.unregisterReceiver(mNetworkStateBroadcastReceiver);
+        mContext.unregisterReceiver(mLocationStateBroadcastReceiver);
     }
 
     @Override
@@ -135,7 +147,7 @@ public final class ArpiGlFragment extends Fragment {
         if (mLocationTracking) {
             if (mLocationProvider.isAvailable()) {
                 if (!mLocationProvider.isListening()) {
-                    if (mOpenGpsSettings) {
+                    if (mOpenLocationSettings) {
                         showEnableGpsIntent();
                     } else {
                         Toast.makeText(mContext, R.string.location_turn_on_toast, Toast.LENGTH_LONG).show();
@@ -147,6 +159,14 @@ public final class ArpiGlFragment extends Fragment {
                 mShowNoLocationError();
             }
         }
+
+        // register network state broadcast receiver
+        IntentFilter networkStateIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        mContext.registerReceiver(mNetworkStateBroadcastReceiver, networkStateIntentFilter);
+
+        // register location state broadcast receiver
+        IntentFilter locationStateIntentFilter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+        mContext.registerReceiver(mLocationStateBroadcastReceiver, locationStateIntentFilter);
     }
 
 
@@ -203,9 +223,12 @@ public final class ArpiGlFragment extends Fragment {
                 lastLocation.setLongitude(0);
             }
             mEngine.setCameraPosition(lastLocation.getLatitude(), lastLocation.getLongitude());
-
         }
         mLocationTracking = locationTracking;
+    }
+
+    public void setOpenLocationSettings(boolean openLocationSettings) {
+        mOpenLocationSettings = openLocationSettings;
     }
 
     /* ***
@@ -234,7 +257,6 @@ public final class ArpiGlFragment extends Fragment {
     }
 
     void showEnableGpsIntent() {
-        mAskedForGps = true;
         Toast.makeText(mContext, R.string.location_turn_on_toast, Toast.LENGTH_LONG).show();
         final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -254,5 +276,32 @@ public final class ArpiGlFragment extends Fragment {
             provider.registerListener(l);
         }
         this.mLocationProvider = provider;
+    }
+
+
+    private class NetworkStateBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                mEngine.updateTileDiffuseMaps();
+            }
+        }
+    }
+
+    private class LocationStateBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mLocationTracking) {
+                if (mLocationProvider.isGpsLocationAvailable() || mLocationProvider.isNetworkLocationAvailable()) {
+                    mLocationProvider.setListeningEnabled(true);
+                } else {
+                    mLocationProvider.setListeningEnabled(false);
+                }
+            }
+        }
     }
 }

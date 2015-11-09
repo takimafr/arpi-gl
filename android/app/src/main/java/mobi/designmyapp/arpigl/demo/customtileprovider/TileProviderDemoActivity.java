@@ -76,6 +76,7 @@ public class TileProviderDemoActivity extends AppCompatActivity {
 
         // Create a controller to manage the arpi fragment
         arpiController = new ArpiGlController(arpiGlFragment);
+        arpiController.setOpenLocationSettings(false);
 
         // Add a Google Maps tile provider to the controller
         // NB: This ApiKey is displayed for demo purposes only.

@@ -18,6 +18,9 @@ package mobi.designmyapp.arpigl.engine;
 
 import android.app.Activity;
 import android.app.Application.ActivityLifecycleCallbacks;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.hardware.SensorEvent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -27,6 +30,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
@@ -170,7 +174,7 @@ public final class ArpiGlController implements Controller {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 double[] cameraPosition = mEngine.getCameraPosition();
-                float offset = - distanceY * 0.01f;
+                float offset = - distanceY * 0.02f;
                 double alt = cameraPosition[2] + offset;
                 setCameraPosition(cameraPosition[0], cameraPosition[1], Math.min(Math.max(MIN_ALTITUDE, alt), MAX_ALTITUDE), false);
                 return true;
@@ -365,6 +369,10 @@ public final class ArpiGlController implements Controller {
     @Override
     public final void setCameraRotation(float[] rotationMatrix) {
         mEngine.setCameraRotation(rotationMatrix);
+    }
+
+    public void setOpenLocationSettings(boolean openLocationSettings) {
+        mFragment.setOpenLocationSettings(openLocationSettings);
     }
 
     /* ***

@@ -32,6 +32,10 @@ public interface LocationProvider {
      */
     boolean isAvailable();
 
+    boolean isNetworkLocationAvailable();
+
+    boolean isGpsLocationAvailable();
+
     /**
      * @return true if this provider is currently listening.
      */
