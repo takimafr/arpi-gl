@@ -35,6 +35,16 @@ public abstract class VisibilityTrigger {
      */
     private Fragment mFragment;
 
+    /**
+     * the listener on display changes
+     */
+    private OnDisplayChangeListener onDisplayChangeListener;
+
+    /**
+     * True if the fragment is visible
+     */
+    private boolean isFragmentVisible;
+
     /* ***
      * CONSTRUCTOR
      */
@@ -65,7 +75,22 @@ public abstract class VisibilityTrigger {
      * @return true if the managed fragment is visible.
      */
     public final boolean isShown() {
-        return mFragment.isVisible();
+        return isFragmentVisible;
+    }
+
+    /**
+     * Remove the  {@code OnDisplayChangeListener}
+     */
+    public void removeOnDisplayChangeListener() {
+        onDisplayChangeListener = null;
+    }
+
+    /**
+     * Set the onDisplayChangeListener
+     * @param onDisplayChangeListener the {@code OnDisplayChangeListener} to set
+     */
+    public void setOnDisplayChangeListener(OnDisplayChangeListener onDisplayChangeListener) {
+        this.onDisplayChangeListener = onDisplayChangeListener;
     }
 
     /**
@@ -74,11 +99,39 @@ public abstract class VisibilityTrigger {
      * @param visible if the fragment should be visible.
      */
     public final synchronized void show(boolean visible) {
-        if (visible && !mFragment.isVisible()) {
+        if (visible && !isFragmentVisible) {
+            if (onDisplayChangeListener != null) {
+                onDisplayChangeListener.beforeDisplayChange(true);
+            }
+            isFragmentVisible = true;
             mFragment.getFragmentManager().beginTransaction().show(mFragment).commit();
-        } else if (!visible && mFragment.isVisible()) {
+            if (onDisplayChangeListener != null) {
+                onDisplayChangeListener.afterDisplayChange(true);
+            }
+        } else if (!visible && isFragmentVisible) {
+            if (onDisplayChangeListener != null) {
+                onDisplayChangeListener.beforeDisplayChange(false);
+            }
+            isFragmentVisible = false;
             mFragment.getFragmentManager().beginTransaction().hide(mFragment).commit();
+            if (onDisplayChangeListener != null) {
+                onDisplayChangeListener.afterDisplayChange(false);
+            }
         }
     }
 
+    public interface OnDisplayChangeListener {
+        /**
+         * Called before the fragment visibility change
+         * @param visible if the fragment will be visible.
+         */
+        void beforeDisplayChange(boolean visible);
+
+        /**
+         * Called after the fragment visibility change
+         * @param visible if the fragment is visible.
+         */
+        void afterDisplayChange(boolean visible);
+    }
 }
+
