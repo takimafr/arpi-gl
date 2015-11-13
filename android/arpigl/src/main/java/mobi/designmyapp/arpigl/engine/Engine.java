@@ -19,6 +19,7 @@ package mobi.designmyapp.arpigl.engine;
 import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
 import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -113,9 +114,9 @@ public final class Engine implements Controller {
         // copied.
         final StringBuilder filesDirBuilder = new StringBuilder();
         filesDirBuilder
-                .append(context.getFilesDir().getAbsolutePath())
-                .append('/')
-                .append(RESOURCES_FOLDER);
+            .append(context.getFilesDir().getAbsolutePath())
+            .append('/')
+            .append(RESOURCES_FOLDER);
         mInstallationDir = filesDirBuilder.toString();
 
         mNativeInstanceAddr = newEngine(mInstallationDir);
@@ -195,7 +196,7 @@ public final class Engine implements Controller {
         float b = (Color.blue(color) / maxShade);
 
         addPoi(mNativeInstanceAddr, poi.getId(), poi.getShapeId(), poi.getIconId(), r, g, b, poi.getLatitude(),
-                poi.getLongitude(), poi.getAltitude());
+            poi.getLongitude(), poi.getAltitude());
     }
 
     @Override
@@ -500,14 +501,46 @@ public final class Engine implements Controller {
         @Override
         public void onTileRequest(final int x, final int y, final int z) {
             // MAY DEADLOCK IF RUN IN THE NATIVE THREAD
-            new Thread(new Runnable() {
+            final Handler mainHandler = new Handler(mContext.getMainLooper());
+            Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     if (mEngineListener != null) {
                         mEngineListener.onTileRequest(x, y, z);
                     }
                 }
-            }).start();
+            };
+            mainHandler.post(runnable);
+        }
+
+        @Override
+        public void onPoiSelected(final String sid) {
+            // MAY DEADLOCK IF RUN IN THE NATIVE THREAD
+            final Handler mainHandler = new Handler(mContext.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (mEngineListener != null) {
+                        mEngineListener.onPoiSelected(sid);
+                    }
+                }
+            };
+            mainHandler.post(runnable);
+        }
+
+        @Override
+        public void onPoiDeselected(final String sid) {
+            // MAY DEADLOCK IF RUN IN THE NATIVE THREAD
+            final Handler mainHandler = new Handler(mContext.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (mEngineListener != null) {
+                        mEngineListener.onPoiDeselected(sid);
+                    }
+                }
+            };
+            mainHandler.post(runnable);
         }
 
         /* ***

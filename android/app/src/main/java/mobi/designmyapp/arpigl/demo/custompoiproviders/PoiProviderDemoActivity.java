@@ -21,6 +21,7 @@ import java.io.IOException;
 import mobi.designmyapp.arpigl.ArpiGlInstaller;
 import mobi.designmyapp.arpigl.demo.R;
 import mobi.designmyapp.arpigl.engine.ArpiGlController;
+import mobi.designmyapp.arpigl.listener.PoiSelectionListener;
 import mobi.designmyapp.arpigl.provider.impl.OpenStreetMapTileProvider;
 import mobi.designmyapp.arpigl.ui.ArpiGlFragment;
 
@@ -28,6 +29,7 @@ import org.json.JSONException;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 /**
  * This activity demonstrates the use of multiple Poi Providers, local (from assets), or remote (from OpenDataSoft.com)
@@ -75,6 +77,18 @@ public class PoiProviderDemoActivity extends AppCompatActivity {
 
         // This one will fetch pois (food) from the google places API
         arpiController.addPoiProvider(new CustomGooglePlacesPoiProvider("AIzaSyBULbG_upfRjG5nrh9x5MSaBbc6lIWilHU"));
+
+        // Set the poi selection listener
+        arpiController.setPoiSelectionListener(new PoiSelectionListener() {
+            @Override
+            public void onPoiSelected(String sid) {
+                Toast.makeText(PoiProviderDemoActivity.this, "Poi " + sid + " selected", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onPoiDeselected(String sid) {
+                Toast.makeText(PoiProviderDemoActivity.this, "Poi " + sid + " deselected", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Enable Skybox
         arpiController.setSkyBoxEnabled(true);

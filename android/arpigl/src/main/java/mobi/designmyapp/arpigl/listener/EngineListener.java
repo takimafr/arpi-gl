@@ -28,4 +28,9 @@ public interface EngineListener {
      * @param z coord of the requested tile.
      */
     void onTileRequest(int x, int y, int z);
+
+    void onPoiSelected(String sid);
+
+    void onPoiDeselected(String sid);
+
 }

@@ -25,6 +25,7 @@ import android.hardware.SensorEvent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -41,6 +42,7 @@ import mobi.designmyapp.arpigl.event.TileEvent;
 import mobi.designmyapp.arpigl.listener.EngineListener;
 import mobi.designmyapp.arpigl.listener.OrientationListener;
 import mobi.designmyapp.arpigl.listener.PoiEventListener;
+import mobi.designmyapp.arpigl.listener.PoiSelectionListener;
 import mobi.designmyapp.arpigl.listener.TileEventListener;
 import mobi.designmyapp.arpigl.model.Poi;
 import mobi.designmyapp.arpigl.model.Tile;
@@ -135,6 +137,7 @@ public final class ArpiGlController implements Controller {
     private TileEventListener mTileEventListener = new ControllerTileEventListener();
     private EngineListener mEngineCallbacks = new ControllerEngineListener();
     private PoiEventListener mPoiEventListener = new ControllerPoiEventListener();
+    private PoiSelectionListener mPoiSelectionListener;
     /* ***
          * ATTRIBUTES
          */
@@ -270,6 +273,16 @@ public final class ArpiGlController implements Controller {
             // stop listening the provider
             mEventBus.unregister(mPoiEventListener);
             mPoiProviders.remove(poiProvider);
+        }
+    }
+
+    /**
+     * Sets the poi selection listener.
+     * @param poiSelectionListener the poi selection listener
+     */
+    public void setPoiSelectionListener(PoiSelectionListener poiSelectionListener) {
+        synchronized (mLock) {
+            mPoiSelectionListener = poiSelectionListener;
         }
     }
 
@@ -488,6 +501,24 @@ public final class ArpiGlController implements Controller {
                 Tile.Id tid = new Tile.Id(x, y, z);
                 // fetch the requested tile
                 fetchTile(tid);
+            }
+        }
+
+        @Override
+        public void onPoiSelected(final String sid) {
+            synchronized (mLock) {
+                if (mPoiSelectionListener != null) {
+                    mPoiSelectionListener.onPoiSelected(sid);
+                }
+            }
+        }
+
+        @Override
+        public void onPoiDeselected(final String sid) {
+            synchronized (mLock) {
+                if (mPoiSelectionListener != null) {
+                    mPoiSelectionListener.onPoiDeselected(sid);
+                }
             }
         }
 
