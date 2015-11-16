@@ -1,0 +1,20 @@
+{
+  "backToFront": true,
+  "passes" : [
+    {
+      "cullMode": "front",
+      "shader": "silhouette",
+      "diffuseColor": [0.0, 0.0, 0.0],
+      "scaling": true,
+      "depthWriting": false
+    },
+    {
+      "cullMode": "back",
+      "shader": "poi",
+      "lighting": "flat",
+      "diffuseColor": [0.3, 0.7, 0.0],
+      "diffuseMap": "damier",
+      "diffuseMapActivation": true
+    }
+  ]
+}

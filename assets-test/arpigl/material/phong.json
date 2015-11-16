@@ -1,0 +1,10 @@
+{
+  "passes" : [
+    {
+      "cullMode": "back",
+      "shader": "phong",
+      "lighting": "smooth",
+      "diffuseColor": [0.3, 0.3, 0.3]
+    }
+  ]
+}

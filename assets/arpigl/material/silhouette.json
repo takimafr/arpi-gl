@@ -1,0 +1,15 @@
+{
+  "backToFront": true,
+  "passes" : [
+    {
+      "cullMode": "front",
+      "shader": "silhouette",
+      "scaling": true
+    },
+    {
+      "cullMode": "back",
+      "shader": "phong",
+      "lighting": "smooth"
+    }
+  ]
+}

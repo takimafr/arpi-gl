@@ -1,0 +1,8 @@
+{
+  "passes" : [
+    {
+      "shader": "textured",
+      "diffuseMap": "bot-texture"
+    }
+  ]
+}

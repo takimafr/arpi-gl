@@ -1,0 +1,9 @@
+{
+  "passes" : [
+    {
+      "cullMode": "none",
+      "shader": "textured",
+      "diffuseMap": "damier"
+    }
+  ]
+}
