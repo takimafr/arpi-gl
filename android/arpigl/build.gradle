@@ -23,7 +23,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "0.3.2-SNAPSHOT"
+        versionName "0.3.2"
     }
 
     sourceSets.main {
