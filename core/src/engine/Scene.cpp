@@ -183,7 +183,7 @@ namespace dma {
     //----------------------------------------------------------------------
     float Scene::distanceFromCamera(std::shared_ptr<Entity> entity) {
         glm::vec3 ce = entity->getPosition() - mCamera->getPosition(); // camera-entity vector
-        return ce.length();
+        return glm::length<float>(ce);
     }
 
 

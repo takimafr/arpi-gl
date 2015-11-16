@@ -306,9 +306,8 @@ namespace dma {
 
             //Log::debug(TAG, "closest: %s", closest->getSid().c_str());
 
-
             closest->getMaterial()->getPass(0).setDiffuseColor(glm::vec3(0.8f, 0.1f, 0.3f));
-            if (mSelected != nullptr) {
+            if (mSelected != nullptr && mSelected->getSid() != closest->getSid()) {
                 mSelected->getMaterial()->getPass(0).setDiffuseColor(glm::vec3(0.0f, 0.0f, 0.0f));
                 mTileMap.mCallbacks->onPoiDeselected(mSelected->getSid()); //TODO see TODO below
             }
