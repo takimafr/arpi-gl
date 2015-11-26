@@ -186,7 +186,7 @@ Add these lines to your proguard config:
 
 ## License
 The Android ArpiGl Library is OpenSource, licensed under the **GNU General Public License 3.0**.  
-The native ArpiGl Library is closed source, **Copyright 2015 by eBusiness Information All-rights reserved**.
+
 
 ## Contribute
 Contributions and Pull Requests are welcome. You may have awesome suggestions and we also have ideas on improvements and new features. Let us know what you want and how you may help!
