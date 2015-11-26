@@ -175,6 +175,12 @@ public final class ArpiGlController implements Controller {
         // setup gesture detectors
         mGestureDetector = new GestureDetector(mActivityContext.get(), new GestureDetector.SimpleOnGestureListener() {
             @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                mEngine.selectPoi((int) e.getX(), (int) e.getY());
+                return true;
+            }
+
+            @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 double[] cameraPosition = mEngine.getCameraPosition();
                 float offset = - distanceY * 0.02f;
@@ -199,13 +205,6 @@ public final class ArpiGlController implements Controller {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 mScaleGestureDetector.onTouchEvent(motionEvent);
                 mGestureDetector.onTouchEvent(motionEvent);
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mEngine.selectPoi((int) motionEvent.getX(), (int) motionEvent.getY());
-                        break;
-                    default:
-                        return false;
-                }
                 return true;
             }
         });
