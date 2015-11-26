@@ -171,43 +171,6 @@ public final class ArpiGlController implements Controller {
         mActivityLifecycleCallbacks.onActivityResumed(activity);
 
         mEventBus = InternalBus.getInstance();
-
-        // setup gesture detectors
-        mGestureDetector = new GestureDetector(mActivityContext.get(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                mEngine.selectPoi((int) e.getX(), (int) e.getY());
-                return true;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                double[] cameraPosition = mEngine.getCameraPosition();
-                float offset = - distanceY * 0.02f;
-                double alt = cameraPosition[2] + offset;
-                setCameraPosition(cameraPosition[0], cameraPosition[1], Math.min(Math.max(MIN_ALTITUDE, alt), MAX_ALTITUDE), false);
-                return true;
-            }
-        });
-
-        // handle scale gesture for zoom
-        mScaleGestureDetector = new ScaleGestureDetector(mActivityContext.get(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            @Override
-            public boolean onScale(ScaleGestureDetector detector) {
-                float scale = detector.getScaleFactor();
-                mEngine.zoom(scale - 1.0f);
-                return true;
-            }
-        });
-
-        mFragment.getArpiGlView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                mScaleGestureDetector.onTouchEvent(motionEvent);
-                mGestureDetector.onTouchEvent(motionEvent);
-                return true;
-            }
-        });
     }
 
     /* ***
@@ -418,6 +381,43 @@ public final class ArpiGlController implements Controller {
                     mEventBus.register(mPoiEventListener);
                 }
             }
+
+            // setup gesture detectors
+            mGestureDetector = new GestureDetector(mActivityContext.get(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    mEngine.selectPoi((int) e.getX(), (int) e.getY());
+                    return true;
+                }
+
+                @Override
+                public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                    double[] cameraPosition = mEngine.getCameraPosition();
+                    float offset = - distanceY * 0.02f;
+                    double alt = cameraPosition[2] + offset;
+                    setCameraPosition(cameraPosition[0], cameraPosition[1], Math.min(Math.max(MIN_ALTITUDE, alt), MAX_ALTITUDE), false);
+                    return true;
+                }
+            });
+
+            // handle scale gesture for zoom
+            mScaleGestureDetector = new ScaleGestureDetector(mActivityContext.get(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
+                    float scale = detector.getScaleFactor();
+                    mEngine.zoom(scale - 1.0f);
+                    return true;
+                }
+            });
+
+            mFragment.getArpiGlView().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    mScaleGestureDetector.onTouchEvent(motionEvent);
+                    mGestureDetector.onTouchEvent(motionEvent);
+                    return true;
+                }
+            });
         }
 
         @Override
@@ -438,6 +438,12 @@ public final class ArpiGlController implements Controller {
                     mEventBus.unregister(mPoiEventListener);
                 }
             }
+
+            // unregister gesture detectors
+
+            mFragment.getArpiGlView().setOnTouchListener(null);
+            mScaleGestureDetector = null;
+            mGestureDetector = null;
         }
 
         @Override
