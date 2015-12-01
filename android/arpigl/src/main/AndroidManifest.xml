@@ -22,8 +22,8 @@
       android:minSdkVersion="15"
       android:targetSdkVersion="23" />
 
-  <uses-feature android:name="android.hardware.sensor.gyroscope" />
-  <uses-feature android:name="android.hardware.sensor.accelerometer" />
+  <uses-feature android:name="android.hardware.sensor.gyroscope" android:required="false"/>
+  <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false"/>
 
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
