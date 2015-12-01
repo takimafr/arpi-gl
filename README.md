@@ -1,7 +1,7 @@
 # ArpiGL
 A lightweight native OpenGL ES 2.0 powered library allowing to display Points of Interest in a 3D Augmented Reality environment.  
 
-The current version 0.3.2 only has an android client library, Pull requests for the iOS version are welcome.
+The current version 0.3.3 only has an android client library, Pull requests for the iOS version are welcome.
 
 # Screenshots
 ![Custom Markers](/images/custom-markers.png)
