@@ -57,6 +57,7 @@ public final class Engine implements Controller {
 
     // loads native library once.
     static {
+        System.loadLibrary("c++_shared");
         System.loadLibrary(JNI_LIB);
     }
 
