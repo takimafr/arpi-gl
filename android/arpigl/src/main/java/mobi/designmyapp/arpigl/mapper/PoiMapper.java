@@ -91,6 +91,10 @@ public interface PoiMapper<T> extends Mapper<List<Poi>, T> {
          * The poi color.
          */
         public static final String COLOR = "color";
+        /**
+         * The poi animation.
+         */
+        public static final String ANIMATED = "animated";
     }
 
 

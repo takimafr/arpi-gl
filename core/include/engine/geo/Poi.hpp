@@ -42,7 +42,7 @@ namespace dma {
         class Poi : public Entity, public Selectable {
 
         public:
-            Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
+            Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, bool animated);
             Poi(const Poi &) = delete;
             void operator=(const Poi &) = delete;
             virtual ~Poi();
@@ -151,6 +151,7 @@ namespace dma {
             double mLon;
             double mAlt;
             bool mDirty;
+            bool mAnimated;
             TranslationAnimation* mCurrentTranslationAnimation;
             RotationAnimation* mCurrentRotationAnimation;
         };

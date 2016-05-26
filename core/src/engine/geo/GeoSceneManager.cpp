@@ -23,7 +23,7 @@
 #include <utils/GeoUtils.hpp>
 
 #define ORIGIN_SHIFTING_TRESHOLD 8000 // 8km
-#define ZOOM_LEVEL 19
+#define ZOOM_LEVEL 20
 
 constexpr float ANIMATE_CAMERA_TRANSLATION_DURATION = 0.9f;
 constexpr float ANIMATE_CAMERA_ROTATION_DURATION = 0.08f;

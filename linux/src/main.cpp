@@ -199,39 +199,40 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    mGeoEngine.getGeoSceneManager().setTileNamespace("test-ns");
+    mGeoEngine.getGeoSceneManager().setTileNamespace("-2");
 
     // Replace the default camera with a FlyThrough camera
     mGeoEngine.getGeoSceneManager().getScene().setCamera(mFlyThroughCamera);
-    mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(45.784448, 4.854678, 5.0));
+    mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.8294849, 2.3776109, 5.0));
 
     mGeoEngine.setSkyBoxEnabled(true);
 
     std::shared_ptr<Poi> poi1 = mGeoEngine.getPoiFactory().builder()
             .sid("poi1")
-            .shape("hydrant")
-            .icon("hydrant-diffuse")
-            .color(Color(0.2f, 0.4f, 0.7f))
+            .shape("defibrillator")
+            //.icon("transilien/pins-agence_transilien")
+            .animation(true)
+            .color(Color(1.0f, 0.5f, 0.5f))
             .build();
-    poi1->setPosition(45.784448, 4.854978, 6.0);
+    poi1->setPosition(48.8294849, 2.3776109, 6.0);
     mGeoEngine.getGeoSceneManager().addPoi(poi1);
 
-    std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()
-            .sid("poi2")
-            .shape("pyramid")
-            .color(Color(0.4f, 0.2f, 0.7f))
-            .build();
-    poi2->setPosition(45.784448, 4.854478, 6.0);
-    mGeoEngine.getGeoSceneManager().addPoi(poi2);
-
-    std::shared_ptr<Poi> poi3 = mGeoEngine.getPoiFactory().builder()
-            .sid("poi3")
-            .shape("note")
-            .icon("b20")
-            .color(Color(0.7f, 0.4f, 0.2f))
-            .build();
-    poi3->setPosition(45.784648, 4.854978, 6.0);
-    mGeoEngine.getGeoSceneManager().addPoi(poi3);
+//    std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()
+//            .sid("poi2")
+//            .shape("pyramid")
+//            .color(Color(0.4f, 0.2f, 0.7f))
+//            .build();
+//    poi2->setPosition(45.784448, 4.854478, 6.0);
+//    mGeoEngine.getGeoSceneManager().addPoi(poi2);
+//
+//    std::shared_ptr<Poi> poi3 = mGeoEngine.getPoiFactory().builder()
+//            .sid("poi3")
+//            .shape("note")
+//            .icon("b20")
+//            .color(Color(0.7f, 0.4f, 0.2f))
+//            .build();
+//    poi3->setPosition(45.784648, 4.854978, 6.0);
+//    mGeoEngine.getGeoSceneManager().addPoi(poi3);
 
     // set viewport size.
     mGeoEngine.setSurfaceSize(mWidth, mHeight);

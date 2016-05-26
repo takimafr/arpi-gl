@@ -44,6 +44,7 @@ public final class Poi {
     double mLatitude;
     double mLongitude;
     double mAltitude;
+    boolean mAnimated;
 
     /* ***
      * CONSTRUCTORS
@@ -128,6 +129,12 @@ public final class Poi {
 
     public Poi(String sid, String shape, String icon, Integer color,
                double lat, double lng, double alt) {
+        this(sid, shape, icon, color, lat, lng, alt, false);
+
+    }
+
+    public Poi(String sid, String shape, String icon, Integer color,
+               double lat, double lng, double alt, boolean animated) {
         if (shape == null) {
             shape = DEFAULT_SHAPE.getSid();
         }
@@ -147,6 +154,7 @@ public final class Poi {
         mLatitude = lat;
         mLongitude = lng;
         mAltitude = alt;
+        mAnimated = animated;
     }
 
     /**
@@ -220,6 +228,11 @@ public final class Poi {
         return mIcon != null && !mIcon.trim().isEmpty();
     }
 
+    public boolean isAnimated() {
+        return mAnimated;
+    }
+
+
     /**
      * Provide a transactional state for this Poi.
      *
@@ -263,6 +276,7 @@ public final class Poi {
         return new Builder();
     }
 
+
     /**
      * Builder for the {@link Poi} class.
      */
@@ -275,6 +289,7 @@ public final class Poi {
         double mLatitude;
         double mLongitude;
         double mAltitude;
+        boolean mAnimated;
 
         /**
          * Instantiates a new builder. Poi will be created with
@@ -387,6 +402,11 @@ public final class Poi {
             return this;
         }
 
+        public Builder animated(boolean animated) {
+            mAnimated = animated;
+            return this;
+        }
+
         /**
          * Clone builder state from existing Poi.
          *
@@ -401,6 +421,7 @@ public final class Poi {
             this.mLatitude = poi.mLatitude;
             this.mLongitude = poi.mLongitude;
             this.mAltitude = poi.mAltitude;
+            this.mAnimated = poi.mAnimated;
             return this;
         }
 

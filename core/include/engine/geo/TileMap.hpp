@@ -35,9 +35,9 @@ namespace dma {
              */
             static constexpr char       TAG[]               = "TileMap";
             static constexpr char       TILE_MATERIAL[]     = "tile";
-            static constexpr int        SIZE       = 7;
+            static constexpr int        SIZE       = 9;
             static constexpr int        OFFSET     = SIZE / 2;
-            static constexpr int        ZOOM     = 19;
+            static constexpr int        ZOOM     = 20;
 
             friend class GeoSceneManager;
 

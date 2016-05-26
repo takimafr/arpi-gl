@@ -42,9 +42,9 @@ vec3 scene_ambient = vec3(0.4, 0.4, 0.4);
 void main() {
 
     Material material = Material(
+      u_diffuse_color * 3.0,
       u_diffuse_color,
-      u_diffuse_color,
-      vec3(0.5, 0.5, 0.5),
+      vec3(0.0, 0.0, 0.0),
       32.0
     );
 
@@ -58,11 +58,12 @@ void main() {
     float sDotNEye = max(dot(sEye,normal), 0.0);
 
     //ambient relief
-    vec3 ambient = scene_ambient * material.Ka * sDotNEye * 3.0;
+    vec3 ambient = scene_ambient * material.Ka * sDotNEye;
 
     float sDotN = max(dot(s,normal), 0.0);
 
-    vec3 diffuse = u_light0.Ld * material.Kd * sDotN;
+//    vec3 diffuse = u_light0.Ld * material.Kd * sDotN;
+    vec3 diffuse = vec3(0.0);
 
     if (u_diffuse_map_enabled) {
         vec4 texel = texture2D(u_diffuse_map, v_uv);
@@ -71,7 +72,7 @@ void main() {
 
         mixed = mix(vec4(diffuse, 1.0), texel, texel.a);
         diffuse = vec3(mixed);
-        mixed = mix(vec4(ambient, 1.0), texel, texel.a);
+        mixed = mix(vec4(ambient, 1.0), vec4(0.0), texel.a);
         ambient = vec3(mixed);
     }
 
@@ -83,6 +84,7 @@ void main() {
     }
 
     specular = specular * 0.40;
+    specular = vec3(0.0);
 
     gl_FragColor = vec4(ambient + diffuse + specular, 1.0);
 }

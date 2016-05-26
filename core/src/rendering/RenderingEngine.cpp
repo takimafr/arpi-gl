@@ -33,7 +33,8 @@
 constexpr auto TAG = "RenderingEngine";
 
 //#define CLEAR_COLOR 0.2f, 0.3f, 0.3f, 1.0f
-#define CLEAR_COLOR 0.52941176470588235294f, 0.80784313725490196078f, 0.92156862745098039215f, 1.0f
+//#define CLEAR_COLOR 0.52941176470588235294f, 0.80784313725490196078f, 0.92156862745098039215f, 1.0f
+#define CLEAR_COLOR 1.f, 1.f, 1.f, 1.0f
 
 namespace dma {
 
@@ -153,10 +154,14 @@ namespace dma {
 
         ///////////////////////////////////////////
         // 1. Draw front to back
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         while (!mFrontToBack.empty()) {
             mDraw(mFrontToBack.top().renderingPackage, *mV, *mP);
             mFrontToBack.pop();
         }
+        glDisable(GL_BLEND);
+
 
         ///////////////////////////////////////////
         // 2. Draw the skybox (early depth testing) if any

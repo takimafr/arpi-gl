@@ -473,13 +473,14 @@ public final class ArpiGlInstaller {
                 copyFile(in, out);
             }
         } catch (final IOException e) {
+            throw e;
+        } finally {
             if (in != null) {
                 in.close();
             }
             if (out != null) {
                 out.close();
             }
-            throw e;
         }
         return sizeInBytes;
     }

@@ -77,7 +77,8 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_addPoi
 (JNIEnv* env, jobject caller, jlong addr,
         jstring jsid, jstring jshape, jstring jicon,
         jfloat jr, jfloat jg, jfloat jb,
-        jdouble jlat, jdouble jlng, jdouble jalt)
+        jdouble jlat, jdouble jlng, jdouble jalt,
+        jboolean animated)
 {
     const char* csid = env->GetStringUTFChars(jsid, 0);
     const std::string sid(csid);
@@ -105,12 +106,13 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_addPoi
     GeoSceneManager& geoSceneManager = engine->getGeoSceneManager();
     PoiFactory& poiFactory = engine->getPoiFactory();
     // Post message
-    engine->post([&geoSceneManager, &poiFactory, sid, shape, icon, color, lat, lng, alt]() {
+    engine->post([&geoSceneManager, &poiFactory, sid, shape, icon, color, lat, lng, alt, animated]() {
         std::shared_ptr<Poi> poi = poiFactory.builder()
             .sid(sid)
             .shape(shape)
             .color(color)
             .icon(icon)
+            .animation(animated)
             .build();
         poi->setPosition(lat, lng, alt);
         geoSceneManager.addPoi(poi);

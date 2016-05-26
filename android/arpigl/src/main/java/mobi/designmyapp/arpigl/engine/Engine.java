@@ -197,7 +197,7 @@ public final class Engine implements Controller {
         float b = (Color.blue(color) / maxShade);
 
         addPoi(mNativeInstanceAddr, poi.getId(), poi.getShapeId(), poi.getIconId(), r, g, b, poi.getLatitude(),
-            poi.getLongitude(), poi.getAltitude());
+            poi.getLongitude(), poi.getAltitude(), poi.isAnimated());
     }
 
     @Override
@@ -570,7 +570,7 @@ public final class Engine implements Controller {
 
     private native void step(long nativeInstanceAddr);
 
-    private native void addPoi(long nativeInstanceAddr, String sid, String shape, String icon, float r, float g, float b, double lat, double lng, double alt);
+    private native void addPoi(long nativeInstanceAddr, String sid, String shape, String icon, float r, float g, float b, double lat, double lng, double alt, boolean animated);
 
     private native void removePoi(long nativeInstanceAddr, String sid);
 

@@ -59,6 +59,7 @@ namespace dma {
                 Builder& shape(const std::string& shape);
                 Builder& icon(const std::string& icon);
                 Builder& color(const Color& color);
+                Builder &animation(bool animated);
                 std::shared_ptr<Poi> build();
             protected:
                 ResourceManager& mResourceManager;
@@ -66,6 +67,8 @@ namespace dma {
                 std::string mShape;
                 std::string mIcon;
                 Color mColor;
+                bool mAnimated;
+
             };
 
         public:

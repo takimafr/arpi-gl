@@ -68,10 +68,10 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_step
 /*
  * Class:     mobi_designmyapp_arpigl_engine_Engine
  * Method:    addPoi
- * Signature: (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;FFFDDD)V
+ * Signature: (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;FFFDDDB)V
  */
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_addPoi
-  (JNIEnv *, jobject, jlong, jstring, jstring, jstring, jfloat, jfloat, jfloat, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jlong, jstring, jstring, jstring, jfloat, jfloat, jfloat, jdouble, jdouble, jdouble, jboolean);
 
 /*
  * Class:     mobi_designmyapp_arpigl_engine_Engine

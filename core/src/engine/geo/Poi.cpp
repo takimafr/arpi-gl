@@ -29,14 +29,17 @@ namespace dma {
         //---------------------------------------------------------------
         Poi::Poi(const std::string& sid,
                  std::shared_ptr<Mesh> mesh,
-                 std::shared_ptr<Material> material) :
+                 std::shared_ptr<Material> material,
+                 bool animated) :
                 Entity(mesh, material),
                 mSID(sid),
+                mAnimated(animated),
                 mCurrentTranslationAnimation(nullptr),
                 mCurrentRotationAnimation(nullptr)
 
         {
             addAnimationComponent();
+            setScale(glm::vec3(0.5f));
         }
 
 //        Poi::Poi(const std::string& sid) :
@@ -76,29 +79,31 @@ namespace dma {
         void Poi::animate() {
             assert(Entity::isAnimable());
 
+            if (mAnimated) {
 
-            if (mCurrentTranslationAnimation != nullptr) {
-                mAnimationComponent->remove(mCurrentTranslationAnimation);
-                delete mCurrentTranslationAnimation;
+                if (mCurrentTranslationAnimation != nullptr) {
+                    mAnimationComponent->remove(mCurrentTranslationAnimation);
+                    delete mCurrentTranslationAnimation;
+                }
+
+                if (mCurrentRotationAnimation != nullptr) {
+                    mAnimationComponent->remove(mCurrentRotationAnimation);
+                    delete mCurrentRotationAnimation;
+                }
+
+                mCurrentTranslationAnimation =
+                        new TranslationAnimation(*mTransformComponent,
+                                                 mTransformComponent->getPosition(),
+                                                 mTransformComponent->getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
+                                                 6.0f, TranslationAnimation::Function::EASE, true, true);
+                mAnimationComponent->add(mCurrentTranslationAnimation);
+
+                mCurrentRotationAnimation =
+                        new RotationAnimation(*mTransformComponent,
+                                              8.0f, true, 360.0f,
+                                              glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f)));
+                mAnimationComponent->add(mCurrentRotationAnimation);
             }
-
-            if (mCurrentRotationAnimation != nullptr) {
-                mAnimationComponent->remove(mCurrentRotationAnimation);
-                delete mCurrentRotationAnimation;
-            }
-
-            mCurrentTranslationAnimation =
-                    new TranslationAnimation(*mTransformComponent,
-                                             mTransformComponent->getPosition(),
-                                             mTransformComponent->getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
-                                             3.0f, TranslationAnimation::Function::EASE, true, true);
-            mAnimationComponent->add(mCurrentTranslationAnimation);
-
-            mCurrentRotationAnimation =
-                    new RotationAnimation(*mTransformComponent,
-                                          4.0f, true, 360.0f,
-                                          glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f)));
-            mAnimationComponent->add(mCurrentRotationAnimation);
         }
 
 

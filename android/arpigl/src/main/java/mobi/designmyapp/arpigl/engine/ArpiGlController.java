@@ -69,7 +69,7 @@ public final class ArpiGlController implements Controller {
     /**
      * Zoom level of tiles displayed on the 3D view.
      */
-    public static final int MAP_ZOOM = 19;
+    public static final int MAP_ZOOM = 20;
 
     private static final float MIN_ALTITUDE = 1.0f;
     private static final float MAX_ALTITUDE = 15.0f;

@@ -40,6 +40,7 @@ import static mobi.designmyapp.arpigl.mapper.PoiMapper.DefaultPoiStructure.LONGI
 import static mobi.designmyapp.arpigl.mapper.PoiMapper.DefaultPoiStructure.POI_ARRAY;
 import static mobi.designmyapp.arpigl.mapper.PoiMapper.DefaultPoiStructure.POI_ID;
 import static mobi.designmyapp.arpigl.mapper.PoiMapper.DefaultPoiStructure.SHAPE_ID;
+import static mobi.designmyapp.arpigl.mapper.PoiMapper.DefaultPoiStructure.ANIMATED;
 
 /**
  * Helper class to create a new Poi by parsing a JSON file.
@@ -183,6 +184,10 @@ final class DefaultInputStreamPoiParser implements Iterator<Poi> {
         double longitude = jso.getDouble(LONGITUDE);
         String meshId = jso.getString(SHAPE_ID);
         String poiId = jso.getString(POI_ID);
+        boolean animated = true;
+        if (jso.has(ANIMATED)) {
+            animated = jso.getBoolean(ANIMATED);
+        }
 
         String iconId = null;
         if (jso.has(ICON_ID)) {
@@ -198,13 +203,31 @@ final class DefaultInputStreamPoiParser implements Iterator<Poi> {
         if (jso.has(COLOR)) {
             try {
                 String colorStr = jso.getString(COLOR);
-                color = Integer.parseInt(colorStr, 16);
+                if (colorStr.startsWith("#")) {
+                    color = Color.parseColor(colorStr.toUpperCase());
+                } else {
+                    color = Integer.parseInt(colorStr, 16);
+                }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
         }
 
-        return new Poi(poiId, meshId, iconId, color, latitude, longitude, altitude);
+        //TODO remove
+        switch (meshId) {
+            case "cab":
+                color = Color.GRAY;
+                animated = false;
+                break;
+            case "defibrillator":
+                color = Color.parseColor("#F22C2C");
+                break;
+            default:
+                color = Color.parseColor("darkgray");
+                break;
+        }
+
+        return new Poi(poiId, meshId, iconId, color, latitude, longitude, altitude, animated);
     }
 
     public void close() {

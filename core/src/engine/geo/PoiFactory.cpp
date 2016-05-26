@@ -88,6 +88,12 @@ namespace dma {
             return *this;
         }
 
+        //------------------------------------------------------------------------------
+        PoiFactory::Builder &PoiFactory::Builder::animation(bool animated) {
+            mAnimated = animated;
+            return *this;
+        }
+
 
         //------------------------------------------------------------------------------
         std::shared_ptr<Poi> PoiFactory::Builder::build() {
@@ -111,7 +117,7 @@ namespace dma {
                 poiPass.setLightingMode(Pass::Func::LIGHTING_SMOOTH);
             }
 
-            return std::make_shared<Poi>(mSid, mesh, material);
+            return std::make_shared<Poi>(mSid, mesh, material, mAnimated);
         }
 
     } /* namespace geo */

@@ -22,7 +22,7 @@
     <string name="title_activity_demo">Arpi Gl Demo</string>
 
     <!-- SplashScreen -->
-    <string name="splashscreen_message">Loading...</string>
+    <string name="splashscreen_message">Loading…</string>
     <string name="splash_screen_edited_by"><![CDATA[Edited by <font color=\"#1565C0\">eBusiness Information</font>]]></string>
     <string name="splash_screen_powered_by"><![CDATA[Powered by <font color=\"#1565C0\">DesignMyApp</font>]]></string>
 

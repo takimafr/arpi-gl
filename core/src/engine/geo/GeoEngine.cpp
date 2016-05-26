@@ -58,7 +58,7 @@ namespace dma {
             watermark->width = 200;
             watermark->height = 200;
             watermark->textureSID = "watermark";
-            mEngine.addHUDElement(watermark);
+            //mEngine.addHUDElement(watermark);
 
             return res;
         }
