@@ -58,16 +58,6 @@ namespace dma {
         struct ResourceIds {
             struct CubeMap {
                 static constexpr char DEFAULT[]      = "default";
-
-#ifndef BUILTIN_CUBEMAPS
-            private:
-#endif
-                static constexpr char CLOUDY_GREY[]  = "CloudyLightRays";
-                static constexpr char CLOUDY[]       = "ThickCloudsWater";
-                static constexpr char STORM[]        = "DarkStormy";
-                static constexpr char NIGHT[]        = "FullMoon";
-                static constexpr char DAY[]          = "TropicalSunnyDay";
-                static constexpr char aSUNSET[]       = "SunSet";
             };
 
         public:
@@ -131,16 +121,6 @@ namespace dma {
     public:
 
         /**
-         * Return the root folder path for the given resource type.
-         */
-        inline const std::string getPathFor(ResourceType type) {
-            std::string res = mResourceDir + std::string(RESOURCE_PATHS[type]);
-            return Utils::addTrailingSlash(res);
-        }
-
-
-        //--------------------------------------------------------------------------
-        /**
          * @return true if the corresponding shader program exists.
          */
         inline bool hasShaderProgram(const std::string& sid) const {
@@ -148,7 +128,6 @@ namespace dma {
         }
 
 
-        //--------------------------------------------------------------------------
         /**
          * @return the ShaderProgram corresponding to the sid
          * @param const std::string& -
@@ -156,21 +135,11 @@ namespace dma {
          * @param Status* -
          *          holds Status::OK if the mesh could be loaded.
          */
-        inline std::shared_ptr<ShaderProgram> acquireShaderProgram(const std::string& sid, Status* result) {
-            return mShaderManager.acquire(sid, result);
-        }
-
-
-        //--------------------------------------------------------------------------
-        /**
-         * @return the ShaderProgram corresponding to the sid
-         */
         inline std::shared_ptr<ShaderProgram> acquireShaderProgram(const std::string& sid) {
-            return acquireShaderProgram(sid, nullptr);
+            return mShaderManager.acquire(sid);
         }
 
 
-        //--------------------------------------------------------------------------
         /**
          * @return true if the corresponding mesh exists.
          */
@@ -179,7 +148,6 @@ namespace dma {
         }
 
 
-        //--------------------------------------------------------------------------
         /**
          * @param const std::string& -
          *          SID of the mesh to load.
@@ -187,12 +155,12 @@ namespace dma {
          *          holds Status::OK if the mesh could be loaded.
          * @return the Mesh corresponding to the sid
          */
-        inline std::shared_ptr<Mesh> acquireMesh(const std::string& sid, Status* result) {
-            return mMeshManager.acquire(sid, result);
+        inline std::shared_ptr<Mesh> acquireMesh(const std::string& sid) {
+            return mMeshManager.acquire(sid);
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * @return true if the corresponding map program exists.
          */
@@ -201,7 +169,7 @@ namespace dma {
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * @param const std::string&
          *                  SID of the texture.
@@ -215,7 +183,7 @@ namespace dma {
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * @param const std::string&
          *                  SID of the texture.
@@ -224,12 +192,12 @@ namespace dma {
          *          holds Status::OK if the cubemap could be loaded.
          * @return the Texture corresponding to the sid
          */
-        inline std::shared_ptr<CubeMap> acquireCubeMap(const std::string &sid, Status *result ) {
+        inline std::shared_ptr<CubeMap> acquireCubeMap(const std::string &sid) {
             return mCubeMapManager.acquire(sid);
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * @return true if the corresponding material exists.
          */
@@ -238,7 +206,7 @@ namespace dma {
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * @param const std::string& -
          *              the SID of the material.
@@ -246,12 +214,12 @@ namespace dma {
          *              holds true if material could be created.
          * @return the Material corresponding to the sid
          */
-        inline std::shared_ptr<Material> acquireMaterial(const std::string& sid, Status* result) {
-            return mMaterialManager.acquire(sid, result);
+        inline std::shared_ptr<Material> acquireMaterial(const std::string& sid) {
+            return mMaterialManager.acquire(sid);
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * Creates a new empty Material
          */
@@ -260,16 +228,16 @@ namespace dma {
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * Creates a new Material corresponding to the sid
          */
-        inline std::shared_ptr<Material> createMaterial(const std::string& sid, Status* status) {
-            return mMaterialManager.create(sid, status);
+        inline std::shared_ptr<Material> createMaterial(const std::string& sid) {
+            return mMaterialManager.create(sid);
         }
 
 
-        //--------------------------------------------------------------------------
+
         /**
          * Creates a new quad width * height
          * @note You must not delete the quad but instead call the deleteQuad method
@@ -280,7 +248,7 @@ namespace dma {
             return mQuadFactory.createQuad(width, height);
         }
 
-        //--------------------------------------------------------------------------
+
         /**
          * Updates all resources: ie unload unused resources
          */
@@ -294,7 +262,7 @@ namespace dma {
         std::string                mResourceDir;
 
         ShaderManager              mShaderManager;
-        MeshManager                mMeshManager;
+    public: MeshManager                mMeshManager; //TODO remove public: used for building/tracks POC
         MapManager                 mMapManager;
         CubeMapManager             mCubeMapManager;
         MaterialManager            mMaterialManager;

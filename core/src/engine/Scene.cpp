@@ -78,45 +78,34 @@ namespace dma {
 
 
     //----------------------------------------------------------------------
-    Status Scene::setSkyBox(const std::string &sid) {
-        Status result = STATUS_OK;
-
+    void Scene::setSkyBox(const std::string &sid) {
         mCurrentSkyboxSid = sid;
 
         if (mSkyboxEnabled) {
-            std::shared_ptr<CubeMap> cubeMap = mResourceManager->acquireCubeMap("skybox/" + sid, &result);
-            if (result != STATUS_OK) {
-                Log::warn(TAG, "Cannot use skybox %s, cubemap doesn't exist", sid.c_str());
-                return result;
-            }
+            std::shared_ptr<CubeMap> cubeMap = mResourceManager->acquireCubeMap("skybox/" + sid);
             if (mSkyBox == nullptr) {
                 mSkyBox = new SkyBox();
-                mSkyBox->init(cubeMap, mResourceManager->acquireShaderProgram("skybox", &result));
+                mSkyBox->init(cubeMap, mResourceManager->acquireShaderProgram("skybox"));
             }
             mSkyBox->setCubeMap(cubeMap);
             mRenderingEngine->setSkyBox(mSkyBox);
         }
-        return result;
     }
 
     //----------------------------------------------------------------------
-    Status Scene::setSkyBoxEnabled(bool enabled) {
+    void Scene::setSkyBoxEnabled(bool enabled) {
         bool shouldEnable = enabled && !mSkyboxEnabled;
         bool shouldDisable = mSkyboxEnabled && !enabled;
         mSkyboxEnabled = enabled;
 
         if (shouldEnable) {
-            return setSkyBox(mCurrentSkyboxSid);
+            setSkyBox(mCurrentSkyboxSid);
         } else if (shouldDisable) {
-            // don't forger to get the rendering engine to stop drawing the deleted skybox.
+            // don't forget to get the rendering engine to stop drawing the deleted skybox.
             mRenderingEngine->setSkyBox(nullptr);
-
             delete mSkyBox;
             mSkyBox = nullptr;
-
-
         }
-        return STATUS_OK;
     }
 
 

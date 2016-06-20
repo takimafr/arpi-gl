@@ -11,7 +11,7 @@ using namespace dma::geo;
 #define ENGINE(addr) ((GeoEngine*) addr)
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT jlong JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_newEngine
         (JNIEnv* env, jobject caller, jstring rootDir)
 {
@@ -23,7 +23,7 @@ JNIEXPORT jlong JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_newEngine
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT jlong JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_freeEngine
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -32,7 +32,7 @@ JNIEXPORT jlong JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_freeEngine
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_init
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -40,7 +40,7 @@ JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_init
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_refresh
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -48,7 +48,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_refresh
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_unload
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_unload
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_wipe
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -64,7 +64,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_wipe
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_step
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -72,7 +72,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_step
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_addPoi
 (JNIEnv* env, jobject caller, jlong addr,
         jstring jsid, jstring jshape, jstring jicon,
@@ -119,7 +119,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_addPoi
     });
 }
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_removePoi
         (JNIEnv* env, jobject caller, jlong addr, jstring jsid)
 {
@@ -136,7 +136,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_removePoi
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setPoiPosition
         (JNIEnv* env, jobject caller, jlong addr, jstring jsid, jdouble jlat, jdouble jlng, jdouble jalt)
 {
@@ -159,7 +159,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setPoiPosition
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setPoiColor
         (JNIEnv* env, jobject caller, jlong addr, jstring jsid, jfloat jr, jfloat jg, jfloat jb)
 {
@@ -180,7 +180,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setPoiColor
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_isInit
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -188,7 +188,7 @@ JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_isInit
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_isAbleToDraw
         (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -196,7 +196,7 @@ JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_isAbleToDr
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_hasPoi
         (JNIEnv* env, jobject caller, jlong addr, jstring jsid)
 {
@@ -207,7 +207,7 @@ JNIEXPORT jboolean JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_hasPoi
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setSkyBox
         (JNIEnv* env, jobject caller, jlong addr, jstring jsid)
 {
@@ -223,7 +223,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setSkyBox
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setSkyBoxEnabled
         (JNIEnv* env, jobject caller, jlong addr, jboolean enabled)
 {
@@ -235,7 +235,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setSkyBoxEnabl
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setSurfaceSize
         (JNIEnv* env, jobject caller, jlong addr, jint width, jint height)
 {
@@ -243,7 +243,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setSurfaceSize
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setEngineListener
         (JNIEnv* env, jobject caller, jlong addr, jlong callbackAddr)
 {
@@ -255,7 +255,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setEngineListe
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setCameraRotation
     (JNIEnv* env, jobject caller, jlong addr, jfloatArray jmatrix)
 {
@@ -271,7 +271,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setCameraRotat
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setCameraPosition2d
         (JNIEnv* env, jobject caller, jlong addr, jdouble jlat, jdouble jlng)
 {
@@ -284,7 +284,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setCameraPosit
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setCameraPosition
         (JNIEnv* env, jobject caller, jlong addr, jdouble jlat, jdouble jlng, jdouble jalt, jboolean janimated)
 {
@@ -303,7 +303,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setCameraPosit
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_zoom
     (JNIEnv* env, jobject caller, jlong addr, jfloat joffset)
 {
@@ -315,7 +315,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_zoom
     });
 }
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setOrigin
     (JNIEnv* env, jobject caller, jlong addr, jdouble jlat, jdouble jlng)
 {
@@ -330,7 +330,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setOrigin
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_notifyTileAvailable
         (JNIEnv* env, jobject caller, jlong addr, jint x, jint y, jint z)
 {
@@ -342,7 +342,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_notifyTileAvai
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setTileNamespace
     (JNIEnv* env, jobject caller, jlong addr, jstring jnamespace)
 {
@@ -358,7 +358,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_setTileNamespa
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_updateTileDiffuseMaps
     (JNIEnv* env, jobject caller, jlong addr)
 {
@@ -370,7 +370,7 @@ JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_updateTileDiff
 }
 
 
-//------------------------------------------------------------------------------------
+
 JNIEXPORT void JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_selectPoi
     (JNIEnv* env, jobject caller, jlong addr, jint jx, jint jy)
 {

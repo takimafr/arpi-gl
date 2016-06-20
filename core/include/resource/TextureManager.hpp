@@ -69,7 +69,7 @@ namespace dma {
          *              holds Status::OK if the shader could be loaded.
          * @return the loaded shader, or default shader if none could be loaded.
          */
-        virtual std::shared_ptr<Texture> acquire(const std::string&, Status* result) override;
+        virtual std::shared_ptr<Texture> acquire(const std::string&) override;
 
 
         //GLuint loadCubeMap(const std::string& sid);

@@ -25,7 +25,7 @@ namespace dma {
     namespace geo {
 
 
-        //-----------------------------------------------------------------------------------------------
+
         JniGeoEngineCallbacks::JniGeoEngineCallbacks(JavaVM* javaVM, jobject listener,
                                                      jmethodID onTileRequest,
                                                      jmethodID onPoiSelected,
@@ -39,12 +39,12 @@ namespace dma {
 
         }
 
-        //-----------------------------------------------------------------------------------------------
+
         JniGeoEngineCallbacks::~JniGeoEngineCallbacks() {
         }
 
 
-        //-----------------------------------------------------------------------------------------------
+
         void JniGeoEngineCallbacks::onTileRequest(int x, int y, int z) {
 
             JNIEnv* env;
@@ -60,7 +60,7 @@ namespace dma {
         }
 
 
-        //-----------------------------------------------------------------------------------------------
+
         void JniGeoEngineCallbacks::onPoiSelected(const std::string &sid) {
 
             JNIEnv* env;
@@ -77,7 +77,7 @@ namespace dma {
         }
 
 
-        //-----------------------------------------------------------------------------------------------
+
         void JniGeoEngineCallbacks::onPoiDeselected(const std::string &sid) {
 
             JNIEnv* env;

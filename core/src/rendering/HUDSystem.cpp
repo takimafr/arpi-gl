@@ -47,8 +47,7 @@ namespace dma {
     void HUDSystem::addHUDElement(std::shared_ptr<HUDElement> hudElement) {
 
         std::shared_ptr<Quad> quad = mResourceManager.createQuad(hudElement->width, hudElement->height);
-        Status status;
-        std::shared_ptr<Material> mat = mResourceManager.acquireMaterial(HUD_ELEMENT_MATERIAL, &status);
+        std::shared_ptr<Material> mat = mResourceManager.acquireMaterial(HUD_ELEMENT_MATERIAL);
         mat->getPass(0).setDiffuseMap(mResourceManager.acquireMap(hudElement->textureSID));
 
         std::shared_ptr<Entity> entity = std::make_shared<Entity>(quad, mat);

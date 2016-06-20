@@ -41,7 +41,7 @@ namespace dma {
          *              holds OK if the resource could be loaded.
          * @return the loaded resource.
          */
-        virtual std::shared_ptr<T> acquire(const std::string&, Status* result) = 0;
+        virtual std::shared_ptr<T> acquire(const std::string&) = 0;
         /**
          * @param const std::string& -
          *              SID of the resource to load.

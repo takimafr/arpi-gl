@@ -27,7 +27,6 @@
 
 //debug tag.
 constexpr auto TAG = "CubeMapManager";
-#define CUBEMAP_PATH std::string(ResourceManager::getPathFor(ResourceManager::ResourceType::CUBEMAP)) + "/"
 
 
 namespace dma {

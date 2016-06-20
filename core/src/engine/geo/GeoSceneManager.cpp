@@ -76,7 +76,7 @@ namespace dma {
             for (auto& kv : mPOIs) {
                 auto poi = kv.second;
                 if (poi->isDirty()) {
-                    const glm::vec3 pos = computePosition(poi->getLat(), poi->getLng(), poi->getAlt());
+                    const glm::vec3 pos = mapPosition(poi->getLat(), poi->getLng(), poi->getAlt());
                     std::static_pointer_cast<Entity>(poi)->setPosition(pos);
                     poi->animate();
                     poi->setDirty(false);
@@ -87,7 +87,7 @@ namespace dma {
                 if (tile->isDirty()) {
                     double lat = tile->getLat();
                     double lon = tile->getLng();
-                    glm::vec3 dest = computePosition(lat, lon, 0.0);
+                    glm::vec3 dest = mapPosition(lat, lon, 0.0);
                     dest.x = dest.x + (tile->getQuad().getWidth() / 2.0f);
                     dest.z = dest.z + (tile->getQuad().getHeight() / 2.0f);
                     tile->setPosition(dest);
@@ -98,7 +98,7 @@ namespace dma {
 
 
         //------------------------------------------------------------------------------
-        glm::vec3 GeoSceneManager::computePosition(double lat, double lon, double alt) const {
+        glm::vec3 GeoSceneManager::mapPosition(double lat, double lon, double alt) const {
             double bearing = GeoUtils::bearing(LatLng(lat, lon), mOrigin);
             double distance = GeoUtils::slc(LatLng(lat, lon), mOrigin);
             glm::vec3 dest = destinationPoint(bearing, distance);
@@ -230,7 +230,7 @@ namespace dma {
                 if (GeoUtils::slc(LatLng(coords.lat, coords.lng), mOrigin) > ORIGIN_SHIFTING_TRESHOLD) {
                     setOrigin(coords.lat, coords.lng);
                     // Update the current camera position with no translation
-                    camera.setPosition(computePosition(mCameraCoords.lat, mCameraCoords.lng, mCameraCoords.alt));
+                    camera.setPosition(mapPosition(mCameraCoords.lat, mCameraCoords.lng, mCameraCoords.alt));
                 }
                 mTileMap.update(x0, y0);
 
@@ -247,7 +247,7 @@ namespace dma {
                 }
             }
 
-            glm::vec3 pos = computePosition(coords.lat, coords.lng, coords.alt);
+            glm::vec3 pos = mapPosition(coords.lat, coords.lng, coords.alt);
             if (!TileMap::isInRange(mLastX, mLastY, x0, y0)) {
                 translationDuration = -1.0f;
             }

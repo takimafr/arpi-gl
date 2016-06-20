@@ -57,6 +57,7 @@ namespace dma {
         positions.clear();
         uvs.clear();
         flatNormals.clear();
+        smoothNormals.clear();
         vertexIndices.clear();
     }
 }

@@ -80,22 +80,20 @@ namespace dma {
      * Returns the pointer of the ShaderProgram with the String ID sid.
      * Increments the reference count
      */
-    std::shared_ptr<ShaderProgram> ShaderManager::acquire(const std::string& sid, Status* result) {
+    std::shared_ptr<ShaderProgram> ShaderManager::acquire(const std::string& sid) {
         if (sid == FALLBACK_SHADER_SID) {
-            *result = STATUS_OK;
             return mFallbackShaderProgram;
         }
         if (mShaderPrograms.find(sid) == mShaderPrograms.end()) {
             std::shared_ptr<ShaderProgram> shaderProgram = std::make_shared<ShaderProgram>();
-            *result = mLoad(shaderProgram, sid);
-            if (*result != STATUS_OK) {
+            Status status = mLoad(shaderProgram, sid);
+            if (status != STATUS_OK) {
                 Log::warn(TAG, "cannot load ShaderProgram %s, returning fallback instead", sid.c_str());
                 //clear the cache and delete shader
                 return mFallbackShaderProgram;
             }
             mShaderPrograms[sid] = shaderProgram;
         }
-        *result = STATUS_OK;
         return mShaderPrograms[sid];
     }
 

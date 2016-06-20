@@ -71,19 +71,16 @@ namespace dma {
 
 
     //------------------------------------------------------------------------------
-    std::shared_ptr<Material> MaterialManager::acquire(const std::string& sid, Status* result) {
-        //////////////////////////////////////////////////:
+    std::shared_ptr<Material> MaterialManager::acquire(const std::string& sid) {
         // Check if material doesn't exist
         if (mMaterials.find(sid) == mMaterials.end()) {
             std::shared_ptr<Material> material = std::make_shared<Material>();
-            *result = mLoad(material, sid);
-            if (*result != STATUS_OK) {
+            if (mLoad(material, sid) != STATUS_OK) {
                 Log::warn(TAG, "Material %s doesn't exist, returning fallback instead", sid.c_str());
                 return mFallbackMaterial;
             }
             mMaterials[sid] = material;
         }
-        *result = STATUS_OK;
         return mMaterials[sid];
     }
 
@@ -185,13 +182,7 @@ namespace dma {
                 assert(!"Invalid shader while parsing material");
                 return throwException(TAG, badFileException, "Invalid shader while parsing material " + path);
             } else {
-                Status result;
-                pass.setShaderProgram(mShaderManager.acquire(shaderSID, &result));
-                if (result != STATUS_OK) {
-                    Log::error(TAG, "Bad shader %s", shaderSID.c_str());
-                    assert(!"bad shader");
-                    return result;
-                }
+                pass.setShaderProgram(mShaderManager.acquire(shaderSID));
             }
 
             /////////////////////////////////////////////////////////////////////////
@@ -284,8 +275,8 @@ namespace dma {
 
 
     //------------------------------------------------------------------------------
-    std::shared_ptr<Material> MaterialManager::create(const std::string &sid, Status *result) {
-        return std::make_shared<Material>(*acquire(sid, result));
+    std::shared_ptr<Material> MaterialManager::create(const std::string &sid) {
+        return std::make_shared<Material>(*acquire(sid));
     }
 
 

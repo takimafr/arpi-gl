@@ -101,6 +101,7 @@ namespace dma {
         std::vector<glm::vec3> positions;
         std::vector<glm::vec2> uvs;
         std::vector<glm::vec3> flatNormals;
+        std::vector<glm::vec3> smoothNormals;
         std::vector<VertexIndices> vertexIndices;
     };
 }

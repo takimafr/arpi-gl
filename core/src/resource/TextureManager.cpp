@@ -61,23 +61,20 @@ namespace dma {
 
 
     //----------------------------------------------------------------------------------------------
-    std::shared_ptr<Texture> TextureManager::acquire(const std::string & sid, Status* result) {
+    std::shared_ptr<Texture> TextureManager::acquire(const std::string & sid) {
 
         if (sid == FALLBACK_TEXTURE_SID) {
-            *result = STATUS_OK;
             return mFallbackTexture;
         }
 
         if (mTextures.find(sid) == mTextures.end()) {
             std::shared_ptr<Map> map = std::make_shared<Map>();
-            *result = mLoadMap(map, sid);
-            if (*result != STATUS_OK) {
+            if (mLoadMap(map, sid) != STATUS_OK) {
                 Log::warn(TAG, "Map %s doesn't exist, returning fallback instead", sid.c_str());
                 return mFallbackTexture;
             }
             mTextures[sid] = map;
         }
-        *result = STATUS_OK;
         return mTextures[sid];
     }
 

@@ -113,7 +113,7 @@ namespace dma {
 //            if (!mDirty) {
 //                return;
 //            }
-//            glm::vec3 newPos = sceneManager.computePosition(mLat, mLon, mAlt);
+//            glm::vec3 newPos = sceneManager.mapPosition(mLat, mLon, mAlt);
 //            mEntity->setPosition(newPos);
 //            animate();
 //            mDirty = false;

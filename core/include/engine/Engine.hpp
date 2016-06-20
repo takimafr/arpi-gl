@@ -109,22 +109,22 @@ namespace dma {
          * PUBLIC GETTERS
          */
 
-        //--------------------------------------------------------------------------
+
         inline ResourceManager& getResourceManager() const {
             return *mResourceManager;
         }
 
-        //--------------------------------------------------------------------------
+
         inline AnimationSystem& getAnimationSystem() const {
             return *mAnimationSystem;
         }
 
-        //--------------------------------------------------------------------------
+
         inline Timer& getGlobalTimer() const {
             return *mGlobalTimer;
         }
 
-        //--------------------------------------------------------------------------
+
         inline Scene &getScene() const {
             return *mScene;
         }

@@ -48,7 +48,7 @@ namespace dma {
          *              holds Status::OK if the shader could be loaded.
          * @return the loaded shader, or default shader if none could be loaded.
          */
-        std::shared_ptr<ShaderProgram> acquire(const std::string& sid, Status* result);
+        std::shared_ptr<ShaderProgram> acquire(const std::string& sid);
 
         /**
          * From disk

@@ -65,7 +65,7 @@ namespace dma {
             /**
              * Convert world coordinates to openGL coordinates.
              */
-            glm::vec3 computePosition(double lat, double lon, double alt) const;
+            glm::vec3 mapPosition(double lat, double lon, double alt) const;
 
             /**
              * Adds the poi to the scene

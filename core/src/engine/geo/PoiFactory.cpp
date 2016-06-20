@@ -97,10 +97,8 @@ namespace dma {
 
         //------------------------------------------------------------------------------
         std::shared_ptr<Poi> PoiFactory::Builder::build() {
-            Status result;
-
-            std::shared_ptr<Mesh> mesh = mResourceManager.acquireMesh(mShape, &result);
-            std::shared_ptr<Material> material = mResourceManager.createMaterial("poi", &result);
+            std::shared_ptr<Mesh> mesh = mResourceManager.acquireMesh(mShape);
+            std::shared_ptr<Material> material = mResourceManager.createMaterial("poi");
 
             //////////////////////////////////////////////////////
             // Setup the "poi" pass

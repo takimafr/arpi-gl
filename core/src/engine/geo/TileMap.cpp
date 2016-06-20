@@ -69,8 +69,7 @@ namespace dma {
             // Create TILE_MAP_SIZE * TILE_MAP_SIZE tiles
             for (int i = 0; i < SIZE * SIZE; ++i) {
                 std::shared_ptr<Quad> quad = mResourceManager.createQuad(1.0f, 1.0f);
-                Status status;
-                std::shared_ptr<Material> mat = mResourceManager.createMaterial(TILE_MATERIAL, &status); //material with default tile texture
+                std::shared_ptr<Material> mat = mResourceManager.createMaterial(TILE_MATERIAL); //material with default tile texture
                 std::shared_ptr<Tile> tile = std::make_shared<Tile>(quad, mat);
                 //TODO remove set in material tile.json tile->setDiffuseMap(mResourceManager.acquireTexture(DEFAULT_TILE_DIFFUSE_MAP, &status));
                 tile->mDirty = true;

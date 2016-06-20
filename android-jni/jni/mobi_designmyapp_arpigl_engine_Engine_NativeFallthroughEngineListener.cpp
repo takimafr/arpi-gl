@@ -13,7 +13,7 @@ extern "C" {
 using namespace dma;
 using namespace dma::geo;
 
-//-----------------------------------------------------------------------------------------------------
+
 /*
  * Class:     mobi_designmyapp_arpigl_engine_Engine_NativeFallthroughEngineListener
  * Method:    newEngineListener
@@ -64,7 +64,7 @@ JNIEXPORT jlong JNICALL Java_mobi_designmyapp_arpigl_engine_Engine_00024NativeFa
 }
 
 
-//-----------------------------------------------------------------------------------------------------
+
 /*
  * Class:     mobi_designmyapp_arpigl_engine_Engine_NativeFallthroughEngineListener
  * Method:    freeEngineListener

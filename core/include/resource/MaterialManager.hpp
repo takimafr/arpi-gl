@@ -58,10 +58,10 @@ namespace dma {
              *          - holds Status::OK if material could be created.
              * @return The material corresponding to the given SID.
              */
-            std::shared_ptr<Material> acquire(const std::string& sid, Status* result) override;
+            std::shared_ptr<Material> acquire(const std::string& sid) override;
 
             std::shared_ptr<Material> create();
-            std::shared_ptr<Material> create(const std::string& sid, Status* result);
+            std::shared_ptr<Material> create(const std::string& sid);
 
             virtual bool hasResource(const std::string &) const;
 

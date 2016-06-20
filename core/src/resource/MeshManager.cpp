@@ -78,8 +78,8 @@ namespace dma {
         // 5. parse faces
         U16 f[3][3];
         objReader.gotoFaces();
-        while(objReader.nextFace(f)) {
-            for(int i=0; i<3; ++i) {
+        while (objReader.nextFace(f)) {
+            for (int i = 0; i < 3; ++i) {
                 VertexIndices vi(f[i][ObjReader::FACE_P],
                                  f[i][ObjReader::FACE_UV],
                                  f[i][ObjReader::FACE_N]);
@@ -194,25 +194,39 @@ namespace dma {
 
 
     //----------------------------------------------------------------------------------------------
-    std::shared_ptr<Mesh> MeshManager::acquire(const std::string& sid, Status* result) {
+    std::shared_ptr<Mesh> MeshManager::acquire(const std::string& sid) {
 
         if (sid == FALLBACK_MESH_SID) {
-            *result = STATUS_OK;
             return mFallbackMesh;
         }
 
         if (mMeshes.find(sid) == mMeshes.end()) {
             std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-            *result = mLoad(mesh, sid);
-            if (*result != STATUS_OK) {
+            if (mLoad(mesh, sid) != STATUS_OK) {
                 Log::warn(TAG, "Mesh %s doesn't exist, returning fallback instead", sid.c_str());
                 return mFallbackMesh;
             }
             mMeshes[sid] = mesh;
         }
-        *result = STATUS_OK;
         return mMeshes[sid];
     }
+
+
+    std::shared_ptr<Mesh> MeshManager::load(std::vector<glm::vec3>& positions,
+                                            std::vector<glm::vec2>& uvs,
+                                            std::vector<glm::vec3>& flatNormals,
+                                            std::vector<glm::vec3>& smoothNormals,
+                                            std::vector<VertexIndices> &indices) {
+        static int n = 0;
+        std::string sid = "anonymous" + std::to_string(n++);
+
+        // 2. Load the anonymous mesh
+        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
+        mLoad(mesh, sid, positions, uvs, flatNormals, smoothNormals, indices);
+        mMeshes[sid] = mesh;
+        return mesh;
+    }
+
 
 
     //----------------------------------------------------------------------------------------------
@@ -329,6 +343,7 @@ namespace dma {
                          mesh->positions,
                          mesh->uvs,
                          mesh->flatNormals,
+                         mesh->smoothNormals,
                          mesh->vertexIndices);
         }
 
@@ -338,6 +353,7 @@ namespace dma {
         std::vector<glm::vec3> positions;
         std::vector<glm::vec2> uvs;
         std::vector<glm::vec3> flatNormals;
+        std::vector<glm::vec3> smoothNormals;
         // map one UV & one p per vertex object
         std::vector<VertexIndices> vertexIndices;
 
@@ -350,13 +366,7 @@ namespace dma {
             return STATUS_KO;
         }
 
-        //update the cache if any
-        mesh->positions = positions;
-        mesh->uvs = uvs;
-        mesh->flatNormals = flatNormals;
-        mesh->vertexIndices = vertexIndices;
-
-        return mLoad(mesh, sid, positions, uvs, flatNormals, vertexIndices);
+        return mLoad(mesh, sid, positions, uvs, flatNormals, smoothNormals, vertexIndices);
     }
 
 
@@ -365,6 +375,7 @@ namespace dma {
                               std::vector<glm::vec3> &positions,
                               std::vector<glm::vec2> &uvs,
                               std::vector<glm::vec3> &flatNormals,
+                              std::vector<glm::vec3> &smoothNormals,
                               std::vector<VertexIndices> &vertexIndices) const {
 
         bool hasUv, hasFlat, hasSmooth;
@@ -379,13 +390,21 @@ namespace dma {
         }
 
         // generates normals
-        std::vector<glm::vec3> smoothNormals;
         if (!hasFlat) {
             generateFlatNormals(flatNormals, positions, vertexIndices);
-            hasFlat = true;
+            hasFlat = true; //TODO remove: used for building poc
         }
-        generateSmoothNormals(smoothNormals, flatNormals, positions, vertexIndices, hasFlat);
-        hasSmooth = true; //TODO metadata
+
+        hasSmooth = !smoothNormals.empty();
+        if (!hasSmooth) {
+            Log::trace(TAG, "no Smooth normal mapping found for mesh \"%s\"", sid.c_str());
+        }
+
+        // generates smooth
+        if (!hasSmooth) {
+            generateSmoothNormals(smoothNormals, flatNormals, positions, vertexIndices, hasFlat);
+            hasSmooth = true; //TODO metadata
+        }
 
         if(!hasFlat) { //TODO handle it with metadata
             flatNormals.clear(); //no need from there
@@ -503,12 +522,18 @@ namespace dma {
 
         mesh->mBoundingSphere = generateBoundingSphere(positions);
 
+        //update the cache
+        mesh->positions = positions;
+        mesh->uvs = uvs;
+        mesh->flatNormals = flatNormals;
+        mesh->smoothNormals = smoothNormals;
+        mesh->vertexIndices = vertexIndices;
+
         Log::trace(TAG, "Mesh %s loaded", sid.c_str());
         return STATUS_OK;
     }
 
 
-    //----------------------------------------------------------------------------------
     void MeshManager::update() {
         auto it = mMeshes.begin();
         while (it != mMeshes.end()) {

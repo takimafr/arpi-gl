@@ -58,8 +58,8 @@ namespace dma {
          */
         void setCamera(std::shared_ptr<Camera> camera);
 
-        Status setSkyBox(const std::string &sid);
-        Status setSkyBoxEnabled(bool enabled);
+        void setSkyBox(const std::string &sid);
+        void setSkyBoxEnabled(bool enabled);
 
 
         void setLightSource(const Light& light);

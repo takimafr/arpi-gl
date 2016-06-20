@@ -154,13 +154,13 @@ namespace dma {
 
         ///////////////////////////////////////////
         // 1. Draw front to back
+        //TODO Blend ???
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         while (!mFrontToBack.empty()) {
             mDraw(mFrontToBack.top().renderingPackage, *mV, *mP);
             mFrontToBack.pop();
         }
-        glDisable(GL_BLEND);
 
 
         ///////////////////////////////////////////
@@ -175,6 +175,8 @@ namespace dma {
             mDraw(mBackToFront.top().renderingPackage, *mV, *mP);
             mBackToFront.pop();
         }
+        glDisable(GL_BLEND);
+
 
 
         ///////////////////////////////////////////

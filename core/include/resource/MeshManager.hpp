@@ -55,7 +55,13 @@ namespace dma {
          *          holds Status::OK if the mesh could be loaded.
          * @return the Mesh corresponding to the sid.
          */
-        std::shared_ptr<Mesh> acquire(const std::string& sid, Status* result);
+        std::shared_ptr<Mesh> acquire(const std::string& sid);
+
+        std::shared_ptr<Mesh> load(std::vector<glm::vec3>& positions,
+                                   std::vector<glm::vec2>& uvs,
+                                   std::vector<glm::vec3>& flatNormals,
+                                   std::vector<glm::vec3>& smoothNormals,
+                                   std::vector<VertexIndices> &indices);
 
         /**
          * From disk
@@ -98,6 +104,7 @@ namespace dma {
                      std::vector<glm::vec3> &positions,
                      std::vector<glm::vec2>& uvs,
                      std::vector<glm::vec3>& flatNormals,
+                     std::vector<glm::vec3>& smoothNormals,
                      std::vector<VertexIndices>& vertexIndices) const;
 
         // FIELDS

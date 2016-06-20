@@ -17,6 +17,7 @@ without the express written permission of eBusiness Information.
 #include <string>
 #include <rendering/FlyThroughCamera.hpp>
 #include <rapidjson/document.h>
+#include <resource/TrackFactory.hpp>
 
 // dma
 #include "utils/ObjReader.hpp"
@@ -250,13 +251,23 @@ int main(int argc, char** argv) {
 //                mGeoSceneManager.addPoi(building);
 
         ResourceManager& resourceManager = mGeoEngine.mEngine.getResourceManager();
-        Status result;
-        std::shared_ptr<Mesh> mesh = resourceManager.acquireMesh("building/" + id, &result);
-        std::shared_ptr<Material> material = resourceManager.acquireMaterial("building", &result);
+        std::shared_ptr<Mesh> mesh = resourceManager.acquireMesh("building/" + id);
+        std::shared_ptr<Material> material = resourceManager.acquireMaterial("building");
         std::shared_ptr<Entity> building = std::make_shared<Entity>(mesh, material);
-        building->setPosition(mGeoEngine.getGeoSceneManager().computePosition(lat, lng, 0.0));
+        building->setPosition(mGeoEngine.getGeoSceneManager().mapPosition(lat, lng, 0.0));
         mGeoEngine.getGeoSceneManager().getScene().addEntity(building);
     }
+
+    TrackFactory trackFactory(mGeoEngine.getGeoSceneManager(), mGeoEngine.mEngine.getResourceManager());
+
+    std::vector<LatLngAlt> geoPoints;
+    geoPoints.push_back(LatLngAlt(48.870548, 2.305235, 1.0));
+    geoPoints.push_back(LatLngAlt(48.870833, 2.304516, 1.0));
+    geoPoints.push_back(LatLngAlt(48.871491, 2.302542, 1.0));
+    geoPoints.push_back(LatLngAlt(48.872075, 2.303449, 1.0));
+    geoPoints.push_back(LatLngAlt(48.872434, 2.304050, 1.0));
+    std::shared_ptr<Entity> track = trackFactory.generate(geoPoints, 2.0f);
+    mGeoEngine.getGeoSceneManager().getScene().addEntity(track);
 
 //    std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()
 //            .sid("poi2")
