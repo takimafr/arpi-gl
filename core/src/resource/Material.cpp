@@ -20,13 +20,13 @@
 
 namespace dma {
 
-    //---------------------------------------------------------------------
+
     Material::Material() :
                     mPassCount(0), mBackToFront(false)
     {}
 
 
-    //---------------------------------------------------------------------
+
     Material::Material(const Material &material) {
         this->mSID = material.mSID;
         this->mPassCount = material.mPassCount;
@@ -37,18 +37,18 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Material::~Material() {
 
     }
 
 
-    //---------------------------------------------------------------------
+
     void Material::addPass(const Pass& pass) {
         mPasses[mPassCount++] = pass;
     }
 
-    //---------------------------------------------------------------------
+
     void Material::reset() {
         mPassCount = 0;
         mBackToFront = false;

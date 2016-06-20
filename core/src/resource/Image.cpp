@@ -44,7 +44,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     inline void onPngError(FILE* file, const std::string& filename, const std::string& error) {
         fclose (file);
         Log::error(TAG, "error processing file \"%s\" : %s", filename.c_str(), error.c_str());
@@ -52,7 +52,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     inline void  normalizePngInfo(png_struct* png_ptr, png_info* info_ptr) {
         int bit_depth, color_type;
 
@@ -87,7 +87,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     // TODO : scale down if > GL_MAX_TEXTURE_SIZE
     bool checkSizePowOf2(U32 width, U32 height) {
 
@@ -103,14 +103,14 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     void png_error_fn (png_structp png_ptr, png_const_charp error_msg) {
         Log::error(TAG, "png_error: %s (%s)", error_msg, (char *)png_get_error_ptr (png_ptr));
         longjmp (png_jmpbuf (png_ptr), 1);
     }
 
 
-    //---------------------------------------------------------------------
+
     void png_warning_fn (png_structp png_ptr, png_const_charp warning_msg) {
         Log::warn(TAG, "png_error: %s (%s)", warning_msg, (char *)png_get_error_ptr (png_ptr));
     }
@@ -118,14 +118,14 @@ namespace dma {
 
     //===========================================================================//
 
-    //---------------------------------------------------------------------
+
     Image::Image() :
             mWidth(0), mHeight(0),
             mFormat(0), mBytesPerPixel(0), mPixels(NULL)
     {}
 
 
-    //---------------------------------------------------------------------
+
     Image::Image(const Image &other) :
         mWidth(other.mWidth),
         mHeight(other.mHeight),
@@ -141,7 +141,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Image::Image(U32 width, U32 height, GLint format, BYTE* pixels) {
         mWidth = width;
         mHeight = height;
@@ -176,7 +176,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Image::~Image(){
         delete[] mPixels;
     }
@@ -188,7 +188,7 @@ namespace dma {
     BYTE* Image::getPixels(){return mPixels;}
 
 
-    //---------------------------------------------------------------------
+
     void Image::mReadPngData(png_struct* png_ptr, GLubyte* data, bool reverse) {
         png_bytep *row_pointers;
 
@@ -214,7 +214,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Status Image::loadAsPNG(const std::string& filename) {
         std::string fname = filename;
         Utils::addFileExt(fname, "png");
@@ -222,7 +222,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Status Image::loadAsPNG(const std::string &filename, bool reverse) {
 
         std::string fname = filename;
@@ -367,7 +367,7 @@ namespace dma {
     }
 
 
-    //-------------------------------------------------------------------------------
+
     Status Image::loadAsPNG(BYTE* data) {
         png_byte header[8];
         png_structp pngPtr = NULL;

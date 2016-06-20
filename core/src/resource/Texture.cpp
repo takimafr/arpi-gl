@@ -24,18 +24,18 @@ constexpr auto TAG = "Texture";
 
 namespace dma {
 
-    //----------------------------------------------------------------------
+
     Texture::Texture() :
             mHandle(0)
     {}
 
 
-    //----------------------------------------------------------------------
+
     Texture::~Texture() {
         //wipe();
     }
 
-    //----------------------------------------------------------------------
+
     void Texture::wipe() {
         Log::trace(TAG, "Trying to delete texture handle %d", mHandle);
         if (mHandle != 0 && glIsTexture(mHandle) == GL_TRUE) {

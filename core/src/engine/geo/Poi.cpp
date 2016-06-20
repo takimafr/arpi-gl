@@ -26,7 +26,7 @@ namespace dma {
 
         constexpr char TAG[] = "Poi";
 
-        //---------------------------------------------------------------
+
         Poi::Poi(const std::string& sid,
                  std::shared_ptr<Mesh> mesh,
                  std::shared_ptr<Material> material,
@@ -51,14 +51,14 @@ namespace dma {
 //        }
 
 
-        //---------------------------------------------------------------
+
         Poi::~Poi() {
             delete mCurrentTranslationAnimation;
             delete mCurrentRotationAnimation;
         }
 
 
-        //---------------------------------------------------------------
+
         void Poi::setPosition(double lat, double lon, double alt) {
             mLat = lat;
             mLon = lon;
@@ -67,7 +67,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------
+
         void Poi::getPosition(double* pos) {
             pos[0] = mLat;
             pos[1] = mLon;
@@ -75,7 +75,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------
+
         void Poi::animate() {
             assert(Entity::isAnimable());
 
@@ -107,7 +107,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------
+
 //        void Poi::update(const GeoSceneManager& sceneManager) {
 //            //TODO test animate();
 //            if (!mDirty) {
@@ -120,7 +120,7 @@ namespace dma {
 //        }
 
 
-        //---------------------------------------------------------------
+
         void Poi::deanimate() {
             mAnimationComponent->remove(mCurrentTranslationAnimation);
             delete mCurrentTranslationAnimation;
@@ -131,13 +131,13 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------
+
         void Poi::setColor(const Color &color) {
             getMaterial()->getPass(POI_PASS).setDiffuseColor(glm::vec3(color.r, color.g, color.b));
         }
 
 
-        //---------------------------------------------------------------
+
         bool Poi::intersects(const glm::vec3 &ray, const glm::vec3& origin) {
             const BoundingSphere& boundingSphere = mRenderingComponent->getMesh()->getBoundingSphere();
             glm::vec3 oc = origin - glm::vec3(mTransformComponent->getM() * glm::vec4(boundingSphere.getCenter(), 1.0f));

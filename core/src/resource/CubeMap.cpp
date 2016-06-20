@@ -25,7 +25,7 @@ constexpr auto TAG = "CubeMap";
 
 namespace dma {
 
-    //------------------------------------------------------------------
+
     CubeMap::CubeMap() :
             Texture()
     {
@@ -35,13 +35,13 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------
+
     CubeMap::~CubeMap() {
         mDeleteImages();
     }
 
 
-    //------------------------------------------------------------------
+
     Status CubeMap::load(const std::string& dirName) {
         std::vector<std::string> faces;
         faces.push_back(dirName + "/right.png");
@@ -77,7 +77,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------
+
     Status CubeMap::refresh(const std::string &dirName) {
         if (mImages[0] == nullptr) {
             Log::trace(TAG, "Refreshing CubeMap %s from disk", dirName.c_str());
@@ -89,7 +89,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------
+
     void CubeMap::mDeleteImages() {
         for (U32 i = 0; i < 6; ++i) {
             delete mImages[i];
@@ -98,7 +98,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------
+
     Status CubeMap::mLoadFromImages() {
         glGenTextures(1, &mHandle);
         //glActiveTexture(GL_TEXTURE0);

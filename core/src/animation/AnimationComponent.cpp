@@ -20,19 +20,19 @@
 
 namespace dma {
 
-    //------------------------------------------------------------------------------
+
     AnimationComponent::AnimationComponent(TransformComponent &transformComponent) :
                         mTransformComponent(transformComponent)
     {}
 
 
-    //------------------------------------------------------------------------------
+
     AnimationComponent::~AnimationComponent() {
         mAnimations.clear();
     }
 
 
-    //------------------------------------------------------------------------------
+
     void AnimationComponent::update(float dt) {
         std::list<Animation*>::iterator it = mAnimations.begin();
         while (it != mAnimations.end()) {

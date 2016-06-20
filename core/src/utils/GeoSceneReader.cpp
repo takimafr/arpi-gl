@@ -39,7 +39,7 @@ namespace dma {
     constexpr char GeoSceneReader::Keys::SHAPE[];
     constexpr char GeoSceneReader::Keys::MATERIAL[];
 
-    //--------------------------------------------------------------------------------
+
     GeoSceneReader::GeoSceneReader(const std::string &path) :
                                 mPath(path),
                                 mPoiIndex(-1),
@@ -47,12 +47,12 @@ namespace dma {
     {}
 
 
-    //--------------------------------------------------------------------------------
+
     GeoSceneReader::~GeoSceneReader() {
 
     }
 
-    //--------------------------------------------------------------------------------
+
     Status GeoSceneReader::parse() {
         ////////////////////////////////////////////////////////////////////////////
         // Stringify the file
@@ -92,7 +92,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool GeoSceneReader::hasOrigin() const {
         if (mDocument.HasMember(Keys::ORIGIN)) {
             const rapidjson::Value& v = mDocument[Keys::ORIGIN];
@@ -103,7 +103,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     double GeoSceneReader::getOriginLat() const {
         if (!hasOrigin()) {
             Log::error(TAG, "Scene file %s malformed:"
@@ -116,7 +116,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     double GeoSceneReader::getOriginLon() const {
         if (!hasOrigin()) {
             Log::error(TAG, "Scene file %s malformed:"
@@ -129,7 +129,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool GeoSceneReader::hasCamera() const {
         if (mDocument.HasMember(Keys::CAMERA)) {
             const rapidjson::Value& v = mDocument[Keys::CAMERA];
@@ -140,7 +140,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     std::string GeoSceneReader::getCameraType() const {
         if (!hasCamera()) {
             Log::error(TAG, "Scene file %s malformed:"
@@ -153,7 +153,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     glm::dvec3 GeoSceneReader::getCameraCoords() const {
         glm::dvec3 coords(0.0);
         if (!hasCamera()) {
@@ -170,7 +170,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool GeoSceneReader::nextPoi() {
         mPoiIndex += 1;
         if(mPoiIndex >= (I32)mPoiCount) return false;
@@ -179,7 +179,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     double GeoSceneReader::getPoiLat() const {
         if (mCurrentPoi.HasMember(Keys::LAT) && mCurrentPoi[Keys::LAT].IsDouble()) {
             return mCurrentPoi[Keys::LAT].GetDouble();
@@ -192,7 +192,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     double GeoSceneReader::getPoiLon() const {
         if (mCurrentPoi.HasMember(Keys::LON) && mCurrentPoi[Keys::LON].IsDouble()) {
             return mCurrentPoi[Keys::LON].GetDouble();
@@ -205,7 +205,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     double GeoSceneReader::getPoiAlt() const {
         if (mCurrentPoi.HasMember(Keys::ALT) && mCurrentPoi[Keys::ALT].IsDouble()) {
             return mCurrentPoi[Keys::ALT].GetDouble();
@@ -218,7 +218,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     std::string GeoSceneReader::getPoiShape() const {
         if (mCurrentPoi.HasMember(Keys::SHAPE) && mCurrentPoi[Keys::SHAPE].IsString()) {
             return mCurrentPoi[Keys::SHAPE].GetString();
@@ -231,7 +231,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     std::string GeoSceneReader::getPoiMaterial() const {
         if (mCurrentPoi.HasMember(Keys::MATERIAL) && mCurrentPoi[Keys::MATERIAL].IsString()) {
             return mCurrentPoi[Keys::MATERIAL].GetString();

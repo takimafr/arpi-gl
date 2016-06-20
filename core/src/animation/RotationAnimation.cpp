@@ -21,7 +21,7 @@
 namespace dma {
 
 
-    //-------------------------------------------------------------------------
+
     RotationAnimation::RotationAnimation(TransformComponent &transformComponent,
             float duration, bool loop,
             float angle, const glm::vec3 &axis) :
@@ -32,13 +32,13 @@ namespace dma {
     {}
 
 
-    //-------------------------------------------------------------------------
+
     RotationAnimation::~RotationAnimation() {
 
     }
 
 
-    //-------------------------------------------------------------------------
+
     void RotationAnimation::update(float dt) {
         mCurrentTime += dt;
         if (mLoop) {

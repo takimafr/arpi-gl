@@ -29,7 +29,7 @@ namespace dma {
 
     /*====================== PUBLIC =======================*/
 
-    //------------------------------------------------------------------------------
+
     //DESTRUCTOR
     MaterialManager::~MaterialManager() {
     }
@@ -37,7 +37,7 @@ namespace dma {
     //METHODS
 
 
-    //------------------------------------------------------------------------------
+
     Status MaterialManager::init() {
         Status result;
         mFallbackMaterial = std::make_shared<Material>();
@@ -46,7 +46,7 @@ namespace dma {
         return result;
     }
 
-    //------------------------------------------------------------------------------
+
     Status MaterialManager::reload() {
         Log::trace(TAG, "Reloading MaterialManager...");
 
@@ -70,7 +70,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------------
+
     std::shared_ptr<Material> MaterialManager::acquire(const std::string& sid) {
         // Check if material doesn't exist
         if (mMaterials.find(sid) == mMaterials.end()) {
@@ -85,7 +85,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------------
+
     void MaterialManager::unload() {
         Log::trace(TAG, "Unloading MaterialManager...");
         if (mFallbackMaterial != nullptr) {
@@ -96,7 +96,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------------
+
     bool MaterialManager::hasResource(const std::string & sid) const {
         const std::string& path = mLocalDir + sid;
         Log::trace(TAG, "Checking if material %s.json exists", path.c_str());
@@ -106,21 +106,15 @@ namespace dma {
 
     /*====================== PRIVATE =======================*/
 
-    //CONSTRUCTORS
-    //------------------------------------------------------------------------------
     MaterialManager::MaterialManager(const std::string &localDir,
                                      ShaderManager& shaderManager,
                                      MapManager&mapManager) :
             mLocalDir(localDir),
             mShaderManager(shaderManager),
             mMapManager(mapManager)
-    {
-    }
+    {}
 
 
-    //METHODS
-
-    //------------------------------------------------------------------------------
     Status MaterialManager::mLoad(std::shared_ptr<Material> material, const std::string& sid) const {
 
         Log::trace(TAG, "Loading material %s ...", sid.c_str());
@@ -266,21 +260,14 @@ namespace dma {
         return STATUS_OK;
     }
 
-
-
-    //------------------------------------------------------------------------------
     std::shared_ptr<Material> MaterialManager::create() {
         return std::make_shared<Material>();
     }
 
-
-    //------------------------------------------------------------------------------
     std::shared_ptr<Material> MaterialManager::create(const std::string &sid) {
         return std::make_shared<Material>(*acquire(sid));
     }
 
-
-    //------------------------------------------------------------------------------
     void MaterialManager::update() {
         auto it = mMaterials.begin();
         while (it != mMaterials.end()) {

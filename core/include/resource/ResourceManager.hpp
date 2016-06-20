@@ -43,41 +43,9 @@ namespace dma {
         /* ***
          * CONSTANTS
          */
-        /** base dir where resources are stored, by type. Defined in cpp implementation. */
-        static const char* RESOURCE_PATHS[];
         static constexpr char TAG[] = "ResourceManager";
 
     public:
-        /* ***
-         * ENUM
-         */
-        enum ResourceType {
-            SHADER = 0, MESH = 1, TEXTURE = 2, MATERIAL = 3, SCENE = 4, CUBEMAP = 5, TILE = 6, size = 7
-        };
-
-        struct ResourceIds {
-            struct CubeMap {
-                static constexpr char DEFAULT[]      = "default";
-            };
-
-        public:
-            struct Texture {
-                static constexpr char DEFAULT[]      = "damier";
-                static constexpr char FALLBACK[]     = "fallback";
-            };
-
-            struct Mesh {
-                static constexpr char BALOON[]  = "balloon";
-                static constexpr char CUBE[]    = "cube";
-                static constexpr char PYRAMID[] = "pyramid";
-                static constexpr char SPHERE[]  = "sphere";
-            };
-
-            struct Shader {
-                static constexpr char FALLBACK[]  = "fallback";
-            };
-
-        };
 
         /* ***
          * CONSTRUCTOR & DESTRUCTOR
@@ -127,7 +95,6 @@ namespace dma {
             return mShaderManager.hasResource(sid);
         }
 
-
         /**
          * @return the ShaderProgram corresponding to the sid
          * @param const std::string& -
@@ -139,14 +106,12 @@ namespace dma {
             return mShaderManager.acquire(sid);
         }
 
-
         /**
          * @return true if the corresponding mesh exists.
          */
         inline bool hasMesh(const std::string& sid) const {
             return mMeshManager.hasResource(sid);
         }
-
 
         /**
          * @param const std::string& -
@@ -159,16 +124,12 @@ namespace dma {
             return mMeshManager.acquire(sid);
         }
 
-
-
         /**
          * @return true if the corresponding map program exists.
          */
         inline bool hasMap(const std::string& sid) const {
             return mMapManager.hasResource(sid);
         }
-
-
 
         /**
          * @param const std::string&
@@ -182,8 +143,6 @@ namespace dma {
             return mMapManager.acquire(sid);
         }
 
-
-
         /**
          * @param const std::string&
          *                  SID of the texture.
@@ -196,16 +155,12 @@ namespace dma {
             return mCubeMapManager.acquire(sid);
         }
 
-
-
         /**
          * @return true if the corresponding material exists.
          */
         inline bool hasMaterial(const std::string& sid) const {
             return mMaterialManager.hasResource(sid);
         }
-
-
 
         /**
          * @param const std::string& -
@@ -218,8 +173,6 @@ namespace dma {
             return mMaterialManager.acquire(sid);
         }
 
-
-
         /**
          * Creates a new empty Material
          */
@@ -227,16 +180,12 @@ namespace dma {
             return mMaterialManager.create();
         }
 
-
-
         /**
          * Creates a new Material corresponding to the sid
          */
         inline std::shared_ptr<Material> createMaterial(const std::string& sid) {
             return mMaterialManager.create(sid);
         }
-
-
 
         /**
          * Creates a new quad width * height
@@ -247,7 +196,6 @@ namespace dma {
         inline std::shared_ptr<Quad> createQuad(F32 width, F32 height) {
             return mQuadFactory.createQuad(width, height);
         }
-
 
         /**
          * Updates all resources: ie unload unused resources
@@ -267,10 +215,6 @@ namespace dma {
         CubeMapManager             mCubeMapManager;
         MaterialManager            mMaterialManager;
         QuadFactory                mQuadFactory;
-
-        static constexpr int RESOURCE_MANAGER_ARRAY_SIZE = 6;
-        /** array of the above resource managers. */
-        //IResourceManager<void>*    mResourceManagers[RESOURCE_MANAGER_ARRAY_SIZE];
     };
 
 }

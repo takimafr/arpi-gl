@@ -22,7 +22,7 @@
 
 namespace dma {
 
-    //----------------------------------------------------------------------------
+
     HUDSystem::HUDSystem(ResourceManager& resourceManager) :
             mV(glm::mat4(1.0f)),
             mP(glm::mat4(1.0f)),
@@ -30,20 +30,20 @@ namespace dma {
     {}
 
 
-    //----------------------------------------------------------------------------
+
     HUDSystem::~HUDSystem() {
         unload();
     }
 
 
-    //----------------------------------------------------------------------------
+
     void HUDSystem::setViewport(U32 width, U32 height) {
 //        mP = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
         mP = glm::ortho(0.0f ,(float)width, 0.0f, (float)height);
     }
 
 
-    //----------------------------------------------------------------------------
+
     void HUDSystem::addHUDElement(std::shared_ptr<HUDElement> hudElement) {
 
         std::shared_ptr<Quad> quad = mResourceManager.createQuad(hudElement->width, hudElement->height);
@@ -59,7 +59,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     void HUDSystem::unload() {
         mHUDElements.clear();
     }

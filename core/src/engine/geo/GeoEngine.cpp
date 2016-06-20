@@ -27,7 +27,7 @@ constexpr char TAG[] = "PoiEngine";
 namespace dma {
     namespace geo {
 
-        //------------------------------------------------------------------------------
+
         GeoEngine::GeoEngine(const std::string &resourceDir) :
                 mRootDir((!resourceDir.empty() && resourceDir.at(resourceDir.length() - 1) != '/') ? resourceDir + '/' : resourceDir),
                 mEngine(resourceDir),
@@ -38,13 +38,13 @@ namespace dma {
         {}
 
 
-        //------------------------------------------------------------------------------
+
         GeoEngine::~GeoEngine() {
 
         }
 
 
-        //------------------------------------------------------------------------------
+
         bool GeoEngine::init() {
             bool res = mEngine.init();
             mGeoSceneManager.init();
@@ -65,13 +65,13 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoEngine::refresh() {
             mEngine.refresh();
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoEngine::reload() {
             std::ofstream out(mRootDir + "texture/watermark.png", std::ios::binary);
             out.write((const char *) Watermark::DATA, Watermark::SIZE);
@@ -80,20 +80,20 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoEngine::unload() {
             mGeoSceneManager.unload();
             mEngine.unload();
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoEngine::wipe() {
             mEngine.wipe();
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoEngine::step() {
             mMessageQueue.flush();
             mGeoSceneManager.step();
@@ -101,12 +101,12 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoEngine::post(std::function<void()> message) {
             mMessageQueue << message;
         }
 
-        //------------------------------------------------------------------------------
+
         void GeoEngine::setCallback(GeoEngineCallbacks* callbacks) {
             if (!callbacks) {
                 mCallbacks = mDefaultCallbacks;

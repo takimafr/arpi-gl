@@ -38,64 +38,64 @@ namespace dma {
         constexpr char ICON_DIR[] = "icon/";
 
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::PoiFactory(ResourceManager &resourceManager) :
             mResourceManager(resourceManager)
         {}
 
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::~PoiFactory() {
         }
 
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::Builder PoiFactory::builder() {
             return Builder(mResourceManager);
         }
 
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::Builder::Builder(ResourceManager& resourceManager) :
             mResourceManager(resourceManager)
         {
         }
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::Builder &PoiFactory::Builder::sid(const std::string &sid) {
             mSid = sid;
             return *this;
         }
 
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::Builder &PoiFactory::Builder::shape(const std::string &shape) {
             mShape = shape;
             return *this;
         }
 
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::Builder &PoiFactory::Builder::icon(const std::string &icon) {
             mIcon = icon;
             return *this;
         }
 
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::Builder &PoiFactory::Builder::color(const Color &color) {
             mColor = color;
             return *this;
         }
 
-        //------------------------------------------------------------------------------
+
         PoiFactory::Builder &PoiFactory::Builder::animation(bool animated) {
             mAnimated = animated;
             return *this;
         }
 
 
-        //------------------------------------------------------------------------------
+
         std::shared_ptr<Poi> PoiFactory::Builder::build() {
             std::shared_ptr<Mesh> mesh = mResourceManager.acquireMesh(mShape);
             std::shared_ptr<Material> material = mResourceManager.createMaterial("poi");

@@ -24,7 +24,7 @@ constexpr auto TAG = "Quad";
 namespace dma {
 
 
-    //--------------------------------------------------
+
     Quad::Quad(float width, float height,
             const U32 vertexSize,
             const U32 vertexCount,
@@ -63,13 +63,13 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------
+
     Quad::~Quad() {
 
     }
 
 
-    //--------------------------------------------------
+
     void Quad::setSize(float width, float height) {
         mWidth = width;
         mHeight = height;

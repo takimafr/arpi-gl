@@ -39,7 +39,7 @@ namespace dma {
 
     /*======================== PUBLIC ======================*/
 
-    //--------------------------------------------------------------------------------
+
     MaterialReader::MaterialReader(const std::string &path) :
             mPath(path),
             mPassCount(0),
@@ -47,13 +47,13 @@ namespace dma {
     {}
 
 
-    //--------------------------------------------------------------------------------
+
     MaterialReader::~MaterialReader() {
 
     }
 
 
-    //--------------------------------------------------------------------------------
+
     Status MaterialReader::parse() {
         ////////////////////////////////////////////////////////////////////////////
         // Stringify the file
@@ -99,7 +99,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::isBackToFront() const {
         if (mDocument.HasMember(B2F_KEY)) {
             const rapidjson::Value& v = mDocument[B2F_KEY];
@@ -110,14 +110,14 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::nextPass() {
         mPassIndex += 1;
         return mPassIndex < (I32)mPassCount;
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::hasCullMode() const {
         if (mPasses[mPassIndex].HasMember(CULL_MODE_KEY)) {
             const rapidjson::Value& v = mPasses[mPassIndex][CULL_MODE_KEY];
@@ -128,7 +128,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     std::string MaterialReader::getCullMode() const {
         if (!hasCullMode()) {
             Log::error(TAG, "Material file %s malformed:"
@@ -140,7 +140,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::hasDepthWriting() const {
         if (mPasses[mPassIndex].HasMember(DEPTH_KEY)) {
             const rapidjson::Value& v = mPasses[mPassIndex][DEPTH_KEY];
@@ -151,7 +151,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     std::string MaterialReader::getShader() const {
         if (mPasses[mPassIndex].HasMember(SHADER_KEY) && mPasses[mPassIndex][SHADER_KEY].IsString()) {
             return mPasses[mPassIndex][SHADER_KEY].GetString();
@@ -164,7 +164,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::hasDiffuseMap() const {
         if (mPasses[mPassIndex].HasMember(DIFFUSE_MAP_KEY)) {
             const rapidjson::Value& v = mPasses[mPassIndex][DIFFUSE_MAP_KEY];
@@ -175,7 +175,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     std::string MaterialReader::getDiffuseMap() const {
         if (!hasDiffuseMap()) {
             Log::error(TAG, "Material file %s malformed:"
@@ -187,7 +187,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::hasLighting() const {
         if (mPasses[mPassIndex].HasMember(LIGHTING_MAP_KEY)) {
             const rapidjson::Value& v = mPasses[mPassIndex][LIGHTING_MAP_KEY];
@@ -198,7 +198,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     std::string MaterialReader::getLighting() const {
         if (!hasLighting()) {
             Log::error(TAG, "Material file %s malformed:"
@@ -210,7 +210,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::hasScaling() const {
         if (mPasses[mPassIndex].HasMember(SCALING_KEY)) {
             const rapidjson::Value& v = mPasses[mPassIndex][SCALING_KEY];
@@ -221,7 +221,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::hasDiffuseColor() const {
         if (mPasses[mPassIndex].HasMember(DIFFUSE_COLOR_KEY)) {
             const rapidjson::Value& v = mPasses[mPassIndex][DIFFUSE_COLOR_KEY];
@@ -232,7 +232,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     const glm::vec3 MaterialReader::getDiffuseColor() const {
         if (!hasDiffuseColor()) {
             Log::error(TAG, "Material file %s malformed:"
@@ -247,7 +247,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------
+
     bool MaterialReader::hasDiffuseMapActivation() {
         if (mPasses[mPassIndex].HasMember(DM_ACTIVATION_KEY)) {
             const rapidjson::Value& v = mPasses[mPassIndex][DM_ACTIVATION_KEY];

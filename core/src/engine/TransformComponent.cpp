@@ -22,7 +22,7 @@
 namespace dma {
 
 
-    //------------------------------------------------------
+
     TransformComponent::TransformComponent() :
                     mPosition(glm::vec3(0.0f)),
                     mOrientation(glm::quat()), //identity quaternion
@@ -32,34 +32,34 @@ namespace dma {
     {}
 
 
-    //------------------------------------------------------
+
     TransformComponent::~TransformComponent() {
 
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::setPosition(const glm::vec3& position) {
         mPosition = position;
         mDirty = true;
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::translate(const glm::vec3& translation) {
         mPosition += translation;
         mDirty = true;
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::setOrientation(const glm::quat& rotationQuat) {
         mOrientation = rotationQuat;
         mDirty = true;
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::rotate(const float angle, const glm::vec3 &axis) {
         glm::quat q = glm::angleAxis(glm::radians(angle), axis);
         mOrientation = q * mOrientation;
@@ -67,32 +67,32 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::pitch(const float angle) {
         rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f));
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::yaw(const float angle) {
         rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::roll(const float angle) {
         rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f));
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::setScale(const glm::vec3 &scale) {
         mScale = scale;
         mDirty = true;
     }
 
 
-    //------------------------------------------------------
+
     void TransformComponent::update(const bool reverse) {
         if (mDirty) {
             if (reverse) {

@@ -65,7 +65,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     Status ShaderManager::init() {
         Status result;
         mFallbackShaderProgram = std::make_shared<ShaderProgram>();
@@ -75,7 +75,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     /*
      * Returns the pointer of the ShaderProgram with the String ID sid.
      * Increments the reference count
@@ -98,7 +98,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     bool ShaderManager::hasResource(const std::string& sid) const {
 
         const std::string& path = mLocalDir + sid;
@@ -108,7 +108,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     Status ShaderManager::reload() {
         Log::trace(TAG, "Reloading ShaderManager...");
 
@@ -136,7 +136,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     Status ShaderManager::refresh() {
         Log::trace(TAG, "Refreshing ShaderManager...");
 
@@ -159,7 +159,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     void ShaderManager::unload() {
         Log::trace(TAG, "Unloading ShaderManager...");
 
@@ -170,7 +170,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     void ShaderManager::wipe() {
         Log::trace(TAG, "Wiping ShaderManager...");
 
@@ -188,7 +188,7 @@ namespace dma {
 
     /* ================= PRIVATE ========================*/
 
-    //----------------------------------------------------------------------------
+
     ShaderManager::ShaderManager(const std::string& localDir) :
             mShaderPrograms()
     {
@@ -196,7 +196,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     Status ShaderManager::mLoad(std::shared_ptr<ShaderProgram> shaderProgram, const std::string &sid) const {
         Log::trace(TAG, "Loading shader %s ...", sid.c_str());
 
@@ -227,7 +227,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     Status ShaderManager::mLoad(std::shared_ptr<ShaderProgram> shaderProgram,
                                 const std::string& sid,
                                 const std::string &vertexSource,
@@ -282,7 +282,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     GLuint ShaderManager::mCompile(const std::string& source, GLenum type) const {
         GLuint handle = glCreateShader(type);
         const GLchar* src = source.c_str();
@@ -300,7 +300,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------
+
     void ShaderManager::update() {
         auto it = mShaderPrograms.begin();
         while (it != mShaderPrograms.end()) {

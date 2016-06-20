@@ -44,19 +44,19 @@ namespace dma {
 
     /* ================= PUBLIC ========================*/
 
-    //------------------------------------------------------------------------------
+
     ShaderProgram::ShaderProgram() :
             mHandle(0), mAttributeFlags(0L), mUniformFlags(0L){
     }
 
 
-    //------------------------------------------------------------------------------
+
     ShaderProgram::~ShaderProgram() {
     }
 
     /* ================= PRIVATE ========================*/
 
-    //------------------------------------------------------------------------------
+
     ExceptionType ShaderProgram::mLink(GLuint vertexHandle, GLuint fragmentHandle) {
         GLint link_ok;
         mHandle = glCreateProgram();
@@ -75,7 +75,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------------
+
     Status ShaderProgram::mBindLocations() {
         std::string name;
         GLint location;
@@ -115,7 +115,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------------
+
     void ShaderProgram::wipe() {
         if (glIsProgram(mHandle)) {
             Log::debug(TAG, "deleting shader program %d", mHandle);

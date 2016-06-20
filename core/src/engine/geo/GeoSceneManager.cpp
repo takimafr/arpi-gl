@@ -32,7 +32,7 @@ namespace dma {
     namespace geo {
         constexpr char TAG[] = "GeoSceneManager";
 
-        //------------------------------------------------------------------------------
+
         GeoSceneManager::GeoSceneManager(Scene& scene, ResourceManager& resourceManager) :
                 mScene(scene),
                 mTileMap(resourceManager),
@@ -44,12 +44,12 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         GeoSceneManager::~GeoSceneManager() {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::init() {
             mTileMap.init();
             for (std::shared_ptr<Tile> tile : mTileMap.getTiles()) {
@@ -57,7 +57,7 @@ namespace dma {
             }
         }
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::unload() {
             Log::trace(TAG, "Unloading GeoSceneManager...");
             for (std::shared_ptr<Tile> tile : mTileMap.getTiles()) {
@@ -71,7 +71,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::step() { //TODO optimization ?
             for (auto& kv : mPOIs) {
                 auto poi = kv.second;
@@ -97,7 +97,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         glm::vec3 GeoSceneManager::mapPosition(double lat, double lon, double alt) const {
             double bearing = GeoUtils::bearing(LatLng(lat, lon), mOrigin);
             double distance = GeoUtils::slc(LatLng(lat, lon), mOrigin);
@@ -107,7 +107,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::setOrigin(double lat, double lon) {
             Log::trace(TAG, "Setting new Origin: old=(%f, %f) new=(%f, %f)",
                        mOrigin.lat, mOrigin.lng, lat, lon);
@@ -122,19 +122,19 @@ namespace dma {
             }
         }
 
-        //------------------------------------------------------------------------------
+
         Status GeoSceneManager::notifyTileAvailable(int x, int y, int z) {
             return mTileMap.notifyTileAvailable(x, y, z);
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::setCallbacks(GeoEngineCallbacks* callbacks) {
             mTileMap.setCallbacks(callbacks);
         }
 
 
-        //------------------------------------------------------------------------------
+
         bool GeoSceneManager::addPoi(std::shared_ptr<Poi> poi) {
             if (hasPoi(poi->getSid())) {
                 Log::warn(TAG, "GeoScene already contains Poi with SID = %s", poi->getSid().c_str());
@@ -153,7 +153,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         bool GeoSceneManager::removePoi(const std::string& sid) {
             if (mPOIs.find(sid) == mPOIs.end()) {
                 Log::warn(TAG, "Trying to remove poi with SID = %s from the GeoScene that does not exist", sid.c_str());
@@ -165,7 +165,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::removeAllPois() {
             for (auto& kv : mPOIs) {
                 mScene.removeEntity(kv.second);
@@ -174,7 +174,7 @@ namespace dma {
         }
 
 
-        //----------------------------------------------------------------------
+
         bool GeoSceneManager::hasPoi(const std::string& sid) {
             return mPOIs.find(sid) != mPOIs.end();
         }
@@ -184,7 +184,7 @@ namespace dma {
          * PRIVATE
          */
 
-        //------------------------------------------------------------------------------
+
         glm::vec3 GeoSceneManager::destinationPoint(double bearing, double distance) const {
             glm::vec3 res;
             double theta = (glm::half_pi<double>() - glm::radians(bearing));
@@ -195,7 +195,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         std::shared_ptr<Poi> GeoSceneManager::getPoi(const std::string &sid) {
             if (mPOIs.find(sid) == mPOIs.end()) {
                 Log::warn(TAG, "No poi found with the sid %s", sid.c_str());
@@ -205,19 +205,19 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::placeCamera(const LatLng& coords) {
             placeCamera(LatLngAlt(coords.lat, coords.lng, mScene.getCamera().getPosition().y));
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::placeCamera(const LatLngAlt& coords) {
             placeCamera(LatLngAlt(coords.lat, coords.lng, coords.alt), -1.0f, TranslationAnimation::Function::LINEAR);
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::placeCamera(const LatLngAlt& coords, float translationDuration, TranslationAnimation::Function translationFunction) {
 
             Camera &camera = mScene.getCamera();
@@ -258,19 +258,19 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::orientateCamera(std::shared_ptr<glm::mat4> rotationMatrix) {
             mScene.getCamera().setOrientation(*rotationMatrix, ANIMATE_CAMERA_ROTATION_DURATION);
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::setTileNamespace(const std::string &ns) {
             mTileMap.setNamespace(ns);
         }
 
 
-        //------------------------------------------------------------------------------
+
         std::shared_ptr<Poi> GeoSceneManager::pick(int screenX, int screenY) {
             std::list<std::shared_ptr<Poi>> intersected;
             glm::vec3 ray = mScene.castRay(screenX, screenY);
@@ -320,7 +320,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         void GeoSceneManager::updateTileDiffuseMaps() {
             mTileMap.updateDiffuseMaps();
         }

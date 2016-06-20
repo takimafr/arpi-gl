@@ -57,6 +57,9 @@ namespace dma {
          */
         std::shared_ptr<Mesh> acquire(const std::string& sid);
 
+        /**
+         * Load an anonymous mesh
+         */
         std::shared_ptr<Mesh> load(std::vector<glm::vec3>& positions,
                                    std::vector<glm::vec2>& uvs,
                                    std::vector<glm::vec3>& flatNormals,

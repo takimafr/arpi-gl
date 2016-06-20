@@ -25,27 +25,27 @@
 namespace dma {
 
 
-    //-----------------------------------------------------------------
+
     MapManager::MapManager(const std::string& dir) {
         mMapDir = dir;
         Utils::addTrailingSlash(mMapDir);
     }
 
 
-    //-----------------------------------------------------------------
+
     MapManager::~MapManager() {
 
     }
 
 
-    //-----------------------------------------------------------------
+
     void MapManager::init() {
         mFallbackMap = std::make_shared<Map>();
         mLoadMap(mFallbackMap, FALLBACK_MAP_SID);
     }
 
 
-    //-----------------------------------------------------------------
+
     std::shared_ptr<Map> MapManager::acquire(const std::string &sid) {
         if (sid == FALLBACK_MAP_SID) {
             return mFallbackMap;
@@ -64,13 +64,13 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------------
+
     bool MapManager::hasResource(const std::string &sid) const {
         return Utils::fileExists(mMapDir + sid + ".png") || Utils::fileExists(mMapDir + sid + ".PNG");
     }
 
 
-    //-----------------------------------------------------------------
+
     void MapManager::reload() {
         Log::trace(TAG, "Reloading MapManager...");
 
@@ -89,7 +89,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------------
+
     void MapManager::refresh() {
         Log::trace(TAG, "Refreshing MapManager...");
 
@@ -108,7 +108,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------------
+
     void MapManager::wipe() {
         Log::trace(TAG, "Wiping MapManager...");
 
@@ -122,7 +122,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------------
+
     void MapManager::unload() {
         Log::trace(TAG, "Unloading MapManager...");
 
@@ -138,7 +138,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------------
+
     void MapManager::update() {
         auto it = mMaps.begin();
         while (it != mMaps.end()) {
@@ -152,7 +152,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void MapManager::mLoadMap(std::shared_ptr<Map> map, const std::string &sid) {
         std::string filename = mMapDir + sid + ".png";
         if (!Utils::fileExists(filename)) {

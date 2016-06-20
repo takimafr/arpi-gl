@@ -40,13 +40,13 @@ namespace dma {
 
     /* ================= ROUTINES ========================*/
 
-    //------------------------------------------------------------------------
+
 
 
 
     /* ================= PUBLIC ========================*/
 
-    //------------------------------------------------------------------------
+
     RenderingEngine::RenderingEngine(ResourceManager& resourceManager) :
             mHUDSystem(resourceManager),
             mSkyBox(nullptr),
@@ -56,12 +56,12 @@ namespace dma {
     {}
 
 
-    //------------------------------------------------------------------------
+
     RenderingEngine::~RenderingEngine() {
         //unload();
     }
 
-    //------------------------------------------------------------------------
+
     Status RenderingEngine::init() {
 
         // As openGL context must be created by the host, we have to check if
@@ -84,7 +84,7 @@ namespace dma {
 
 
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::unload() {
         Log::trace(TAG, "Unloading RenderingEngine...");
 
@@ -104,7 +104,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::setViewport(U32 width, U32 height) {
         assert(width > 0);
         assert(height > 0);
@@ -116,7 +116,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::subscribe(RenderingPackage* package, bool back2front, float distanceFromCamera) {
         Entry e;
         e.renderingPackage = package;
@@ -131,7 +131,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::subscribe(const RenderingComponent* component, float distanceFromCamera) {
         for(RenderingPackage* rp : component->getRenderingPackages()) {
             subscribe(rp, rp->isBackToFront(), distanceFromCamera);
@@ -139,13 +139,13 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::subscribeHUDElement(std::shared_ptr<HUDElement> hudElement) {
         mHUDSystem.addHUDElement(hudElement);
     }
 
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::drawFrame() {
         assert (mV != NULL && "mV not set before rendering starts!");
         assert (mP != NULL && "mP not set before rendering starts!");
@@ -198,7 +198,7 @@ namespace dma {
 
     /* ================= PRIVATE ========================*/
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::mDraw(RenderingPackage* package, const glm::mat4& V, const glm::mat4& P) {
         GLUtils::clearGlErrors();
 
@@ -398,7 +398,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------
+
     void RenderingEngine::mDrawSkyBox() {
         glm::mat4 MVP = *mP * glm::mat4(glm::mat3(*mV)); //remove translation components
 

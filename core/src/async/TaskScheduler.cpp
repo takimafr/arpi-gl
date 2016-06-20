@@ -28,25 +28,25 @@
 
 namespace dma {
 
-    //---------------------------------------------------------------------------
+
     TaskScheduler::TaskScheduler() {
         
     }
 
-    //---------------------------------------------------------------------------
+
     TaskScheduler::~TaskScheduler() {
         cancelAll();
     }
 
 
-    //---------------------------------------------------------------------------
+
     void TaskScheduler::operator<<(std::function<void()> task) {
         std::lock_guard<std::mutex> guard(mLock);
         mTasks.push_back(task);
     }
 
 
-    //---------------------------------------------------------------------------
+
     int TaskScheduler::flush() {
         std::lock_guard<std::mutex> guard(mLock);
         int count = 0;
@@ -60,7 +60,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     int TaskScheduler::cancelAll() {
         std::lock_guard<std::mutex> guard(mLock);
         int count = (int) mTasks.size();

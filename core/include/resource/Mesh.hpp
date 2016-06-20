@@ -45,27 +45,35 @@ namespace dma {
         inline const std::string& getSID() const {
             return mSID;
         }
+
         inline bool hasFlatNormals() const {
             return hasVertexElement(VertexElement::Semantic::FLAT_NORMAL);
         }
+
         inline U32 getVertexSize() const {
             return mVertexSize;
         }
+
         inline U32 getVertexCount() const {
             return mVertexCount;
         }
+
         inline const VertexBuffer& getVertexBuffer() const {
             return *mVertexBuffer;
         }
+
         inline const IndexBuffer& getIndexBuffer() const {
             return *mIndexBuffer;
         }
+
         inline U32 getVertexSemFlags() const {
             return mVertexSemFlags;
         }
+
         inline bool hasVertexElement(VertexElement::Semantic sem) const {
             return (mVertexSemFlags & (1L << sem)) != 0;
         }
+
         inline const VertexElement& getVertexElement(VertexElement::Semantic semantic) const {
             return mVertexElements[semantic];
         }

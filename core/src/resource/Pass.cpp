@@ -20,7 +20,7 @@
 
 namespace dma {
 
-    //---------------------------------------------------------------------
+
     Pass::Pass() :
             mFuncFlags(0),
             mCullMode(NONE),
@@ -31,31 +31,31 @@ namespace dma {
     {}
 
 
-    //---------------------------------------------------------------------
+
     Pass::~Pass() {
 
     }
 
 
-    //---------------------------------------------------------------------
+
     void Pass::addFunc(Pass::Func func) {
         mFuncFlags |= (1L << func);
     }
 
 
-    //---------------------------------------------------------------------
+
     void Pass::removeFunc(Pass::Func func) {
         mFuncFlags &= ~(1L << func);
     }
 
 
-    //---------------------------------------------------------------------
+
     void Pass::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram) {
         mShaderProgram = shaderProgram;
     }
 
 
-    //---------------------------------------------------------------------
+
     void Pass::setDiffuseMap(std::shared_ptr<Map> diffuseMap)  {
         mDiffuseMap = diffuseMap;
         addFunc(Func::DIFFUSE_MAP);

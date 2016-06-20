@@ -21,23 +21,23 @@
 
 namespace dma {
 
-    //----------------------------------------------------------------
+
     Plane::Plane() { }
 
-    //----------------------------------------------------------------
+
     Plane::Plane(const glm::vec3& normal, const glm::vec3& point) :
         mNormal(normal),
         mPoint(point)
     {}
 
 
-    //----------------------------------------------------------------
+
     Plane::~Plane() {
 
     }
 
 
-    //----------------------------------------------------------------
+
     float Plane::distance(const glm::vec3& p) {
         //float D = glm::dot<float>(-mNormal, mPoint);
 

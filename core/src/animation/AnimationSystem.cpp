@@ -27,12 +27,12 @@ constexpr char TAG[] = "AnimationSystem";
 
 namespace dma {
 
-    //--------------------------------------------------------------------
+
     AnimationSystem::AnimationSystem()
     {}
 
 
-    //--------------------------------------------------------------------
+
     void AnimationSystem::unload() {
         assert(false); //TODO remove animation system
         mAnimations.clear();
@@ -40,21 +40,21 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------
+
     void AnimationSystem::subscribe(AnimationComponent &animationComponent) {
         assert(false); //TODO remove animation system
         mAnimationComponents.push_back(&animationComponent);
     }
 
 
-    //--------------------------------------------------------------------
+
     void AnimationSystem::unsubscribe(AnimationComponent &animationComponent) {
         assert(false); //TODO remove animation system
         mAnimationComponents.remove(&animationComponent);
     }
 
 
-    //--------------------------------------------------------------------
+
     void AnimationSystem::step(float dt) {
         assert(false); //TODO remove animation system
         for (AnimationComponent* ac : mAnimationComponents) {

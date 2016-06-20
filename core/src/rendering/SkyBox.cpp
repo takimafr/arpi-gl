@@ -24,19 +24,19 @@ constexpr auto TAG = "SkyBox";
 namespace dma {
 
 
-    //--------------------------------------------------------------------
+
     SkyBox::SkyBox() :
             mCubeMap(nullptr), mShaderProgram(nullptr)
 
     {}
 
 
-    //--------------------------------------------------------------------
+
     SkyBox::~SkyBox() {
 
     }
 
-    //--------------------------------------------------------------------
+
     void SkyBox::init(std::shared_ptr<CubeMap> cubeMap, std::shared_ptr<ShaderProgram> shaderProgram) {
 
         GLfloat positions[] = {
@@ -95,14 +95,14 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------
+
     void SkyBox::refresh() {
         //wipe();
         init(mCubeMap, mShaderProgram);
     }
 
 
-    //--------------------------------------------------------------------
+
     void SkyBox::wipe() {
         mVertexBuffer.wipe();
         mIndexBuffer.wipe();

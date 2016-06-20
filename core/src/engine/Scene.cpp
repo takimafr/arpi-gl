@@ -25,7 +25,7 @@ constexpr char TAG[] = "Scene";
 
 namespace dma {
 
-    //----------------------------------------------------------------------
+
     Scene::Scene(ResourceManager* resourceManager,
                  AnimationSystem* animationSystem,
                  RenderingEngine* renderingEngine) :
@@ -46,13 +46,13 @@ namespace dma {
 
     /*============================== PUBLIC ==============================*/
 
-    //----------------------------------------------------------------------
+
     Scene::~Scene() {
         delete mSkyBox;
     }
 
 
-    //----------------------------------------------------------------------
+
     void Scene::unload() {
         Log::trace(TAG, "Unloading Scene...");
         mEntities.clear();
@@ -60,7 +60,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------
+
     void Scene::refresh() {
         Log::trace(TAG, "Refreshing Scene...");
         if (mSkyBox != nullptr) {
@@ -70,14 +70,14 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------
+
     void Scene::setCamera(std::shared_ptr<Camera> camera) {
         mCamera = camera;
         mRenderingEngine->setVP(camera->getView(), camera->getProjection());
     }
 
 
-    //----------------------------------------------------------------------
+
     void Scene::setSkyBox(const std::string &sid) {
         mCurrentSkyboxSid = sid;
 
@@ -92,7 +92,7 @@ namespace dma {
         }
     }
 
-    //----------------------------------------------------------------------
+
     void Scene::setSkyBoxEnabled(bool enabled) {
         bool shouldEnable = enabled && !mSkyboxEnabled;
         bool shouldDisable = mSkyboxEnabled && !enabled;
@@ -109,13 +109,13 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------
+
     void Scene::setLightSource(const Light& light) {
         mRenderingEngine->setLight(light);
     }
 
 
-    //----------------------------------------------------------------------
+
     std::shared_ptr<Entity> Scene::pick(int screenX, int screenY) {
 
         //TODO implement
@@ -148,7 +148,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------
+
     glm::vec3 Scene::castRay(int screenX, int screenY) {
         float x = (2.0f * screenX) / mRenderingEngine->getViewportWidth() - 1.0f;
         float y = 1.0f - (2.0f * screenY) / mRenderingEngine->getViewportHeight();
@@ -169,14 +169,14 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------
+
     float Scene::distanceFromCamera(std::shared_ptr<Entity> entity) {
         glm::vec3 ce = entity->getPosition() - mCamera->getPosition(); // camera-entity vector
         return glm::length<float>(ce);
     }
 
 
-    //----------------------------------------------------------------------
+
     void Scene::step(float dt) {
         assert(mCamera != nullptr && "Camera not set before calling Scene#step");
         mCamera->update(dt);
@@ -199,13 +199,13 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------
+
     bool Scene::addEntity(std::shared_ptr<Entity> entity) {
         return mEntities.insert(entity).second;
     }
 
 
-    //----------------------------------------------------------------------
+
     bool Scene::removeEntity(std::shared_ptr<Entity> entity) {
         if (mEntities.erase(entity) == 0) {
             Log::warn(TAG, "Cannot remove entity since it doesn't belong to the scene");
@@ -215,12 +215,12 @@ namespace dma {
         return true;
     }
 
-    //----------------------------------------------------------------------
+
     bool Scene::hasEntity(std::shared_ptr<Entity> entity) {
         return mEntities.find(entity) != mEntities.end();
     }
 
-    //----------------------------------------------------------------------
+
     void Scene::wipe() {
         if (mSkyBox != nullptr) {
             mSkyBox->wipe();

@@ -25,7 +25,7 @@ constexpr auto TAG = "Tile";
 namespace dma {
     namespace geo {
 
-        //--------------------------------------------------------------------------
+
         Tile::Tile(std::shared_ptr<Quad> quad,
                    std::shared_ptr<Material> material,
                    const LatLng& coords, int x, int y, int z) :
@@ -39,43 +39,43 @@ namespace dma {
         }
 
 
-        //--------------------------------------------------------------------------
+
         Tile::Tile(std::shared_ptr<Quad> quad, std::shared_ptr<Material> material) :
             Tile(quad, material, LatLng(), -1, -1, -1)
         {
         }
 
 
-        //--------------------------------------------------------------------------
+
         Tile::~Tile() {
 
         }
 
-//        //--------------------------------------------------------------------------
+//
 //        bool Tile::operator<(const Tile& other) const {
 //            return mId < other.mId;
 //        }
 
 
-//        //--------------------------------------------------------------------------
+//
 //        bool Tile::operator==(const Tile& other) const {
 //            return mId == other.mId;
 //        }
 
 
-        //--------------------------------------------------------------------------
+
         void Tile::setDiffuseMap(std::shared_ptr<Map> diffuseMap) {
             getMaterial()->setDiffuseMap(diffuseMap, TILE_PASS_INDEX);
         }
 
 
-        //--------------------------------------------------------------------------
+
         std::shared_ptr<Map> Tile::getDiffuseMap() {
             return getMaterial()->getPass(TILE_PASS_INDEX).getDiffuseMap();
         }
 
 
-        //--------------------------------------------------------------------------
+
         std::shared_ptr<Material> Tile::getMaterial() {
             return mRenderingComponent->getRenderingPackages()[0]->getMaterial();
         }

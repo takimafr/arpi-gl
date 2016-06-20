@@ -27,7 +27,7 @@ constexpr auto TAG = "Utils";
 
 namespace dma {
 
-    //--------------------------------------------------------------------------------------
+
     std::vector<std::string> &Utils::split(const std::string &s, char delim,
                                            std::vector<std::string> &elems) {
         std::stringstream ss(s);
@@ -39,7 +39,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------------
+
     bool Utils::dirExists(const char *path) {
         struct stat info;
         if (stat(path, &info) != 0)
@@ -47,7 +47,7 @@ namespace dma {
         else return (info.st_mode & S_IFDIR) != 0;
     }
 
-    //--------------------------------------------------------------------------------------
+
     bool Utils::fileExists(const std::string& path) {
         std::ifstream is;
         is.open(path.c_str());
@@ -58,7 +58,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------------
+
     long Utils::getFileSize(const std::string& path) {
         long length;
         std::ifstream is;
@@ -72,7 +72,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------------
+
     Status Utils::bufferize(const std::string& path, std::string& buffer) {
         I64 length;
         std::ifstream is;
@@ -96,7 +96,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------------
+
     Status Utils::bufferize(const std::string& path, std::vector<BYTE>& buffer) {
         I64 length;
         std::ifstream is(path.c_str(), std::ios::binary | std::ios::ate);
@@ -118,7 +118,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------------
+
     std::string Utils::getFileExt(const std::string &s) {
         size_t i = s.rfind('.', s.length());
         if (i != std::string::npos) {
@@ -129,7 +129,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------------
+
     std::string& Utils::addFileExt(std::string &filename, const std::string &ext) {
         std::string fileExt = Utils::getFileExt(filename);
         if (fileExt == ext) {
@@ -140,7 +140,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------------------
+
     std::string& Utils::addTrailingSlash(std::string& dir) {
         if (!dir.empty() && dir.at(dir.length() - 1) != '/') {
             dir += '/';

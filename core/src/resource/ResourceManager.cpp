@@ -22,17 +22,6 @@
 
 namespace dma {
 
-
-    // paths
-    // MATERIAL = 0, MESH = 1, SHADER = 2, TEXTURE = 3, SCENE = 4, CUBEMAP = 5
-    const char* ResourceManager::RESOURCE_PATHS [] = {
-            "shader", "mesh", "texture", "material", "geoscene", "texture/cubemap",  "texture/tiles"
-    };
-
-
-    /* ================= PUBLIC ========================*/
-
-    //---------------------------------------------------------------------
     ResourceManager::ResourceManager(const std::string& resourceDir) :
         mResourceDir(resourceDir),
         mShaderManager(mResourceDir + "shader/"),
@@ -41,33 +30,11 @@ namespace dma {
         mCubeMapManager(mResourceDir + "texture/cubemap/"),
         mMaterialManager(mResourceDir + "material/", mShaderManager, mMapManager),
         mQuadFactory()
-    {
-        //mResourceManagers = new IResourceManager<void>*[RESOURCE_MANAGER_ARRAY_SIZE];
-//        mResourceManagers[ResourceType::MATERIAL] = (IResourceManager<void>*) mMaterialManager;
-//        mResourceManagers[ResourceType::MESH] = (IResourceManager<void>*) mMeshManager;
-//        mResourceManagers[ResourceType::SHADER] = (IResourceManager<void>*) mShaderManager;
-//        mResourceManagers[ResourceType::TEXTURE] = (IResourceManager<void>*) mTextureManager;
-//        mResourceManagers[ResourceType::SCENE] = (IResourceManager<void>*) mSceneManager;
-//        mResourceManagers[ResourceType::CUBEMAP] = (IResourceManager<void>*) mCubeMapManager;
+    {}
 
-    }
-
-
-    //---------------------------------------------------------------------
     ResourceManager::~ResourceManager() {
-        Log::trace(TAG, "DTOR ResourceManager...");
-//        delete mShaderManager;
-//        delete mMeshManager;
-//        delete mTextureManager;
-//        delete mMaterialManager;
-//        delete mQuadFactory;
-//        delete mSceneManager;
-//        delete mCubeMapManager;
-        Log::trace(TAG, "DTOR ResourceManager done");
     }
 
-
-    //---------------------------------------------------------------------
     Status ResourceManager::init() {
         Log::trace(TAG, "Initializing ResourceManager...");
 
@@ -78,21 +45,10 @@ namespace dma {
         mMaterialManager.init();
         mQuadFactory.init();
 
-//        Status status;
-//        for (int i = 0; i < RESOURCE_MANAGER_ARRAY_SIZE; ++i) {
-//            status = mResourceManagers[i]->init();
-//            if (status != STATUS_OK) {
-//                return status;
-//            }
-//        }
-//        mQuadFactory->init();
-
         Log::trace(TAG, "ResourceManager initialized");
         return STATUS_OK;
     }
 
-
-    //---------------------------------------------------------------------
     Status ResourceManager::refresh() {
         Log::trace(TAG, "Refreshing ResourceManager...");
 
@@ -105,8 +61,6 @@ namespace dma {
         return STATUS_OK;
     }
 
-
-    //---------------------------------------------------------------------
     Status ResourceManager::reload() {
         Log::trace(TAG, "Reloading ResourceManager...");
         if (mShaderManager.reload() != STATUS_OK) return STATUS_KO;
@@ -119,8 +73,6 @@ namespace dma {
         return STATUS_OK;
     }
 
-
-    //---------------------------------------------------------------------
     void ResourceManager::unload() {
         Log::trace(TAG, "Unloading ResourceManager...");
         wipe();
@@ -133,8 +85,6 @@ namespace dma {
         Log::trace(TAG, "ResourceManager unloaded");
     }
 
-
-    //---------------------------------------------------------------------
     void ResourceManager::wipe() {
         Log::trace(TAG, "Wiping ResourceManager...");
         mShaderManager.wipe();
@@ -145,8 +95,6 @@ namespace dma {
         Log::trace(TAG, "ResourceManager wiped");
     }
 
-
-    //---------------------------------------------------------------------
     void ResourceManager::update() {
         Log::trace(TAG, "Updating ResourceManager...");
         mMaterialManager.update();

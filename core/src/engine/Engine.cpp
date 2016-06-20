@@ -35,7 +35,7 @@ namespace dma {
     /* ***
      * CONSTRUCTORS
      */
-    //---------------------------------------------------------------------------------
+
     Engine::Engine(const std::string& rootDir) :
             mRootDir(rootDir),
             mIsInit(false) {
@@ -54,7 +54,7 @@ namespace dma {
         Log::trace(TAG, "-----Engine created-----\n");
     }
 
-    //---------------------------------------------------------------------------------
+
 
     Engine::~Engine() {
         Log::trace(TAG, "Destroying Engine...");
@@ -69,7 +69,7 @@ namespace dma {
     /* ***
      * PUBLIC METHODS
      */
-    //---------------------------------------------------------------------------------
+
     void Engine::setSurfaceSize(U32 width, U32 height) {
         Log::trace(TAG, "Setting surface size...");
 
@@ -91,7 +91,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------------
+
     bool Engine::init() {
         // an openGL context must be opened for this operation.
         bool hasOglContext = GLUtils::hasGlContext();
@@ -130,7 +130,7 @@ namespace dma {
         return true;
     }
 
-    //---------------------------------------------------------------------------------
+
     void Engine::refresh() {
         mAssertInit("Engine::refresh");
 
@@ -139,7 +139,7 @@ namespace dma {
         mRenderingEngine->init();
     }
 
-    //---------------------------------------------------------------------------------
+
     void Engine::reload() {
         mAssertInit("Engine::reload");
 
@@ -148,7 +148,7 @@ namespace dma {
         mRenderingEngine->init();
     }
 
-    //---------------------------------------------------------------------------------
+
     void Engine::unload() {
         Log::trace(TAG, "Unloading Engine...");
         if(!mIsInit) {
@@ -166,7 +166,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------------
+
     void Engine::wipe() {
         mAssertInit("Engine::wipe");
 
@@ -177,7 +177,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------------
+
     void Engine::step() {
         mAssertInit("Engine::step");
         mGlobalTimer->update();
@@ -189,13 +189,13 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------------
+
     void Engine::addHUDElement(std::shared_ptr<HUDElement> hudElement) {
         mRenderingEngine->subscribeHUDElement(hudElement);
     }
 
 
-    //---------------------------------------------------------------------------------
+
     void Engine::mUpdateFPS() {
         static float elapsedTime = 0.0f;
         static int frameCount = 0;
@@ -211,7 +211,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------------
+
 #ifdef DEBUG
     void Engine::mAssertInit(const char* msg) const {
 

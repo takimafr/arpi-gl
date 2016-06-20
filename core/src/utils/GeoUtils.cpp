@@ -22,7 +22,7 @@
 namespace dma {
     namespace geo {
 
-        //------------------------------------------------------------------------------
+
         double GeoUtils::slc(LatLng coords1, LatLng coords2) {
 
             if (coords1 == coords2) {
@@ -50,7 +50,7 @@ namespace dma {
         }
 
 
-        //------------------------------------------------------------------------------
+
         double GeoUtils::bearing(LatLng coords1, LatLng coords2) {
             double dlambda = glm::radians(coords1.lng - coords2.lng);
             double phi1 = glm::radians(coords2.lat);

@@ -26,7 +26,7 @@ namespace dma {
     static bool enableAnisotropy = false;
 
 
-    //----------------------------------------------------------------------------------------------
+
     inline void checkAnisotropyExt() {
         static bool mChecked = false;
         if(mChecked) {
@@ -42,20 +42,20 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Map::Map() :
             Texture(),
             mImage(nullptr)
     {}
 
 
-    //---------------------------------------------------------------------
+
     Map::~Map() {
         delete mImage;
     }
 
 
-    //---------------------------------------------------------------------
+
     Status Map::load(const std::string& filename) {
 
         Log::trace(TAG, "Loading 2D texture %s ...", filename.c_str());
@@ -80,7 +80,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Status Map::load(const Image &image) {
         Log::trace(TAG, "Loading 2D texture from Image");
 
@@ -100,7 +100,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Status Map::refresh(const std::string &filename) {
         if (mImage == nullptr) {
             Log::trace(TAG, "Refreshing Map %s from disk", filename.c_str());
@@ -112,7 +112,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Status Map::refresh() {
         if (mImage == nullptr) {
             Log::error(TAG, "Refreshing Map that doesn't have cache");
@@ -125,7 +125,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     Status Map::mLoadFromImage() {
         /* generate texture */
         glGenTextures (1, &mHandle);

@@ -31,24 +31,24 @@ constexpr auto TAG = "CubeMapManager";
 
 namespace dma {
 
-    //-----------------------------------------------------------------------------------------------
+
     CubeMapManager::CubeMapManager(const std::string& dir) {
         mDir = dir;
         Utils::addTrailingSlash(mDir);
     }
 
 
-    //-----------------------------------------------------------------------------------------------
+
     CubeMapManager::~CubeMapManager() {
     }
 
 
-    //-----------------------------------------------------------------------------------------------
+
     void CubeMapManager::init() {
     }
 
 
-    //-----------------------------------------------------------------------------------------------
+
     std::shared_ptr<CubeMap> CubeMapManager::acquire(const std::string & sid) {
         if (mCubeMaps.find(sid) == mCubeMaps.end()) {
             std::shared_ptr<CubeMap> cubemap = std::make_shared<CubeMap>();
@@ -66,7 +66,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void CubeMapManager::mLoadCubeMap(std::shared_ptr<CubeMap> cubeMap, const std::string &sid) {
         std::string directoryName = mDir + sid;
         cubeMap->load(directoryName);
@@ -74,7 +74,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void CubeMapManager::reload() {
         Log::trace(TAG, "Reloading CubeMapManager...");
 
@@ -91,7 +91,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void CubeMapManager::refresh() {
         Log::trace(TAG, "Refreshing CubeMapManager...");
 
@@ -107,7 +107,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void CubeMapManager::wipe() {
         Log::trace(TAG, "Wiping CubeMapManager...");
 
@@ -119,7 +119,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void CubeMapManager::unload() {
         Log::trace(TAG, "Unloading CubeMapManager...");
 
@@ -132,7 +132,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void CubeMapManager::update() {
         auto it = mCubeMaps.begin();
         while (it != mCubeMaps.end()) {

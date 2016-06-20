@@ -21,7 +21,7 @@
 namespace dma {
 
 
-    //-----------------------------------------------------------------
+
     Animation::Animation(TransformComponent& transformComponent,
             float duration, bool loop) :
                         mDuration(duration),
@@ -31,7 +31,7 @@ namespace dma {
     {}
 
 
-    //-----------------------------------------------------------------
+
     Animation::~Animation() {
 
     }

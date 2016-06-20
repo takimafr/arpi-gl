@@ -32,7 +32,7 @@ namespace dma {
         constexpr int TileMap::OFFSET;
         constexpr int TileMap::ZOOM;
 
-        //---------------------------------------------------------------------------
+
         bool TileMap::isInRange(int x, int y, int xp, int yp) {
             return x >= xp - OFFSET
                    && x <= xp + OFFSET
@@ -45,7 +45,7 @@ namespace dma {
         /****************************************************************************/
 
 
-        //---------------------------------------------------------------------------
+
         TileMap::TileMap(ResourceManager& resourceManager) :
                 mResourceManager(resourceManager),
                 mLastX(-1),
@@ -56,14 +56,14 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         TileMap::~TileMap() {
             unload();
             delete mNullCallbacks;
         }
 
 
-        //---------------------------------------------------------------------------
+
         void TileMap::init() {
             mLastX = mLastY = -1;
             // Create TILE_MAP_SIZE * TILE_MAP_SIZE tiles
@@ -78,14 +78,14 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         void TileMap::unload() {
             mRemoveAllTiles();
             mLastX = mLastY = -1;
         }
 
 
-        //---------------------------------------------------------------------------
+
         void TileMap::update(int x0, int y0) {
             Log::trace(TAG, "Updating TileMap (%d, %d, %d)", x0, y0, ZOOM);
 
@@ -163,7 +163,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         Status TileMap::notifyTileAvailable(int x, int y, int z) {
             Log::trace(TAG, "Notifying tile available (%d, %d, %d)", x, y, z);
             std::shared_ptr<Tile> tile = findTile(x, y, z);
@@ -182,7 +182,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         Status TileMap::mUpdateTile(std::shared_ptr<Tile> tile, double lat, double lng, float width, float height, int x , int y, int z) {
 
             tile->x = x;
@@ -211,13 +211,13 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         void TileMap::mRemoveAllTiles() {
             mTiles.clear();
         }
 
 
-        //---------------------------------------------------------------------------
+
         std::shared_ptr<Tile> TileMap::findTile(int x, int y, int z) {
             for (auto tile : mTiles) {
                 if (tile->x == x && tile->y == y && tile->z == z) {
@@ -228,7 +228,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         std::string TileMap::tileSid(int x, int y, int z) const {
             std::stringstream ssid;
             ssid << "tiles/";
@@ -240,7 +240,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         void TileMap::setNamespace(const std::string &ns) {
             Log::debug(TAG, "Setting namespace: %s", ns.c_str());
             mNamespace = ns;
@@ -250,7 +250,7 @@ namespace dma {
         }
 
 
-        //---------------------------------------------------------------------------
+
         void TileMap::updateDiffuseMaps() {
             for (std::shared_ptr<Tile> tile : mTiles) {
                 std::string sid = tileSid(tile->x, tile->y, tile->z);

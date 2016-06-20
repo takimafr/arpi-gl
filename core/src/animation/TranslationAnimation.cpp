@@ -20,7 +20,7 @@
 
 namespace dma {
 
-    //---------------------------------------------------------------------------
+
     float linear(float x, bool mirror) {
         if (mirror) {
             if (x <= 0.5) {
@@ -35,7 +35,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     float ease(float x, bool mirror) {
         if (mirror) {
             x *= 2;
@@ -49,19 +49,19 @@ namespace dma {
         return a / (a + c);
     }
 
-    //---------------------------------------------------------------------------
+
     float easeOut(float x, bool mirror) {
         return -x*(x-2);
     }
 
 
-    //---------------------------------------------------------------------------
+
     float backAndForth(float x) {
         return  1.0f - ((float) ((cos(2 * M_PI * x) + 1.0f) / 2.0f));
     }
 
 
-    //---------------------------------------------------------------------------
+
     TranslationAnimation::TranslationAnimation(TransformComponent& transformComponent,
                                                const glm::vec3 &from,
                                                const glm::vec3 &to,
@@ -77,7 +77,7 @@ namespace dma {
     {}
 
 
-    //---------------------------------------------------------------------------
+
     TranslationAnimation::TranslationAnimation(TransformComponent &transformComponent,
                                                const glm::vec3 &from,
                                                const glm::vec3 &to,
@@ -88,7 +88,7 @@ namespace dma {
     {}
 
 
-    //---------------------------------------------------------------------------
+
     TranslationAnimation::TranslationAnimation(TransformComponent &transformComponent,
                                                const glm::vec3 &from,
                                                const glm::vec3 &to,
@@ -98,7 +98,7 @@ namespace dma {
     {}
 
 
-    //---------------------------------------------------------------------------
+
     void TranslationAnimation::update(float dt) {
         mCurrentTime += dt;
         if (mLoop) {
@@ -127,7 +127,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     void TranslationAnimation::refresh(const glm::vec3 &from, const glm::vec3 &to, float duration) {
         mFrom = from;
         mTo = to;

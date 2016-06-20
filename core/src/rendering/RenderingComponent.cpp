@@ -24,7 +24,7 @@ namespace dma {
 
     /* ================= ROUTINES ========================*/
 
-    //---------------------------------------------------------------------
+
     void assertMeshMaterialCompatible(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) {
 
         for (U8 i = 0; i < material->getPassCount(); ++i) {
@@ -70,7 +70,7 @@ namespace dma {
 
     /* ================= PUBLIC ========================*/
 
-    //---------------------------------------------------------------------
+
     RenderingComponent::RenderingComponent(const glm::mat4& M,
                                            std::shared_ptr<Mesh> mesh,
                                            std::shared_ptr<Material> material) :
@@ -83,7 +83,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     RenderingComponent::~RenderingComponent() {
         for (RenderingPackage* rp : mRenderingPackages) {
             delete rp;
@@ -91,13 +91,13 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------
+
     void RenderingComponent::setMesh(std::shared_ptr<Mesh> mesh) {
         mRenderingPackages[0]->setMesh(mesh); //TODO handle multiple submeshes
     }
 
 
-    //---------------------------------------------------------------------
+
     void RenderingComponent::setMaterial(std::shared_ptr<Material> material) {
         mRenderingPackages[0]->setMaterial(material);
     }

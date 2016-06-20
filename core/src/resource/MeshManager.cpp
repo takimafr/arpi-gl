@@ -30,7 +30,7 @@ namespace dma {
 
     /* ================= ROUTINES ========================*/
 
-    //----------------------------------------------------------------------------------------------
+
     Status loadObj(const std::string& path,
                    std::vector<glm::vec3>& positions,
                    std::vector<glm::vec2>& uvs,
@@ -91,18 +91,18 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     inline bool containsNormal(const std::vector<glm::vec3> &normals,
                                const glm::vec3& n) {
         F32 e = 0.0001f;
-        for(glm::vec3 normal : normals) {
+        for (glm::vec3 normal : normals) {
             if(glm::abs(glm::dot<float>(normal, n) - 1) < e) return true;
         }
         return false;
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void generateFlatNormals(std::vector<glm::vec3>& flatNormals,
                              const std::vector<glm::vec3>& positions,
                              std::vector<VertexIndices>& indices) {
@@ -123,7 +123,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void generateSmoothNormals(std::vector<glm::vec3>& smoothNormals,
                                const std::vector<glm::vec3>& flatNormals,
                                const std::vector<glm::vec3>& positions,
@@ -157,7 +157,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     BoundingSphere generateBoundingSphere(const std::vector<glm::vec3>& positions) {
         glm::vec3 center(0.0f, 0.0f, 0.0f);
         float radius = 0.0f;
@@ -177,15 +177,13 @@ namespace dma {
 
     /* ================= PUBLIC ========================*/
 
-    //----------------------------------------------------------------------------------------------
+
     MeshManager::~MeshManager() {
     }
 
 
-    //----------------------------------------------------------------------------------------------
     Status MeshManager::init() {
         Status result;
-        //acquire(FALLBACK_MESH_SID, &result);
         mFallbackMesh = std::make_shared<Mesh>();
         result = mLoad(mFallbackMesh, FALLBACK_MESH_SID);
         assert(result == STATUS_OK);
@@ -193,9 +191,8 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
-    std::shared_ptr<Mesh> MeshManager::acquire(const std::string& sid) {
 
+    std::shared_ptr<Mesh> MeshManager::acquire(const std::string& sid) {
         if (sid == FALLBACK_MESH_SID) {
             return mFallbackMesh;
         }
@@ -210,7 +207,6 @@ namespace dma {
         }
         return mMeshes[sid];
     }
-
 
     std::shared_ptr<Mesh> MeshManager::load(std::vector<glm::vec3>& positions,
                                             std::vector<glm::vec2>& uvs,
@@ -227,9 +223,6 @@ namespace dma {
         return mesh;
     }
 
-
-
-    //----------------------------------------------------------------------------------------------
     Status MeshManager::reload() {
         Log::trace(TAG, "Reloading MeshManager...");
 
@@ -255,7 +248,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     Status MeshManager::refresh() {
         Log::trace(TAG, "Refreshing MeshManager...");
 
@@ -278,7 +271,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void MeshManager::unload() {
         Log::trace(TAG, "Unloading MeshManager...");
 
@@ -300,7 +293,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void MeshManager::wipe() {
         Log::trace(TAG, "Wiping MeshManager...");
 
@@ -317,7 +310,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     bool MeshManager::hasResource(const std::string & sid) const {
         //filename, deduced from SID
         const std::string& path = mLocalDir + sid;
@@ -328,14 +321,14 @@ namespace dma {
     /* ================= PRIVATE ========================*/
 
 
-    //----------------------------------------------------------------------------------------------
+
     MeshManager::MeshManager(const std::string& localDir) :
             mMeshes() {
         mLocalDir = localDir;
     }
 
 
-    //--------------------------------------------------------------------
+
     Status MeshManager::mLoad(std::shared_ptr<Mesh> mesh, const std::string& sid) const {
         //try to load from the cache
         if (mesh->hasCache()) {
@@ -370,7 +363,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------
+
     Status MeshManager::mLoad(std::shared_ptr<Mesh> mesh, const std::string &sid,
                               std::vector<glm::vec3> &positions,
                               std::vector<glm::vec2> &uvs,

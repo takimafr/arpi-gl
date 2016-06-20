@@ -28,38 +28,38 @@ namespace dma {
 
         public:
 
-            //-----------------------------------------
+
             static inline int lng2tilex(double lon, int z) {
                 return (int)(floor((lon + 180.0) / 360.0 * (double)(1 << z)));
             }
 
 
-            //---------------------------------------------------------------------------
+
             static inline int lat2tiley(double lat, int z) {
                 return (int)(floor((1.0 - log( tan(lat * M_PI/180.0) + 1.0 / cos(lat * M_PI/180.0)) / M_PI) / 2.0 * (double)(1 << z)));
             }
 
 
-            //---------------------------------------------------------------------------
+
             static inline double tilex2long(int x, int z) {
                 return x / (double)(1 << z) * 360.0 - 180;
             }
 
 
-            //---------------------------------------------------------------------------
+
             static inline double tiley2lat(int y, int z) {
                 double n = M_PI - 2.0 * M_PI * y / (double)(1 << z);
                 return 180.0 / M_PI * atan(0.5 * (exp(n) - exp(-n)));
             }
 
-            //------------------------------------------------------------------------------
+
             /**
             * Spherical Law of Cosines
             * Returns the distance in meter between coords1 and coords2
             */
             static double slc(LatLng coords1, LatLng coords2);
 
-            //------------------------------------------------------------------------------
+
             /**
              * Computes the bearing between 2 coordinates from coords2 to coords1.
              * @param coords1 the arrival point

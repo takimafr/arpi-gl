@@ -20,7 +20,7 @@
 
 namespace dma {
 
-    //---------------------------------------------------------------------------
+
     SlerpAnimation::SlerpAnimation(TransformComponent& transformComponent,
             const glm::quat &from,
             const glm::quat &to,
@@ -32,7 +32,7 @@ namespace dma {
     {}
 
 
-    //---------------------------------------------------------------------------
+
     void SlerpAnimation::update(float dt) {
         mCurrentTime += dt;
         if (mLoop) {
@@ -47,7 +47,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     void SlerpAnimation::refresh(const glm::quat &from, const glm::quat &to, float duration) {
         mFrom = from;
         mTo = to;

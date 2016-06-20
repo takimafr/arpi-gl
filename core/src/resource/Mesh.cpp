@@ -22,7 +22,7 @@ namespace dma {
 
     /* ================= PRIVATE ========================*/
 
-    //------------------------------------------------------------------------------
+
     Mesh::Mesh() :
             mVertexSemFlags(0),
             mVertexSize(0),
@@ -32,27 +32,27 @@ namespace dma {
     {}
 
 
-    //------------------------------------------------------------------------------
+
     Mesh::~Mesh() {
 
     }
 
 
-    //------------------------------------------------------------------------------
+
     void Mesh::addVertexElement(const VertexElement& vertexElement) {
         mVertexElements[vertexElement.getSemantic()] = vertexElement;
         mVertexSemFlags |= (1L << vertexElement.getSemantic());
     }
 
 
-    //------------------------------------------------------------------------------
+
     void Mesh::wipe() {
         mVertexBuffer->wipe();
         mIndexBuffer->wipe();
     }
 
 
-    //------------------------------------------------------------------------------
+
     void Mesh::clearCache() {
         positions.clear();
         uvs.clear();

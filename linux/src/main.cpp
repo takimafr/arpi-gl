@@ -7,19 +7,14 @@ without the express written permission of eBusiness Information.
 
 #include <cassert>
 
-// OpenGL
 #define GLFW_INCLUDE_ES2
 #include <GLFW/glfw3.h>
 
-#define BUILTIN_CUBEMAP // TO enable all skyboxes.
-
-//std
 #include <string>
 #include <rendering/FlyThroughCamera.hpp>
 #include <rapidjson/document.h>
 #include <resource/TrackFactory.hpp>
 
-// dma
 #include "utils/ObjReader.hpp"
 #include "engine/geo/GeoEngine.hpp"
 
@@ -34,7 +29,7 @@ using namespace dma::geo;
  */
 #define WIDTH 800
 #define HEIGHT 600
-#define WINDOW_TITLE "APIGL"
+#define WINDOW_TITLE "ARPIGL"
 
 /* ***
  * ATTRIBUTES
@@ -241,14 +236,6 @@ int main(int argc, char** argv) {
         double lat = itr->value["lat"].GetDouble();
         double lng = itr->value["lng"].GetDouble();
         std::string id = itr->name.GetString();
-//                std::shared_ptr<Poi> building = mPoiFactory.builder()
-//                        .sid(id)
-//                        .shape("building/" + id)
-//                        .animation(false)
-//                        .color(Color(1.0f, 0.5f, 0.5f))
-//                        .build();
-//                building->setPosition(lat, lng, 5.0);
-//                mGeoSceneManager.addPoi(building);
 
         ResourceManager& resourceManager = mGeoEngine.mEngine.getResourceManager();
         std::shared_ptr<Mesh> mesh = resourceManager.acquireMesh("building/" + id);

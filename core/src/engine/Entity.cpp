@@ -22,7 +22,7 @@
 namespace dma {
 
 
-    //---------------------------------------------------------------------------
+
     Entity::Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, const glm::vec3& pos) :
             mTransformComponent(new TransformComponent()),
             mRenderingComponent(new RenderingComponent(mTransformComponent->getM(), mesh, material)),
@@ -32,19 +32,19 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     Entity::Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, float x, float y, float z) :
             Entity(mesh, material, glm::vec3(x, y, z)) {
     }
 
 
-    //---------------------------------------------------------------------------
+
     Entity::Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) :
             Entity(mesh, material, 0.0f, 0.0f, 0.0f) {
     }
 
 
-    //---------------------------------------------------------------------------
+
     Entity::~Entity() {
         delete mAnimationComponent;
         delete mRenderingComponent;
@@ -52,19 +52,19 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     void Entity::setMesh(std::shared_ptr<Mesh> mesh) {
         mRenderingComponent->setMesh(mesh);
     }
 
 
-    //---------------------------------------------------------------------------
+
     void Entity::setMaterial(std::shared_ptr<Material> material) {
         mRenderingComponent->setMaterial(material);
     }
 
 
-    //---------------------------------------------------------------------------
+
     void Entity::update(float dt) {
         assert(mTransformComponent != NULL);
         mTransformComponent->update();
@@ -74,7 +74,7 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     void Entity::addAnimationComponent() {
         delete mAnimationComponent;
         mAnimationComponent = new AnimationComponent(*mTransformComponent);

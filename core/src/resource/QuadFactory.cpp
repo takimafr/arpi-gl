@@ -24,7 +24,7 @@ constexpr auto TAG = "QuadFactory";
 
 namespace dma {
 
-    //--------------------------------------------------
+
     QuadFactory::QuadFactory() :
             mVertexSize(0),
             mVertexCount(0),
@@ -33,12 +33,12 @@ namespace dma {
     {}
 
 
-    //--------------------------------------------------
+
     QuadFactory::~QuadFactory() {
 
     }
 
-    //--------------------------------------------------
+
     void QuadFactory::init() {
         Log::trace(TAG, "Loading QuadFactory...");
 
@@ -110,7 +110,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------
+
     void QuadFactory::unload() {
         Log::trace(TAG, "Unloading QuadFactory...");
 
@@ -121,7 +121,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------
+
     void QuadFactory::wipe() {
         Log::trace(TAG, "Wiping QuadFactory...");
 
@@ -133,20 +133,20 @@ namespace dma {
 
 
 
-    //--------------------------------------------------
+
     void QuadFactory::refresh() {
         //wipe();
         init();
     }
 
 
-    //--------------------------------------------------
+
     std::shared_ptr<Quad> QuadFactory::createQuad(F32 width, F32 height) {
         return std::make_shared<Quad>(width, height, mVertexSize, mVertexCount, mVertexBuffer, mIndexBuffer);
     }
 
 
-    //--------------------------------------------------
+
     void QuadFactory::deleteQuad(const Quad &quad) {
         delete &quad;
     }

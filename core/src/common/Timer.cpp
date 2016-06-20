@@ -23,20 +23,20 @@ constexpr char TAG[] = "Timer";
 
 namespace dma {
 
-    //-----------------------------------------------------------
+
     Timer::Timer() :
                         mDT(0.0f),
                         mLastTime(0.0f)
     {}
 
 
-    //-----------------------------------------------------------
+
     Timer::~Timer() {
 
     }
 
 
-    //-----------------------------------------------------------
+
     void Timer::reset(){
         Log::trace(TAG, "Resetting Timer");
         mDT = 0.0f;
@@ -44,7 +44,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------
+
     void Timer::update(){
         double currentTime = now();
         mDT = (float) (currentTime - mLastTime);
@@ -52,7 +52,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------
+
     double Timer::now(){
         timespec timeVal;
         clock_gettime(CLOCK_MONOTONIC, &timeVal);
@@ -60,13 +60,13 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------
+
     float Timer::dt(){
         return mDT;
     }
 
 
-    //-----------------------------------------------------------
+
     float Timer::liveDT(){
         return (float) (now() - mLastTime);
     }

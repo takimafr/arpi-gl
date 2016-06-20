@@ -38,19 +38,19 @@ namespace dma {
     const std::string TextureManager::FALLBACK_TEXTURE_SID = "fallback";
 
 
-    //----------------------------------------------------------------------------------------------
+
     TextureManager::TextureManager(const std::string& localDir) {
         mLocalDir = localDir;
         Utils::addTrailingSlash(mLocalDir);
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     TextureManager::~TextureManager() {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     Status TextureManager::init() {
         Status result;
         mFallbackTexture = std::make_shared<Map>();
@@ -60,7 +60,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     std::shared_ptr<Texture> TextureManager::acquire(const std::string & sid) {
 
         if (sid == FALLBACK_TEXTURE_SID) {
@@ -80,7 +80,7 @@ namespace dma {
 
 
 
-    //----------------------------------------------------------------------------------------------
+
     Status TextureManager::reload() {
         Log::trace(TAG, "Reloading TextureManager...");
 
@@ -108,7 +108,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     Status TextureManager::refresh() {
         Log::trace(TAG, "Refreshing TextureManager...");
 
@@ -136,7 +136,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void TextureManager::unload() {
         Log::trace(TAG, "Unloading TextureManager...");
 
@@ -156,7 +156,7 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     void TextureManager::wipe() {
         Log::trace(TAG, "Wiping TextureManager...");
 
@@ -174,14 +174,14 @@ namespace dma {
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     bool TextureManager::hasResource(const std::string & sid) const {
         /* deduce filename from sid */
         return Utils::fileExists(mLocalDir + sid + ".png") || Utils::fileExists(mLocalDir + sid + ".PNG");
     }
 
 
-    //----------------------------------------------------------------------------------------------
+
     Status TextureManager::mLoadMap(std::shared_ptr<Map> map, const std::string &sid) {
         std::string filename = mLocalDir + sid + ".png";
         if (!Utils::fileExists(filename)) {
@@ -196,7 +196,7 @@ namespace dma {
     }
 
 
-    //------------------------------------------------------------------------------------------------
+
     void TextureManager::update() {
         auto it = mTextures.begin();
         while (it != mTextures.end()) {

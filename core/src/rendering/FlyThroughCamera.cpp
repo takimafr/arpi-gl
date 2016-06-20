@@ -23,45 +23,45 @@
 
 namespace dma {
 
-    //-------------------------------------------------
+
     FlyThroughCamera::FlyThroughCamera() : Camera(), mYaw(-90.0f) {
 
     }
 
 
-    //-------------------------------------------------
+
     FlyThroughCamera::~FlyThroughCamera() {
 
     }
 
 
-    //---------------------------------------------------------------------------
+
     void FlyThroughCamera::forward(const float offset) {
         Camera::translate(mDirection * offset);
     }
 
 
-    //---------------------------------------------------------------------------
+
     void FlyThroughCamera::backward(const float offset) {
         Camera::translate(-mDirection * offset);
     }
 
 
-    //---------------------------------------------------------------------------
+
     void FlyThroughCamera::strafeRight(const float offset) {
         glm::vec3 right = glm::cross(glm::vec3(mDirection), glm::vec3(mUp));
         Camera::translate(right * offset);
     }
 
 
-    //---------------------------------------------------------------------------
+
     void FlyThroughCamera::strafeLeft(const float offset) {
         glm::vec3 right = glm::cross(glm::vec3(mDirection), glm::vec3(mUp));
         Camera::translate(-right * offset);
     }
 
 
-    //---------------------------------------------------------------------------
+
     void FlyThroughCamera::pitch(float offset) {
         mPitch += offset;
         if (mPitch > 89.0f) {
@@ -73,14 +73,14 @@ namespace dma {
     }
 
 
-    //---------------------------------------------------------------------------
+
     void FlyThroughCamera::yaw(const float offset) {
         mYaw = glm::mod(mYaw + offset, 360.0f);
         mDirty = true;
     }
 
 
-    //-------------------------------------------------
+
     void FlyThroughCamera::update(float dt) {
         mAnimationComponent.update(dt);
 

@@ -20,26 +20,26 @@
 
 namespace dma {
 
-    //-------------------------------------------------------------------------------
+
     BoundingSphere::BoundingSphere() :
         BoundingSphere(0.0f, 0.0f, 0.0f, 0.0f)
     {}
 
 
-    //-------------------------------------------------------------------------------
+
     BoundingSphere::BoundingSphere(float x, float y, float z, float r) :
         mCenter(x, y, z),
         mRadius(r)
     {}
 
 
-    //-------------------------------------------------------------------------------
+
     BoundingSphere::BoundingSphere(const glm::vec3 &center, float radius) :
         BoundingSphere(center.x, center.y, center.z, radius)
     {}
 
 
-    //-------------------------------------------------------------------------------
+
     BoundingSphere::~BoundingSphere() {
 
     }

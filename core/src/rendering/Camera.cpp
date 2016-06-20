@@ -28,7 +28,7 @@ constexpr char TAG[] = "Camera";
 namespace dma {
 
 
-    //--------------------------------------------------------------------------
+
     Camera::Camera() :
             mAnimationComponent(mTransformComponent),
             mCurrentTranslationAnimation(nullptr),
@@ -45,14 +45,14 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------
+
     Camera::~Camera() {
         delete mCurrentTranslationAnimation;
         delete mCurrentSlerpAnimation;
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::setPerspective(F32 fovy, F32 aspect, F32 zNear, F32 zFar) {
         mFrustum.setPerspective(fovy, aspect, zNear, zFar);
         mBaseFov = fovy;
@@ -60,19 +60,19 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::setPosition(const glm::vec3& position) {
         setPosition(position, 0.0f);
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::setPosition(const glm::vec3& position, float duration) {
         setPosition(position, duration, TranslationAnimation::Function::EASE);
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::setPosition(const glm::vec3& position, float duration, TranslationAnimation::Function translationFunction) {
         if (duration <= 0.0) {
             //remove current animation
@@ -103,7 +103,7 @@ namespace dma {
 
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::setOrientation(const glm::quat& orientation, float duration) {
 
         if (duration <= 0.0f) {
@@ -132,19 +132,19 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::translate(const glm::vec3 &translation) {
         mTransformComponent.translate(translation);
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::lookAt(const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up) {
         mView = glm::lookAt(eye, center, up);
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::zoom(float offset) {
         mZoom -= offset;
         if (mZoom < 0.2f) {
@@ -158,7 +158,7 @@ namespace dma {
     }
 
 
-    //--------------------------------------------------------------------------
+
     void Camera::update(float dt) {
         mAnimationComponent.update(dt);
         if (mDirty || mTransformComponent.isDirty()) {

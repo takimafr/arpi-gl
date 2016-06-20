@@ -24,19 +24,19 @@
 
 namespace dma {
 
-    //-----------------------------------------------------------------------------
+
     Frustum::Frustum() {
 
     }
 
 
-    //-----------------------------------------------------------------------------
+
     Frustum::~Frustum() {
 
     }
 
 
-    //-----------------------------------------------------------------------------
+
     void Frustum::setPerspective(float fovy, float aspect, float zNear, float zFar) {
         mFovY = fovy;
         mAspectRatio = aspect;
@@ -57,7 +57,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------------------------
+
     void Frustum::update(const glm::vec3& p, const glm::vec3& d,  const glm::vec3& up) {
         glm::vec3 nc, fc, m; //points
         glm::vec3 right, a, normal; // direction vectors
@@ -109,7 +109,7 @@ namespace dma {
     }
 
 
-    //-----------------------------------------------------------------------------
+
     bool Frustum::containsSphere(const glm::vec3& center, float radius) {
         float distance;
 
