@@ -109,7 +109,7 @@ namespace dma {
             virtual void setCallback(GeoEngineCallbacks* callbacks);
 
 
-        private:
+        public:
             /* ***
              * ATTRIBUTES
              */

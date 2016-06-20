@@ -18,6 +18,7 @@
 
 #include <fstream>
 #include <resource/Watermark.hpp>
+#include <utils/LocationReader.hpp>
 #include "engine/geo/GeoEngine.hpp"
 #include "engine/geo/GeoSceneManager.hpp"
 

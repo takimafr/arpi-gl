@@ -36,7 +36,7 @@ namespace dma {
             mRenderingEngine(renderingEngine)
     {
         //set default light source
-        Light light(glm::vec3(-100.0f, 10.0f, 50.0f),
+        Light light(glm::vec3(-100.0f, 500.0f, 100.0f),
                     glm::vec3(1.0f),
                     glm::vec3(1.0),
                     glm::vec3(1.0));

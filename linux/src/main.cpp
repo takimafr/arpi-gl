@@ -16,6 +16,7 @@ without the express written permission of eBusiness Information.
 //std
 #include <string>
 #include <rendering/FlyThroughCamera.hpp>
+#include <rapidjson/document.h>
 
 // dma
 #include "utils/ObjReader.hpp"
@@ -199,11 +200,11 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    mGeoEngine.getGeoSceneManager().setTileNamespace("-2");
+    mGeoEngine.getGeoSceneManager().setTileNamespace("default");
 
     // Replace the default camera with a FlyThrough camera
     mGeoEngine.getGeoSceneManager().getScene().setCamera(mFlyThroughCamera);
-    mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.8294849, 2.3776109, 5.0));
+    mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
 
     mGeoEngine.setSkyBoxEnabled(true);
 
@@ -216,6 +217,46 @@ int main(int argc, char** argv) {
             .build();
     poi1->setPosition(48.8294849, 2.3776109, 6.0);
     mGeoEngine.getGeoSceneManager().addPoi(poi1);
+
+    // 1. Stringify the file
+    std::string json;
+    std::string path =  "assets-test/arpigl/locations.json";
+    Status status = Utils::bufferize(path, json);
+    if (status != STATUS_OK) {
+        Log::error(TAG, "Unable to bufferize Locations %s", path.c_str());
+        assert(!"Unable to bufferize Locations");
+        return status;
+    }
+
+    rapidjson::Document document;
+    // 2. Create the DOM
+    document.Parse(json.c_str());
+    if (document.HasParseError()) {
+        Log::error(TAG, "Unable to parse Locations %s", path.c_str());
+        assert(!"Unable to parse Locations");
+        return throwException(TAG, ExceptionType::PARSE_ERROR, "Unable to parse Locations " + path);
+    }
+    for (rapidjson::Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr) {
+        double lat = itr->value["lat"].GetDouble();
+        double lng = itr->value["lng"].GetDouble();
+        std::string id = itr->name.GetString();
+//                std::shared_ptr<Poi> building = mPoiFactory.builder()
+//                        .sid(id)
+//                        .shape("building/" + id)
+//                        .animation(false)
+//                        .color(Color(1.0f, 0.5f, 0.5f))
+//                        .build();
+//                building->setPosition(lat, lng, 5.0);
+//                mGeoSceneManager.addPoi(building);
+
+        ResourceManager& resourceManager = mGeoEngine.mEngine.getResourceManager();
+        Status result;
+        std::shared_ptr<Mesh> mesh = resourceManager.acquireMesh("building/" + id, &result);
+        std::shared_ptr<Material> material = resourceManager.acquireMaterial("building", &result);
+        std::shared_ptr<Entity> building = std::make_shared<Entity>(mesh, material);
+        building->setPosition(mGeoEngine.getGeoSceneManager().computePosition(lat, lng, 0.0));
+        mGeoEngine.getGeoSceneManager().getScene().addEntity(building);
+    }
 
 //    std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()
 //            .sid("poi2")

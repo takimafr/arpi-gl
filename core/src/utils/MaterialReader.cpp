@@ -21,8 +21,6 @@
 #include "utils/ExceptionHandler.hpp"
 #include "utils/Utils.hpp"
 
-#include <cassert>
-
 constexpr auto TAG = "MaterialReader";
 
 constexpr auto B2F_KEY = "backToFront";

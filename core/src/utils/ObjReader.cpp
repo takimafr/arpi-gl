@@ -20,7 +20,6 @@
 #include "utils/Log.hpp"
 
 #include <sstream>
-#include <cassert>
 
 constexpr auto TAG = "ObjReader";
 
@@ -115,7 +114,6 @@ namespace dma {
      * f 2/2 2/1 1/3
      * f 2 2 1
      */
-
     bool ObjReader::nextFace(U16 face[3][3]) {
         std::string line;
         if(!getline(mInputStream, line)) return false;

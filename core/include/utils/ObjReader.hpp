@@ -49,8 +49,9 @@ namespace dma {
             bool nextFace(U16 face[3][3]);
 
         private:
-            std::ifstream mInputStream;
             Status mGotoLabel(const std::string&);
+
+            std::ifstream mInputStream;
 
         };
     }

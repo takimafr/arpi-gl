@@ -1,0 +1,18 @@
+{
+  "backToFront": true,
+  "passes" : [
+    {
+      "cullMode": "front",
+      "shader": "silhouette",
+      "diffuseColor": [0.0, 0.0, 0.0],
+      "scaling": true,
+      "depthWriting": true
+    },
+    {
+      "cullMode": "back",
+      "shader": "building",
+      "lighting": "flat",
+      "diffuseColor": [0.6, 0.6, 0.6]
+    }
+  ]
+}

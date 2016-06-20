@@ -18,10 +18,7 @@
 
 #include "resource/MeshManager.hpp"
 #include "utils/ObjReader.hpp"
-#include "utils/Log.hpp"
-#include "utils/ExceptionHandler.hpp"
 
-#include <set>
 #include <algorithm>
 #include <string.h>
 
@@ -337,7 +334,7 @@ namespace dma {
 
         //otherwise load from the file
 
-        // stores elements as they comes from .obj
+        // stores elements as they come from .obj
         std::vector<glm::vec3> positions;
         std::vector<glm::vec2> uvs;
         std::vector<glm::vec3> flatNormals;
@@ -385,6 +382,7 @@ namespace dma {
         std::vector<glm::vec3> smoothNormals;
         if (!hasFlat) {
             generateFlatNormals(flatNormals, positions, vertexIndices);
+            hasFlat = true;
         }
         generateSmoothNormals(smoothNormals, flatNormals, positions, vertexIndices, hasFlat);
         hasSmooth = true; //TODO metadata
