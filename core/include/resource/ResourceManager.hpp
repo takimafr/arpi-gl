@@ -18,7 +18,7 @@
 #ifndef _DMA_RESOURCE_MANAGER_HPP_
 #define _DMA_RESOURCE_MANAGER_HPP_
 
-#include "resource/IResourceManager.hpp"
+#include "resource/ResourceManagerHandler.hpp"
 #include "resource/CubeMapManager.hpp"
 #include "resource/ShaderManager.hpp"
 #include "resource/MeshManager.hpp"

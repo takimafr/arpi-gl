@@ -23,32 +23,18 @@
 #include <string>
 #include <map>
 
-#include "resource/IResourceManager.hpp"
+#include "resource/ResourceManagerHandler.hpp"
 #include "resource/ShaderProgram.hpp"
 #include "common/Types.hpp"
 
 namespace dma {
 
-    class ShaderManager : public IResourceManager<ShaderProgram> {
+    class ShaderManager : public ResourceManagerHandler<ShaderProgram> {
 
         friend class ResourceManager;
 
     public:
         virtual ~ShaderManager();
-
-        /**
-         * Loads the fallback shader
-         */
-        Status init();
-
-        /**
-         * @param const std::string& -
-         *              SID of the shader to load.
-         * @param Status* -
-         *              holds Status::OK if the shader could be loaded.
-         * @return the loaded shader, or default shader if none could be loaded.
-         */
-        std::shared_ptr<ShaderProgram> acquire(const std::string& sid);
 
         /**
          * From disk
@@ -59,13 +45,6 @@ namespace dma {
          * From cache if any
          */
         Status refresh();
-
-        /**
-         * Unload all the shader programs from the GPU and clean all resources.
-         */
-        void unload();
-
-        void update() override;
 
 
         /**
@@ -88,18 +67,12 @@ namespace dma {
          * and uploads it to the GPU.
          * This is the non-cached version: the shader source code won't remain in RAM
          **/
-        Status mLoad(std::shared_ptr<ShaderProgram> shaderProgram, const std::string& sid) const;
-        /**
-         * Loads the shader program corresponding to the sid from disk
-         * and uploads it to the GPU.
-         * If cache is not a nullptr it will be filled with the vertex and fragment source code
-         */
-        //Status mLoad(ShaderProgram* shaderProgram, const std::string& sid, Cache* cache) const;
+        Status load(std::shared_ptr<ShaderProgram> shaderProgram, const std::string& sid) const;
 
         /**
         * Loads the shader program from the provided sources and uploads it to the GPU.
         */
-        Status mLoad(std::shared_ptr<ShaderProgram> shaderProgram,
+        Status load(std::shared_ptr<ShaderProgram> shaderProgram,
                      const std::string& sid,
                      const std::string& vertexSource,
                      const std::string& fragmentSource) const;
@@ -108,13 +81,9 @@ namespace dma {
          * or GL_FRAGMENT_SHADER according to the type parameter.
          * Returns the OpenGL shader handle
          **/
-        GLuint mCompile(const std::string &source, GLenum type) const;
+        GLuint compile(const std::string &source, GLenum type) const;
 
     private:
-        static const std::string FALLBACK_SHADER_SID;
-
-        std::map<std::string, std::shared_ptr<ShaderProgram>> mShaderPrograms;
-        std::shared_ptr<ShaderProgram> mFallbackShaderProgram;
         std::string mLocalDir;
     };
 

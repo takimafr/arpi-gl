@@ -15,49 +15,58 @@
  */
 
 
-#ifndef _DMA_IRESOURCEMANAGER_HPP_
-#define _DMA_IRESOURCEMANAGER_HPP_
+#ifndef _DMA_RESOURCE_MANAGER_HANDLER_HPP_
+#define _DMA_RESOURCE_MANAGER_HANDLER_HPP_
 
 #include <string>
 #include <memory>
+#include <map>
 #include "common/Types.hpp"
-//#include <boost/std::shared_ptr.hpp>
-
-//using namespace boost;
 
 namespace dma {
     template <class T>
-    class IResourceManager {
+    class ResourceManagerHandler {
     public:
-        virtual ~IResourceManager() {}
+        virtual ~ResourceManagerHandler();
 
-        virtual Status init() = 0;
+        virtual void init();
 
         /**
-         * Load the resource identifiedby SID.
+         * Load the resource identified by SID.
          * @param const std::string& -
          *              SID of the resource to load.
          * @param Status* -
          *              holds OK if the resource could be loaded.
          * @return the loaded resource.
          */
-        virtual std::shared_ptr<T> acquire(const std::string&) = 0;
-        /**
-         * @param const std::string& -
-         *              SID of the resource to load.
-         */
-        virtual void unload() = 0;
-
-        virtual void update() = 0;
+        virtual std::shared_ptr<T> acquire(const std::string& sid);
 
         /**
-         * param const std::string& SID of the resource to test.
-         * @return true if there is a resource that matches the given SID.
+         * Clear all resources used but keep the pointer to them.
+         * The resource pointer remains valid, but the resource itself is not.
+         * This is typically used when you need to refresh the resources
+         * for example when the OpenGL context has changed.
          */
-        virtual bool hasResource(const std::string &) const = 0;
+        virtual void unload();
 
+        /**
+         * Unload and remove not used resources
+         */
+        virtual void prune();
+
+
+    protected:
+        constexpr auto FALLBACK_SID = "fallback";
+
+        /**
+         * Load the resource identified by sid
+         */
+        virtual Status load(std::shared_ptr<T> resource, std::string sid) = 0;
+
+        std::shared_ptr<T> mFallback;
+        std::map<std::string, std::shared_ptr<T>> mResources;
 
     };
 } /* namespace dma */
 
-#endif /* _DMA_IRESOURCEMANAGER_HPP_ */
+#endif /* _DMA_RESOURCE_MANAGER_HANDLER_HPP_ */

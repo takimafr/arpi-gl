@@ -35,7 +35,6 @@ precision mediump float;\n\
 #endif
 
 namespace dma {
-    const std::string ShaderManager::FALLBACK_SHADER_SID = "fallback";
 
     /* ================= ROUTINES ========================*/
 
@@ -59,48 +58,10 @@ namespace dma {
     /* ================= PUBLIC ========================*/
 
     ShaderManager::~ShaderManager() {
-//        Log::trace(TAG, "Destructing ShaderManager...");
-//        unload();
-//        Log::trace(TAG, "ShaderManager destructed");
     }
-
-
-
-    Status ShaderManager::init() {
-        Status result;
-        mFallbackShaderProgram = std::make_shared<ShaderProgram>();
-        result = mLoad(mFallbackShaderProgram, FALLBACK_SHADER_SID);
-        assert(result == STATUS_OK);
-        return result;
-    }
-
-
-
-    /*
-     * Returns the pointer of the ShaderProgram with the String ID sid.
-     * Increments the reference count
-     */
-    std::shared_ptr<ShaderProgram> ShaderManager::acquire(const std::string& sid) {
-        if (sid == FALLBACK_SHADER_SID) {
-            return mFallbackShaderProgram;
-        }
-        if (mShaderPrograms.find(sid) == mShaderPrograms.end()) {
-            std::shared_ptr<ShaderProgram> shaderProgram = std::make_shared<ShaderProgram>();
-            Status status = mLoad(shaderProgram, sid);
-            if (status != STATUS_OK) {
-                Log::warn(TAG, "cannot load ShaderProgram %s, returning fallback instead", sid.c_str());
-                //clear the cache and delete shader
-                return mFallbackShaderProgram;
-            }
-            mShaderPrograms[sid] = shaderProgram;
-        }
-        return mShaderPrograms[sid];
-    }
-
 
 
     bool ShaderManager::hasResource(const std::string& sid) const {
-
         const std::string& path = mLocalDir + sid;
         bool res = Utils::fileExists(path + ".v.glsl") || Utils::fileExists(path + ".v.GLSL");
         res &=  (Utils::fileExists(path + ".f.glsl") || Utils::fileExists(path + ".f.glsl"));
@@ -112,18 +73,18 @@ namespace dma {
     Status ShaderManager::reload() {
         Log::trace(TAG, "Reloading ShaderManager...");
 
-        mFallbackShaderProgram->wipe();
-        mFallbackShaderProgram->clearCache();
-        mLoad(mFallbackShaderProgram, FALLBACK_SHADER_SID);
+        mFallback->wipe();
+        mFallback->clearCache();
+        load(mFallback, FALLBACK_SID);
 
-        for (auto& kv : mShaderPrograms) {
+        for (auto& kv : mResources) {
             const std::string& sid = kv.first;
             auto shaderProgram = kv.second;
 
             if (shaderProgram != nullptr) {
                 shaderProgram->wipe();
                 shaderProgram->clearCache();
-                if (mLoad(shaderProgram, sid) != STATUS_OK) {
+                if (load(shaderProgram, sid) != STATUS_OK) {
                     Log::error(TAG, "Error while reloading shader %s", sid.c_str());
                     assert(false);
                     return STATUS_KO;
@@ -141,13 +102,13 @@ namespace dma {
         Log::trace(TAG, "Refreshing ShaderManager...");
 
         //mFallbackShaderProgram->wipe();
-        mLoad(mFallbackShaderProgram, FALLBACK_SHADER_SID);
+        load(mFallback, FALLBACK_SID);
 
-        for (auto& kv : mShaderPrograms) {
+        for (auto& kv : mResources) {
             const std::string& sid = kv.first;
             auto shaderProgram = kv.second;
             //shaderProgram->wipe();
-            if (mLoad(shaderProgram, sid) != STATUS_OK) {
+            if (load(shaderProgram, sid) != STATUS_OK) {
                 Log::error(TAG, "Error while reloading shader %s", sid.c_str());
                 assert(false);
                 return STATUS_KO;
@@ -159,24 +120,12 @@ namespace dma {
     }
 
 
-
-    void ShaderManager::unload() {
-        Log::trace(TAG, "Unloading ShaderManager...");
-
-        mFallbackShaderProgram = nullptr; //release reference count
-        mShaderPrograms.clear();
-
-        Log::trace(TAG, "ShaderManager unloaded");
-    }
-
-
-
     void ShaderManager::wipe() {
         Log::trace(TAG, "Wiping ShaderManager...");
 
-        mFallbackShaderProgram->wipe();
+        mFallback->wipe();
 
-        for (auto& kv : mShaderPrograms) {
+        for (auto& kv : mResources) {
             auto shaderProgram = kv.second;
             if (shaderProgram != nullptr) {
                 shaderProgram->wipe();
@@ -190,19 +139,17 @@ namespace dma {
 
 
     ShaderManager::ShaderManager(const std::string& localDir) :
-            mShaderPrograms()
-    {
-        mLocalDir = localDir;
-    }
+        mLocalDir(localDir)
+    {}
 
 
 
-    Status ShaderManager::mLoad(std::shared_ptr<ShaderProgram> shaderProgram, const std::string &sid) const {
+    Status ShaderManager::load(std::shared_ptr<ShaderProgram> shaderProgram, const std::string &sid) const {
         Log::trace(TAG, "Loading shader %s ...", sid.c_str());
 
         //try to load from the cache
         if (shaderProgram->hasCache()) {
-            return mLoad(shaderProgram, sid, shaderProgram->mVertexSource, shaderProgram->mFragmentSource);
+            return load(shaderProgram, sid, shaderProgram->mVertexSource, shaderProgram->mFragmentSource);
         }
 
         //otherwise load from the file
@@ -223,12 +170,12 @@ namespace dma {
         shaderProgram->mVertexSource = vertexSource;
         shaderProgram->mFragmentSource = fragmentSource;
 
-        return mLoad(shaderProgram, sid, vertexSource, fragmentSource);
+        return load(shaderProgram, sid, vertexSource, fragmentSource);
     }
 
 
 
-    Status ShaderManager::mLoad(std::shared_ptr<ShaderProgram> shaderProgram,
+    Status ShaderManager::load(std::shared_ptr<ShaderProgram> shaderProgram,
                                 const std::string& sid,
                                 const std::string &vertexSource,
                                 const std::string &fragmentSource) const {
@@ -240,8 +187,8 @@ namespace dma {
                 fragmentSource = fragmentSource.insert(0, FRAGMENT_SHADER_PRECISION_HEADER);
             }
 #endif
-        GLuint vertexHandle = mCompile(vertexSource, GL_VERTEX_SHADER);
-        GLuint fragmentHandle = mCompile(fragmentSource, GL_FRAGMENT_SHADER);
+        GLuint vertexHandle = compile(vertexSource, GL_VERTEX_SHADER);
+        GLuint fragmentHandle = compile(fragmentSource, GL_FRAGMENT_SHADER);
 
         if (vertexHandle == 0 || fragmentHandle == 0) {
             Log::error(TAG, "Unable to compile shader %s", sid.c_str());
@@ -283,7 +230,7 @@ namespace dma {
 
 
 
-    GLuint ShaderManager::mCompile(const std::string& source, GLenum type) const {
+    GLuint ShaderManager::compile(const std::string &source, GLenum type) const {
         GLuint handle = glCreateShader(type);
         const GLchar* src = source.c_str();
         glShaderSource(handle, 1, &src, NULL);
@@ -297,19 +244,5 @@ namespace dma {
             glDeleteShader(handle);
         }
         return handle;
-    }
-
-
-
-    void ShaderManager::update() {
-        auto it = mShaderPrograms.begin();
-        while (it != mShaderPrograms.end()) {
-            if (it->second.unique()) {
-                it->second->wipe();
-                it = mShaderPrograms.erase(it);
-            } else {
-                ++it;
-            }
-        }
     }
 }

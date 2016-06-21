@@ -22,13 +22,13 @@
 #include <map>
 
 #include "common/Types.hpp"
-#include "resource/IResourceManager.hpp"
+#include "resource/ResourceManagerHandler.hpp"
 #include "resource/Texture.hpp"
 #include "resource/Map.hpp"
 
 namespace dma {
 
-    class TextureManager : public IResourceManager<Texture> {
+    class TextureManager : public ResourceManagerHandler<Texture> {
 
         /** this class is *only* intended to be used by ResourceManager. */
         friend class ResourceManager;

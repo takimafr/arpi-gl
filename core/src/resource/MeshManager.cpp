@@ -181,33 +181,6 @@ namespace dma {
     MeshManager::~MeshManager() {
     }
 
-
-    Status MeshManager::init() {
-        Status result;
-        mFallbackMesh = std::make_shared<Mesh>();
-        result = mLoad(mFallbackMesh, FALLBACK_MESH_SID);
-        assert(result == STATUS_OK);
-        return result;
-    }
-
-
-
-    std::shared_ptr<Mesh> MeshManager::acquire(const std::string& sid) {
-        if (sid == FALLBACK_MESH_SID) {
-            return mFallbackMesh;
-        }
-
-        if (mMeshes.find(sid) == mMeshes.end()) {
-            std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-            if (mLoad(mesh, sid) != STATUS_OK) {
-                Log::warn(TAG, "Mesh %s doesn't exist, returning fallback instead", sid.c_str());
-                return mFallbackMesh;
-            }
-            mMeshes[sid] = mesh;
-        }
-        return mMeshes[sid];
-    }
-
     std::shared_ptr<Mesh> MeshManager::load(std::vector<glm::vec3>& positions,
                                             std::vector<glm::vec2>& uvs,
                                             std::vector<glm::vec3>& flatNormals,
@@ -218,7 +191,7 @@ namespace dma {
 
         // 2. Load the anonymous mesh
         std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-        mLoad(mesh, sid, positions, uvs, flatNormals, smoothNormals, indices);
+        load(mesh, sid, positions, uvs, flatNormals, smoothNormals, indices);
         mMeshes[sid] = mesh;
         return mesh;
     }
@@ -227,7 +200,7 @@ namespace dma {
         Log::trace(TAG, "Reloading MeshManager...");
 
         mFallbackMesh->wipe();
-        mLoad(mFallbackMesh, FALLBACK_MESH_SID);
+        load(mFallbackMesh, FALLBACK_MESH_SID);
 
         for (auto& kv : mMeshes) {
             const std::string& sid = kv.first;
@@ -235,7 +208,7 @@ namespace dma {
             if (mesh != nullptr) {
                 mesh->wipe();
                 mesh->clearCache();
-                if (mLoad(mesh, sid) != STATUS_OK) {
+                if (load(mesh, sid) != STATUS_OK) {
                     Log::error(TAG, "Error while refreshing mesh %s", sid.c_str());
                     assert(false);
                     return STATUS_KO;
@@ -248,18 +221,17 @@ namespace dma {
     }
 
 
-
     Status MeshManager::refresh() {
         Log::trace(TAG, "Refreshing MeshManager...");
 
         //mFallbackMesh->wipe();
-        mLoad(mFallbackMesh, FALLBACK_MESH_SID);
+        load(mFallbackMesh, FALLBACK_MESH_SID);
 
         for (auto& kv : mMeshes) {
             const std::string& sid = kv.first;
             auto mesh = kv.second;
             //mesh->wipe();
-            if (mLoad(mesh, sid) != STATUS_OK) {
+            if (load(mesh, sid) != STATUS_OK) {
                 Log::error(TAG, "Error while refreshing mesh %s", sid.c_str());
                 assert(false);
                 return STATUS_KO;
@@ -269,29 +241,6 @@ namespace dma {
         Log::trace(TAG, "MeshManager refreshed");
         return STATUS_OK;
     }
-
-
-
-    void MeshManager::unload() {
-        Log::trace(TAG, "Unloading MeshManager...");
-
-        assert(mFallbackMesh != nullptr);
-        mFallbackMesh->wipe();
-        mFallbackMesh = nullptr; //release reference count
-
-        for (auto& kv : mMeshes) {
-            const std::string& sid = kv.first;
-            auto mesh = kv.second;
-            assert(mesh != nullptr);
-            Log::trace(TAG, "Deleting Mesh %s", sid.c_str());
-            mesh->wipe();
-        }
-
-        mMeshes.clear();
-
-        Log::trace(TAG, "MeshManager unloaded");
-    }
-
 
 
     void MeshManager::wipe() {
@@ -329,10 +278,10 @@ namespace dma {
 
 
 
-    Status MeshManager::mLoad(std::shared_ptr<Mesh> mesh, const std::string& sid) const {
+    Status MeshManager::load(std::shared_ptr<Mesh> mesh, const std::string& sid) const {
         //try to load from the cache
         if (mesh->hasCache()) {
-            return mLoad(mesh, sid,
+            return load(mesh, sid,
                          mesh->positions,
                          mesh->uvs,
                          mesh->flatNormals,
@@ -359,12 +308,12 @@ namespace dma {
             return STATUS_KO;
         }
 
-        return mLoad(mesh, sid, positions, uvs, flatNormals, smoothNormals, vertexIndices);
+        return load(mesh, sid, positions, uvs, flatNormals, smoothNormals, vertexIndices);
     }
 
 
 
-    Status MeshManager::mLoad(std::shared_ptr<Mesh> mesh, const std::string &sid,
+    Status MeshManager::load(std::shared_ptr<Mesh> mesh, const std::string &sid,
                               std::vector<glm::vec3> &positions,
                               std::vector<glm::vec2> &uvs,
                               std::vector<glm::vec3> &flatNormals,
@@ -524,18 +473,5 @@ namespace dma {
 
         Log::trace(TAG, "Mesh %s loaded", sid.c_str());
         return STATUS_OK;
-    }
-
-
-    void MeshManager::update() {
-        auto it = mMeshes.begin();
-        while (it != mMeshes.end()) {
-            if (it->second.unique()) {
-                it->second->wipe();
-                it = mMeshes.erase(it);
-            } else {
-                ++it;
-            }
-        }
     }
 }

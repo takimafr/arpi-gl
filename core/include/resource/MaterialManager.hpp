@@ -19,7 +19,7 @@
 #define _DMA_MATERIALMANAGER_HPP
 
 #include "resource/Material.hpp"
-#include "resource/IResourceManager.hpp"
+#include "resource/ResourceManagerHandler.hpp"
 #include "resource/ShaderManager.hpp"
 #include "resource/MapManager.hpp"
 
@@ -29,7 +29,7 @@
 
 namespace dma {
 
-        class MaterialManager : public IResourceManager<Material>{
+        class MaterialManager : public ResourceManagerHandler<Material> {
 
             friend class ResourceManager;
             static const std::string FALLBACK_MATERIAL_SID;
@@ -41,24 +41,10 @@ namespace dma {
             //METHODS
 
 
-            Status init() override;
             /**
              * From disk
              */
             Status reload();
-
-            void unload() override;
-
-            void update() override;
-
-            /**
-             * @param const std::string& sid&
-             *          - the SID of the material to load.
-             * @param Status*
-             *          - holds Status::OK if material could be created.
-             * @return The material corresponding to the given SID.
-             */
-            std::shared_ptr<Material> acquire(const std::string& sid) override;
 
             std::shared_ptr<Material> create();
             std::shared_ptr<Material> create(const std::string& sid);
@@ -75,7 +61,7 @@ namespace dma {
 
 
             //METHODS
-            Status mLoad(std::shared_ptr<Material> material,  const std::string& sid) const;
+            Status load(std::shared_ptr<Material> material,  const std::string& sid) const;
 
             //FIELDS
             std::string                     mLocalDir;

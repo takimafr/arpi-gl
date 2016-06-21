@@ -24,7 +24,7 @@
 #include <rendering/Vertex.hpp>
 #include <utils/GLES2Logger.hpp>
 
-#include "resource/IResourceManager.hpp"
+#include "resource/ResourceManagerHandler.hpp"
 #include "utils/VertexIndices.hpp"
 #include "resource/Mesh.hpp"
 #include "glm/glm.hpp"
@@ -33,29 +33,12 @@
 
 namespace dma {
 
-    class MeshManager : public IResourceManager<Mesh> {
+    class MeshManager : public ResourceManagerHandler<Mesh> {
 
         friend class ResourceManager;
 
-        static const std::string FALLBACK_MESH_SID;
-
-
     public:
         virtual ~MeshManager();
-
-        /**
-         * Load the fallback mesh
-         */
-        Status init();
-
-        /**
-         * @param const std::string& -
-         *          SID of the mesh to load.
-         * @param Status* -
-         *          holds Status::OK if the mesh could be loaded.
-         * @return the Mesh corresponding to the sid.
-         */
-        std::shared_ptr<Mesh> acquire(const std::string& sid);
 
         /**
          * Load an anonymous mesh
@@ -71,8 +54,6 @@ namespace dma {
          */
         Status reload();
 
-        void update() override;
-
         /**
          * From cache if any
          */
@@ -83,15 +64,6 @@ namespace dma {
          */
         void wipe();
 
-
-        /**
-         * Clear all resources used by the meshes but keep the pointer to them.
-         * The mesh pointer remains valid, but the mesh itself is not.
-         * This is typically used when you need to refresh the resources
-         * for example when the OpenGL context has changed.
-         */
-        void unload();
-
         bool hasResource(const std::string &) const;
 
     private:
@@ -99,20 +71,14 @@ namespace dma {
         MeshManager(const MeshManager&) = delete;
         void operator=(const MeshManager&) = delete;
 
-        //METHODS
-        //Mesh* mLoad(const std::string& sid, bool* result) const;
-        //Mesh* mLoad(Mesh* mesh, const std::string& sid, bool* result) const;
-        Status mLoad(std::shared_ptr<Mesh> mesh, const std::string& sid) const;
-        Status mLoad(std::shared_ptr<Mesh> mesh, const std::string& sid,
+        Status load(std::shared_ptr<Mesh> mesh, const std::string& sid) const;
+        Status load(std::shared_ptr<Mesh> mesh, const std::string& sid,
                      std::vector<glm::vec3> &positions,
                      std::vector<glm::vec2>& uvs,
                      std::vector<glm::vec3>& flatNormals,
                      std::vector<glm::vec3>& smoothNormals,
                      std::vector<VertexIndices>& vertexIndices) const;
 
-        // FIELDS
-        std::map<std::string, std::shared_ptr<Mesh>> mMeshes;
-        std::shared_ptr<Mesh> mFallbackMesh;
         std::string mLocalDir;
     };
 }

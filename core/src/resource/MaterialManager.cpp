@@ -24,41 +24,24 @@ constexpr auto TAG = "MaterialManager";
 
 namespace dma {
 
-    const std::string MaterialManager::FALLBACK_MATERIAL_SID = "fallback";
-
-
     /*====================== PUBLIC =======================*/
 
-
-    //DESTRUCTOR
     MaterialManager::~MaterialManager() {
-    }
-
-    //METHODS
-
-
-
-    Status MaterialManager::init() {
-        Status result;
-        mFallbackMaterial = std::make_shared<Material>();
-        result = mLoad(mFallbackMaterial, FALLBACK_MATERIAL_SID);
-        assert(result == STATUS_OK);
-        return result;
     }
 
 
     Status MaterialManager::reload() {
         Log::trace(TAG, "Reloading MaterialManager...");
 
-        mFallbackMaterial->reset();
-        mLoad(mFallbackMaterial, FALLBACK_MATERIAL_SID);
+        mFallback->reset();
+        load(mFallback, FALLBACK_SID);
 
         for (auto& kv : mMaterials) {
             const std::string& sid = kv.first;
             auto material = kv.second;
             if (material != nullptr) {
                 material->reset();
-                if (mLoad(material, sid) != STATUS_OK) {
+                if (load(material, sid) != STATUS_OK) {
                     Log::error(TAG, "Error while reloading material %s", sid.c_str());
                     return STATUS_KO;
                 }
@@ -68,33 +51,6 @@ namespace dma {
         Log::trace(TAG, "MaterialManager reloaded");
         return STATUS_OK;
     }
-
-
-
-    std::shared_ptr<Material> MaterialManager::acquire(const std::string& sid) {
-        // Check if material doesn't exist
-        if (mMaterials.find(sid) == mMaterials.end()) {
-            std::shared_ptr<Material> material = std::make_shared<Material>();
-            if (mLoad(material, sid) != STATUS_OK) {
-                Log::warn(TAG, "Material %s doesn't exist, returning fallback instead", sid.c_str());
-                return mFallbackMaterial;
-            }
-            mMaterials[sid] = material;
-        }
-        return mMaterials[sid];
-    }
-
-
-
-    void MaterialManager::unload() {
-        Log::trace(TAG, "Unloading MaterialManager...");
-        if (mFallbackMaterial != nullptr) {
-            mFallbackMaterial = nullptr; //release reference count
-        }
-        mMaterials.clear();
-        Log::trace(TAG, "MaterialManager unloaded...");
-    }
-
 
 
     bool MaterialManager::hasResource(const std::string & sid) const {
@@ -108,14 +64,14 @@ namespace dma {
 
     MaterialManager::MaterialManager(const std::string &localDir,
                                      ShaderManager& shaderManager,
-                                     MapManager&mapManager) :
+                                     MapManager& mapManager) :
             mLocalDir(localDir),
             mShaderManager(shaderManager),
             mMapManager(mapManager)
     {}
 
 
-    Status MaterialManager::mLoad(std::shared_ptr<Material> material, const std::string& sid) const {
+    Status MaterialManager::load(std::shared_ptr<Material> material, const std::string& sid) const {
 
         Log::trace(TAG, "Loading material %s ...", sid.c_str());
 
@@ -266,16 +222,5 @@ namespace dma {
 
     std::shared_ptr<Material> MaterialManager::create(const std::string &sid) {
         return std::make_shared<Material>(*acquire(sid));
-    }
-
-    void MaterialManager::update() {
-        auto it = mMaterials.begin();
-        while (it != mMaterials.end()) {
-            if (it->second.unique()) {
-                it = mMaterials.erase(it);
-            } else {
-                ++it;
-            }
-        }
     }
 }
