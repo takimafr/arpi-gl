@@ -37,8 +37,8 @@ namespace dma {
         ~Image();
 
     public:
-        Status loadAsPNG(const std::string& filename);
-        Status loadAsPNG(const std::string&filename, bool reverse);
+        void loadAsPNG(const std::string& filename);
+        void loadAsPNG(const std::string&filename, bool reverse);
         Status loadAsPNG(BYTE* data);
 
         U32 getWidth();

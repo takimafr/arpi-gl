@@ -2,24 +2,17 @@
 
 namespace dma {
 
-
-    TrackFactory::TrackFactory(GeoSceneManager& geoSceneManager, ResourceManager& resourceManager) :
-        geoSceneManager(geoSceneManager),
-        resourceManager(resourceManager)
+    TrackFactory::TrackFactory(ResourceManager& resourceManager) :
+            resourceManager(resourceManager)
     {}
 
-    std::shared_ptr<Entity> TrackFactory::generate(const std::vector<LatLngAlt>& geoPoints, float thickness) {
+    std::shared_ptr<Mesh> TrackFactory::generateMesh(const std::vector<glm::vec3>& points, float thickness) const {
 
         std::vector<glm::vec3> positions;
         std::vector<glm::vec2> uvs;
         std::vector<glm::vec3> flatNormals;
         std::vector<glm::vec3> smoothNormals;
         std::vector<VertexIndices> indices;
-
-        std::vector<glm::vec3> points;
-        for (auto& p : geoPoints) {
-            points.push_back(geoSceneManager.mapPosition(p.lat, p.lng, p.alt));
-        }
 
         for (U32 i = 0; i < points.size(); ++i) {
             glm::vec3 p0 = i <= 0 ? points[0] : points[i - 1];
@@ -38,7 +31,7 @@ namespace dma {
 
             // 3. Find the tangent vector at both the end points:
             //		-if there are no segments before or after this one, use the line itself
-	        //		-otherwise, add the two normalized lines and average them by normalizing again
+            //		-otherwise, add the two normalized lines and average them by normalizing again
             glm::vec3 tangent1 = p0 == p1 ? line : glm::normalize(glm::normalize(p1 - p0) + line);
             glm::vec3 tangent2 = p2 == p3 ? line : glm::normalize(glm::normalize(p3 - p2) + line);
 
@@ -103,12 +96,55 @@ namespace dma {
             indices.push_back(vi6);
         }
 
-        // Create the entity
-        std::shared_ptr<Mesh> mesh = resourceManager.mMeshManager.load(positions, uvs, flatNormals, smoothNormals, indices);
-        std::shared_ptr<Material> material = resourceManager.acquireMaterial("track");
-
-        return std::make_shared<Entity>(mesh, material);
+        return resourceManager.createMesh(positions, uvs, flatNormals, smoothNormals, indices);
     }
+
+
+    std::shared_ptr<Material> TrackFactory::generateMaterial(const Color &color) const {
+        std::shared_ptr<Material> material = resourceManager.createMaterial("track");
+        material->getPass(0).setDiffuseColor(glm::vec3(color.r, color.g, color.b));
+        return material;
+    }
+
+
+    TrackFactory::Builder TrackFactory::builder() {
+        return Builder(*this);
+    }
+
+    TrackFactory::Builder::Builder(const TrackFactory& trackFactory) :
+            mTrackFactory(trackFactory)
+    {}
+
+    TrackFactory::Builder &TrackFactory::Builder::thickness(float thickness) {
+        mThickness = thickness;
+        return *this;
+    }
+
+    TrackFactory::Builder &TrackFactory::Builder::color(float r, float g, float b) {
+        mColor = Color(r, g, b);
+        return *this;
+    }
+
+    TrackFactory::PathBuilder TrackFactory::Builder::path() {
+        return TrackFactory::PathBuilder(*this);
+    }
+
+
+    TrackFactory::PathBuilder::PathBuilder(const Builder& builder) :
+            mBuilder(builder)
+    {}
+
+    TrackFactory::PathBuilder &TrackFactory::PathBuilder::point(const glm::vec3& point) {
+        mPoints.push_back(point);
+        return *this;
+    }
+
+    std::shared_ptr<Mesh> TrackFactory::PathBuilder::build() {
+        //const Color& color = mBuilder.mColor;
+        float thickness = mBuilder.mThickness;
+        return mBuilder.mTrackFactory.generateMesh(mPoints, thickness);
+    }
+
 
 }
 

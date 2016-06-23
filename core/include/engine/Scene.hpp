@@ -35,10 +35,10 @@ namespace dma {
 
         friend class Engine;
 
-    private:
-        Scene(ResourceManager* resourceManager,
-              AnimationSystem* animationSystem,
-              RenderingEngine* renderingEngine);
+    public:
+        Scene(std::shared_ptr<ResourceManager> resourceManager,
+              std::shared_ptr<AnimationSystem> animationSystem,
+              std::shared_ptr<RenderingEngine> renderingEngine);
 
     public:
         virtual ~Scene();
@@ -78,6 +78,8 @@ namespace dma {
          */
         void step(float dt);
 
+        inline std::set<std::shared_ptr<Entity>>& getEntities() { return mEntities; }
+
         /**
          * Adds an Entity to the scene.
          * @return true if entity added, false if it already belongs to the Scene.
@@ -106,10 +108,10 @@ namespace dma {
          * ATTRIBUTES
          */
         std::shared_ptr<Camera> mCamera;
-        SkyBox* mSkyBox;
-        ResourceManager* mResourceManager;
-        AnimationSystem* mAnimationSystem;
-        RenderingEngine* mRenderingEngine;
+        std::shared_ptr<SkyBox> mSkyBox;
+        std::shared_ptr<ResourceManager> mResourceManager;
+        std::shared_ptr<AnimationSystem> mAnimationSystem;
+        std::shared_ptr<RenderingEngine> mRenderingEngine;
         std::set<std::shared_ptr<Entity>> mEntities;
         std::string mCurrentSkyboxSid = "default";
         bool mSkyboxEnabled = false;

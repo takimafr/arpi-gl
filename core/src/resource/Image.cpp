@@ -24,6 +24,7 @@
 
 #include <string.h>
 #include <pngconf.h>
+#include <stdexcept>
 
 
 constexpr auto TAG = "Image";
@@ -215,15 +216,15 @@ namespace dma {
 
 
 
-    Status Image::loadAsPNG(const std::string& filename) {
+    void Image::loadAsPNG(const std::string& filename) {
         std::string fname = filename;
         Utils::addFileExt(fname, "png");
-        return loadAsPNG(filename, true);
+        loadAsPNG(filename, true);
     }
 
 
 
-    Status Image::loadAsPNG(const std::string &filename, bool reverse) {
+    void Image::loadAsPNG(const std::string &filename, bool reverse) {
 
         std::string fname = filename;
         Utils::addFileExt(fname, "png");
@@ -242,21 +243,23 @@ namespace dma {
         file = fopen(fname.c_str(), "rb");
 
         if (!file) {
-            Log::error(TAG, "file %s doesn't exist", fname.c_str());
-            return throwException(TAG, ExceptionType::IO, "cannot open file " + fname);
+            std::string error = "file " + fname + " doesn't exist";
+            Log::error(TAG, error.c_str());
+            throw std::runtime_error(error);
         }
 
         /* read magic number to ensure this file is a png */
         if (fread (magic, sizeof (magic), 1, file) <= 0) {
             fclose(file);
-            Log::error(TAG, "cannot read \"%s\" magic number", fname.c_str());
-            return throwException(TAG, ExceptionType::INVALID_FILE, "cannot read texture file");
+            std::string error = "cannot read " + fname + " magic number";
+            Log::error(TAG, error.c_str());
+            throw std::runtime_error(error);
         }
 
         /* check for valid magic number */
         if (!png_check_sig (magic, sizeof (magic))) {
             onPngError(file, fname, "is not a valid PNG file");
-            return throwException(TAG, ExceptionType::INVALID_FILE, (fname + " is not a valid PNG file").c_str());
+            throw std::runtime_error(fname + " is not a valid PNG file");
         }
 
         /* create a png read struct */
@@ -266,22 +269,25 @@ namespace dma {
                                           png_warning_fn);            // warning callback
 
         if (!png_ptr) {
-            onPngError(file, fname, "cannot create data structure");
-            return throwException(TAG, ExceptionType::MEMORY, "cannot create data structure");
+            std::string error = "cannot create data structure";
+            onPngError(file, fname, error);
+            throw std::runtime_error(error);
         }
 
         /* create a png info struct */
         info_ptr = png_create_info_struct (png_ptr);
         if (!info_ptr) {
-            onPngError(file, fname, "cannot read info");
-            return throwException(TAG, ExceptionType::INVALID_FILE, "cannot read info");
+            std::string error = "cannot read info";
+            onPngError(file, fname, error);
+            throw std::runtime_error(error);
         }
 
         // initialize the setjmp for returning properly after a libpng error occurred
         if (setjmp (png_jmpbuf (png_ptr))) {
             png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
-            onPngError(file, fname, "unknown error");
-            return throwException(TAG, ExceptionType::UNKNOWN, "unknown error");
+            std::string error = "unknown error";
+            onPngError(file, fname, error);
+            throw std::runtime_error(error);
         }
 
         // setup libpng for using standard C fread() function
@@ -310,14 +316,12 @@ namespace dma {
 
         Log::trace(TAG, "loading texture of size (%d, %d)", mWidth, mHeight);
 
-        if(!checkSizePowOf2(mWidth, mHeight)) {
-
+        if (!checkSizePowOf2(mWidth, mHeight)) {
             std::stringstream ss;
-
             ss << "texture size (" << mWidth << ", " << mHeight << ")" << " must be power of 2";
             Log::error(TAG, "%s", ss.str().c_str());
             assert(!"size must be a power of 2");
-            return throwException(TAG, ExceptionType::INVALID_FILE, ss.str());
+            throw std::runtime_error("size must be a power of 2");
         }
 
         /* convert PNG color-type to openGL texture format. */
@@ -346,7 +350,7 @@ namespace dma {
             default:
                 Log::error(TAG, "unknown PNG color format : %d ", color_type);
                 assert(!"unknown PNG color format");
-                break;
+                throw std::runtime_error("unknown PNG color format: " + std::to_string(color_type));
         }
 
         /* we can now allocate memory for storing pixel data */
@@ -362,12 +366,10 @@ namespace dma {
         png_read_end(png_ptr, NULL);
         png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
         fclose(file);
-
-        return STATUS_OK;
     }
 
 
-
+//TODO clean ?
     Status Image::loadAsPNG(BYTE* data) {
         png_byte header[8];
         png_structp pngPtr = NULL;

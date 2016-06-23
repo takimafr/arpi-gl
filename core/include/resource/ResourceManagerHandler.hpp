@@ -20,16 +20,24 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 #include <map>
+#include <utils/Log.hpp>
 #include "common/Types.hpp"
 
 namespace dma {
-    template <class T>
+    template<typename T>
     class ResourceManagerHandler {
-    public:
-        virtual ~ResourceManagerHandler();
 
-        virtual void init();
+    public:
+        virtual ~ResourceManagerHandler() {
+
+        }
+
+        virtual void init() {
+            mFallback = std::make_shared<T>();
+            load(mFallback, FALLBACK_SID);
+        }
 
         /**
          * Load the resource identified by SID.
@@ -39,7 +47,17 @@ namespace dma {
          *              holds OK if the resource could be loaded.
          * @return the loaded resource.
          */
-        virtual std::shared_ptr<T> acquire(const std::string& sid);
+        virtual std::shared_ptr<T> acquire(const std::string& sid) {
+            if (sid == FALLBACK_SID) {
+                return mFallback;
+            }
+            if (mResources.find(sid) == mResources.end()) {
+                std::shared_ptr<T> resource = std::make_shared<T>();
+                load(resource, sid);
+                mResources[sid] = resource;
+            }
+            return mResources[sid];
+        }
 
         /**
          * Clear all resources used but keep the pointer to them.
@@ -47,25 +65,86 @@ namespace dma {
          * This is typically used when you need to refresh the resources
          * for example when the OpenGL context has changed.
          */
-        virtual void unload();
+        virtual void unload() {
+            Log::trace(TAG, "Unloading...");
+            if (mFallback != nullptr) {
+                mFallback = nullptr; //release reference count
+            }
+            mResources.clear();
+            mAnonymousResources.clear();
+            Log::trace(TAG, "Unloaded done...");
+        }
+
+        /**
+         * Refresh all resources from cache
+         */
+        virtual void refresh() {
+            Log::trace(TAG, "Refreshing...");
+
+            load(mFallback, FALLBACK_SID);
+
+            for (auto& kv : mResources) {
+                const std::string& sid = kv.first;
+                auto resource = kv.second;
+                load(resource, sid);
+            }
+
+            for (auto r : mAnonymousResources) {
+                load(r, "_anonymous_");
+            }
+
+            Log::trace(TAG, "Refresh done.");
+        }
+
+        /**
+         * Reload all resources from file
+         */
+        virtual void reload() {
+            Log::trace(TAG, "Reloading...");
+            mFallback->clearCache();
+            for (auto& kv : mResources) {
+                auto resource = kv.second;
+                if (resource != nullptr) {
+                    resource->clearCache();
+                }
+            }
+            refresh();
+            Log::trace(TAG, "Reload done.");
+        }
+
 
         /**
          * Unload and remove not used resources
          */
-        virtual void prune();
+        virtual void prune() {
+            auto it = mResources.begin();
+            while (it != mResources.end()) {
+                if (it->second.unique()) {
+                    it = mResources.erase(it);
+                } else {
+                    ++it;
+                }
+            }
+        }
 
 
     protected:
-        constexpr auto FALLBACK_SID = "fallback";
+        static constexpr auto FALLBACK_SID = "fallback";
+        static constexpr auto TAG = "ResourceManagerHandler";
+
+        ResourceManagerHandler(const std::string& localDir) :
+                mLocalDir(localDir)
+        {}
 
         /**
          * Load the resource identified by sid
          */
-        virtual Status load(std::shared_ptr<T> resource, std::string sid) = 0;
+        virtual void load(std::shared_ptr<T> resource, const std::string& sid) = 0;
 
         std::shared_ptr<T> mFallback;
         std::map<std::string, std::shared_ptr<T>> mResources;
-
+        std::vector<std::shared_ptr<T>> mAnonymousResources;
+        std::string mLocalDir;
     };
 } /* namespace dma */
 

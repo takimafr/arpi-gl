@@ -17,7 +17,6 @@
 
 
 #include "resource/ResourceManager.hpp"
-#include "resource/ShaderManager.hpp"
 #include "utils/ExceptionHandler.hpp"
 
 constexpr auto TAG = "ShaderManager";
@@ -55,7 +54,11 @@ namespace dma {
     }
 
 
-    /* ================= PUBLIC ========================*/
+    /* ================= MEMBERS ========================*/
+
+    ShaderManager::ShaderManager(const std::string& localDir) :
+            GpuResourceManagerHandler(localDir)
+    {}
 
     ShaderManager::~ShaderManager() {
     }
@@ -69,102 +72,21 @@ namespace dma {
     }
 
 
-
-    Status ShaderManager::reload() {
-        Log::trace(TAG, "Reloading ShaderManager...");
-
-        mFallback->wipe();
-        mFallback->clearCache();
-        load(mFallback, FALLBACK_SID);
-
-        for (auto& kv : mResources) {
-            const std::string& sid = kv.first;
-            auto shaderProgram = kv.second;
-
-            if (shaderProgram != nullptr) {
-                shaderProgram->wipe();
-                shaderProgram->clearCache();
-                if (load(shaderProgram, sid) != STATUS_OK) {
-                    Log::error(TAG, "Error while reloading shader %s", sid.c_str());
-                    assert(false);
-                    return STATUS_KO;
-                }
-            }
-        }
-
-        Log::trace(TAG, "ShaderManager reloaded");
-        return STATUS_OK;
-    }
-
-
-
-    Status ShaderManager::refresh() {
-        Log::trace(TAG, "Refreshing ShaderManager...");
-
-        //mFallbackShaderProgram->wipe();
-        load(mFallback, FALLBACK_SID);
-
-        for (auto& kv : mResources) {
-            const std::string& sid = kv.first;
-            auto shaderProgram = kv.second;
-            //shaderProgram->wipe();
-            if (load(shaderProgram, sid) != STATUS_OK) {
-                Log::error(TAG, "Error while reloading shader %s", sid.c_str());
-                assert(false);
-                return STATUS_KO;
-            }
-        }
-
-        Log::trace(TAG, "ShaderManager refreshed");
-        return STATUS_OK;
-    }
-
-
-    void ShaderManager::wipe() {
-        Log::trace(TAG, "Wiping ShaderManager...");
-
-        mFallback->wipe();
-
-        for (auto& kv : mResources) {
-            auto shaderProgram = kv.second;
-            if (shaderProgram != nullptr) {
-                shaderProgram->wipe();
-            }
-        }
-
-        Log::trace(TAG, "ShaderManager wiped");
-    }
-
-    /* ================= PRIVATE ========================*/
-
-
-    ShaderManager::ShaderManager(const std::string& localDir) :
-        mLocalDir(localDir)
-    {}
-
-
-
-    Status ShaderManager::load(std::shared_ptr<ShaderProgram> shaderProgram, const std::string &sid) const {
+    void ShaderManager::load(std::shared_ptr<ShaderProgram> shaderProgram, const std::string &sid) {
         Log::trace(TAG, "Loading shader %s ...", sid.c_str());
 
         //try to load from the cache
         if (shaderProgram->hasCache()) {
-            return load(shaderProgram, sid, shaderProgram->mVertexSource, shaderProgram->mFragmentSource);
+            load(shaderProgram, sid, shaderProgram->mVertexSource, shaderProgram->mFragmentSource);
         }
 
         //otherwise load from the file
 
         std::string vertexSource;
         std::string fragmentSource;
-        Status status;
-        status = Utils::bufferize(mLocalDir + sid + ".v.glsl", vertexSource);
-        if(status == STATUS_OK) {
-            status = Utils::bufferize(mLocalDir + sid + ".f.glsl", fragmentSource);
-        }
+        Utils::bufferize(mLocalDir + "/" + sid + ".v.glsl", vertexSource);
+        Utils::bufferize(mLocalDir + "/" + sid + ".f.glsl", fragmentSource);
 
-        if(status != STATUS_OK) {
-            return status;
-        }
 
         //update the cache
         shaderProgram->mVertexSource = vertexSource;
@@ -174,11 +96,10 @@ namespace dma {
     }
 
 
-
-    Status ShaderManager::load(std::shared_ptr<ShaderProgram> shaderProgram,
-                                const std::string& sid,
-                                const std::string &vertexSource,
-                                const std::string &fragmentSource) const {
+    void ShaderManager::load(std::shared_ptr<ShaderProgram> shaderProgram,
+                               const std::string& sid,
+                               const std::string &vertexSource,
+                               const std::string &fragmentSource) const {
         // add precision directives in case it is missing.
 #ifdef AUTO_ADD_PRECISION
         unsigned int found = fragmentSource.find_first_not_of(" \n");
@@ -191,10 +112,9 @@ namespace dma {
         GLuint fragmentHandle = compile(fragmentSource, GL_FRAGMENT_SHADER);
 
         if (vertexHandle == 0 || fragmentHandle == 0) {
-            Log::error(TAG, "Unable to compile shader %s", sid.c_str());
-            assert(!"cannot compile shader");
-            throwException(TAG, ExceptionType::OPENGL, ("Unable to compile shader " + sid).c_str());
-            return STATUS_KO;
+            std::string error = "Unable to compile shader " + sid;
+            Log::error(TAG, error.c_str());
+            throw std::runtime_error(error);
         }
         ExceptionType exception;
 
@@ -204,12 +124,11 @@ namespace dma {
         //ShaderProgram* shaderProgram = new ShaderProgram();
         exception = shaderProgram->mLink(vertexHandle, fragmentHandle);
         if (exception != NO_EXCEPTION) {
-            Log::error(TAG, "Unable to link shader program %s", sid.c_str());
+            std::string error = "Unable to link shader program " + sid;
+            Log::error(TAG, error.c_str());
             glDeleteShader(vertexHandle);
             glDeleteShader(fragmentHandle);
-            assert(!"cannot link shader");
-            throwException(TAG, exception, ("Unable to link shader " + sid).c_str());
-            return STATUS_KO;
+            throw std::runtime_error(error);
         }
 
         // we can mark shader to be deleted
@@ -219,13 +138,12 @@ namespace dma {
         // Bind the shader program locations
         Status status = shaderProgram->mBindLocations();
         if (status != STATUS_OK) {
-            Log::error(TAG, "cannot bind location for shader program %s", sid.c_str());
-            assert(!"cannot bind location for shader");
-            return status;
+            std::string error = "cannot bind location for shader program " + sid;
+            Log::error(TAG, error.c_str());
+            throw std::runtime_error(error);
         }
 
         Log::trace(TAG, "Shader %s loaded", sid.c_str());
-        return STATUS_OK;
     }
 
 

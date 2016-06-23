@@ -22,15 +22,13 @@ namespace dma {
 
     struct Color {
         Color() {}
-        Color(float r, float g, float b) : r(r), g(g), b(b) {}
-        Color(int r, int g, int b) {
-            this->r = (float) r / 255.0f;
-            this->g = (float) g / 255.0f;
-            this->b = (float) b / 255.0f;
-        }
-            float r;
-            float g;
-            float b;
+        Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {}
+        Color(float r, float g, float b) : Color(r, g, b, 1.0f) {}
+        Color(int r, int g, int b) : Color(r/255.f, g/255.f, b/255.f) {}
+        float r;
+        float g;
+        float b;
+        float a;
     };
 }
 

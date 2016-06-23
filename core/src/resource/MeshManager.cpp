@@ -26,8 +26,6 @@ constexpr auto TAG = "MeshManager";
 
 namespace dma {
 
-    const std::string MeshManager::FALLBACK_MESH_SID = "fallback";
-
     /* ================= ROUTINES ========================*/
 
 
@@ -175,89 +173,27 @@ namespace dma {
     }
 
 
-    /* ================= PUBLIC ========================*/
+    /* ================= MEMBERS ========================*/
 
+
+    MeshManager::MeshManager(const std::string& localDir) :
+            GpuResourceManagerHandler(localDir)
+    {}
 
     MeshManager::~MeshManager() {
     }
 
-    std::shared_ptr<Mesh> MeshManager::load(std::vector<glm::vec3>& positions,
-                                            std::vector<glm::vec2>& uvs,
-                                            std::vector<glm::vec3>& flatNormals,
-                                            std::vector<glm::vec3>& smoothNormals,
-                                            std::vector<VertexIndices> &indices) {
-        static int n = 0;
-        std::string sid = "anonymous" + std::to_string(n++);
-
-        // 2. Load the anonymous mesh
+    std::shared_ptr<Mesh> MeshManager::create(std::vector<glm::vec3> &positions,
+                                              std::vector<glm::vec2> &uvs,
+                                              std::vector<glm::vec3> &flatNormals,
+                                              std::vector<glm::vec3> &smoothNormals,
+                                              std::vector<VertexIndices> &indices) {
+        // Load the anonymous mesh
         std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-        load(mesh, sid, positions, uvs, flatNormals, smoothNormals, indices);
-        mMeshes[sid] = mesh;
+        load(mesh, "_anonymous_", positions, uvs, flatNormals, smoothNormals, indices);
+        mAnonymousResources.push_back(mesh);
         return mesh;
     }
-
-    Status MeshManager::reload() {
-        Log::trace(TAG, "Reloading MeshManager...");
-
-        mFallbackMesh->wipe();
-        load(mFallbackMesh, FALLBACK_MESH_SID);
-
-        for (auto& kv : mMeshes) {
-            const std::string& sid = kv.first;
-            auto mesh = kv.second;
-            if (mesh != nullptr) {
-                mesh->wipe();
-                mesh->clearCache();
-                if (load(mesh, sid) != STATUS_OK) {
-                    Log::error(TAG, "Error while refreshing mesh %s", sid.c_str());
-                    assert(false);
-                    return STATUS_KO;
-                }
-            }
-        }
-
-        Log::trace(TAG, "MeshManager reloaded");
-        return STATUS_OK;
-    }
-
-
-    Status MeshManager::refresh() {
-        Log::trace(TAG, "Refreshing MeshManager...");
-
-        //mFallbackMesh->wipe();
-        load(mFallbackMesh, FALLBACK_MESH_SID);
-
-        for (auto& kv : mMeshes) {
-            const std::string& sid = kv.first;
-            auto mesh = kv.second;
-            //mesh->wipe();
-            if (load(mesh, sid) != STATUS_OK) {
-                Log::error(TAG, "Error while refreshing mesh %s", sid.c_str());
-                assert(false);
-                return STATUS_KO;
-            }
-        }
-
-        Log::trace(TAG, "MeshManager refreshed");
-        return STATUS_OK;
-    }
-
-
-    void MeshManager::wipe() {
-        Log::trace(TAG, "Wiping MeshManager...");
-
-        assert(mFallbackMesh != nullptr);
-        mFallbackMesh->wipe();
-
-        for (auto& kv : mMeshes) {
-            auto mesh = kv.second;
-            assert(mesh != nullptr);
-            mesh->wipe();
-        }
-
-        Log::trace(TAG, "MeshManager wiped");
-    }
-
 
 
     bool MeshManager::hasResource(const std::string & sid) const {
@@ -267,26 +203,16 @@ namespace dma {
         return Utils::fileExists(path + ".obj") || Utils::fileExists(path + ".OBJ");
     }
 
-    /* ================= PRIVATE ========================*/
 
-
-
-    MeshManager::MeshManager(const std::string& localDir) :
-            mMeshes() {
-        mLocalDir = localDir;
-    }
-
-
-
-    Status MeshManager::load(std::shared_ptr<Mesh> mesh, const std::string& sid) const {
+    void MeshManager::load(std::shared_ptr<Mesh> mesh, const std::string& sid) {
         //try to load from the cache
         if (mesh->hasCache()) {
             return load(mesh, sid,
-                         mesh->positions,
-                         mesh->uvs,
-                         mesh->flatNormals,
-                         mesh->smoothNormals,
-                         mesh->vertexIndices);
+                        mesh->positions,
+                        mesh->uvs,
+                        mesh->flatNormals,
+                        mesh->smoothNormals,
+                        mesh->vertexIndices);
         }
 
         //otherwise load from the file
@@ -300,25 +226,26 @@ namespace dma {
         std::vector<VertexIndices> vertexIndices;
 
         //filename, deduced from SID
-        std::string path = mLocalDir + sid + ".obj";
+        std::string path = mLocalDir + "/" + sid + ".obj";
 
         //load positions uvs and their indices from the obj file
         if (loadObj(path, positions, uvs, flatNormals, vertexIndices) != STATUS_OK) {
-            Log::error(TAG, "Unable to load obj %s", path.c_str());
-            return STATUS_KO;
+            std::string error = "Unable to load obj " + sid;
+            Log::error(TAG, error.c_str());
+            throw std::runtime_error(error);
         }
 
-        return load(mesh, sid, positions, uvs, flatNormals, smoothNormals, vertexIndices);
+        load(mesh, sid, positions, uvs, flatNormals, smoothNormals, vertexIndices);
     }
 
 
 
-    Status MeshManager::load(std::shared_ptr<Mesh> mesh, const std::string &sid,
-                              std::vector<glm::vec3> &positions,
-                              std::vector<glm::vec2> &uvs,
-                              std::vector<glm::vec3> &flatNormals,
-                              std::vector<glm::vec3> &smoothNormals,
-                              std::vector<VertexIndices> &vertexIndices) const {
+    void MeshManager::load(std::shared_ptr<Mesh> mesh, const std::string &sid,
+                           std::vector<glm::vec3> &positions,
+                           std::vector<glm::vec2> &uvs,
+                           std::vector<glm::vec3> &flatNormals,
+                           std::vector<glm::vec3> &smoothNormals,
+                           std::vector<VertexIndices> &vertexIndices) const {
 
         bool hasUv, hasFlat, hasSmooth;
         hasUv = !uvs.empty();
@@ -422,7 +349,6 @@ namespace dma {
 
         /////////////////////////////////////////////////////////////////////////
         // Generate vertex buffer
-        //delete mesh->mVertexBuffer;
         if (mesh->mVertexBuffer != nullptr) {
             mesh->mVertexBuffer->wipe();
         }
@@ -455,7 +381,6 @@ namespace dma {
         delete[] data;
 
 
-        //delete mesh->mIndexBuffer;
         if (mesh->mIndexBuffer != nullptr) {
             mesh->mIndexBuffer->wipe();
         }
@@ -472,6 +397,5 @@ namespace dma {
         mesh->vertexIndices = vertexIndices;
 
         Log::trace(TAG, "Mesh %s loaded", sid.c_str());
-        return STATUS_OK;
     }
 }

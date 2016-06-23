@@ -17,6 +17,7 @@ without the express written permission of eBusiness Information.
 
 #include "utils/ObjReader.hpp"
 #include "engine/geo/GeoEngine.hpp"
+#include "engine/geo/Poi.hpp"
 
 
 using namespace dma;
@@ -207,71 +208,29 @@ int main(int argc, char** argv) {
     std::shared_ptr<Poi> poi1 = mGeoEngine.getPoiFactory().builder()
             .sid("poi1")
             .shape("defibrillator")
-            //.icon("transilien/pins-agence_transilien")
+                    //.icon("transilien/pins-agence_transilien")
             .animation(true)
             .color(Color(1.0f, 0.5f, 0.5f))
             .build();
-    poi1->setPosition(48.8294849, 2.3776109, 6.0);
-    mGeoEngine.getGeoSceneManager().addPoi(poi1);
+    poi1->setCoords(LatLngAlt(8.8294849, 2.3776109, 6.0));
+    mGeoEngine.getGeoSceneManager().addGeoEntity(poi1->getSid(), poi1);
 
-    // 1. Stringify the file
-    std::string json;
-    std::string path =  "assets-test/arpigl/locations.json";
-    Status status = Utils::bufferize(path, json);
-    if (status != STATUS_OK) {
-        Log::error(TAG, "Unable to bufferize Locations %s", path.c_str());
-        assert(!"Unable to bufferize Locations");
-        return status;
-    }
+    std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()
+            .sid("poi2")
+            .shape("pyramid")
+            .color(Color(0.4f, 0.2f, 0.7f))
+            .build();
+    poi2->setCoords(LatLngAlt(45.784448, 4.854478, 6.0));
+    mGeoEngine.getGeoSceneManager().addGeoEntity(poi2->getSid(), poi2);
 
-    rapidjson::Document document;
-    // 2. Create the DOM
-    document.Parse(json.c_str());
-    if (document.HasParseError()) {
-        Log::error(TAG, "Unable to parse Locations %s", path.c_str());
-        assert(!"Unable to parse Locations");
-        return throwException(TAG, ExceptionType::PARSE_ERROR, "Unable to parse Locations " + path);
-    }
-    for (rapidjson::Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr) {
-        double lat = itr->value["lat"].GetDouble();
-        double lng = itr->value["lng"].GetDouble();
-        std::string id = itr->name.GetString();
-
-        ResourceManager& resourceManager = mGeoEngine.mEngine.getResourceManager();
-        std::shared_ptr<Mesh> mesh = resourceManager.acquireMesh("building/" + id);
-        std::shared_ptr<Material> material = resourceManager.acquireMaterial("building");
-        std::shared_ptr<Entity> building = std::make_shared<Entity>(mesh, material);
-        building->setPosition(mGeoEngine.getGeoSceneManager().mapPosition(lat, lng, 0.0));
-        mGeoEngine.getGeoSceneManager().getScene().addEntity(building);
-    }
-
-    TrackFactory trackFactory(mGeoEngine.getGeoSceneManager(), mGeoEngine.mEngine.getResourceManager());
-
-    std::vector<LatLngAlt> geoPoints;
-    geoPoints.push_back(LatLngAlt(48.870548, 2.305235, 1.0));
-    geoPoints.push_back(LatLngAlt(48.870833, 2.304516, 1.0));
-    geoPoints.push_back(LatLngAlt(48.871491, 2.302542, 1.0));
-    geoPoints.push_back(LatLngAlt(48.872075, 2.303449, 1.0));
-    geoPoints.push_back(LatLngAlt(48.872434, 2.304050, 1.0));
-    std::shared_ptr<Entity> track = trackFactory.generate(geoPoints, 2.0f);
-    mGeoEngine.getGeoSceneManager().getScene().addEntity(track);
-
-//    std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()
-//            .sid("poi2")
-//            .shape("pyramid")
-//            .color(Color(0.4f, 0.2f, 0.7f))
-//            .build();
-//    poi2->setPosition(45.784448, 4.854478, 6.0);
-//    mGeoEngine.getGeoSceneManager().addPoi(poi2);
-//
-//    std::shared_ptr<Poi> poi3 = mGeoEngine.getPoiFactory().builder()
-//            .sid("poi3")
-//            .shape("note")
-//            .icon("b20")
-//            .color(Color(0.7f, 0.4f, 0.2f))
-//            .build();
-//    poi3->setPosition(45.784648, 4.854978, 6.0);
-//    mGeoEngine.getGeoSceneManager().addPoi(poi3);
+    std::shared_ptr<Poi> poi3 = mGeoEngine.getPoiFactory().builder()
+            .sid("poi3")
+            .shape("note")
+            .icon("b20")
+            .color(Color(0.7f, 0.4f, 0.2f))
+            .build();
+    poi3->setCoords(LatLngAlt(45.784648, 4.854978, 6.0));
+    mGeoEngine.getGeoSceneManager().addGeoEntity(poi3->getSid(), poi3);
 
     // set viewport size.
     mGeoEngine.setSurfaceSize(mWidth, mHeight);

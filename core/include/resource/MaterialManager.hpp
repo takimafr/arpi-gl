@@ -29,48 +29,29 @@
 
 namespace dma {
 
-        class MaterialManager : public ResourceManagerHandler<Material> {
+    class MaterialManager : public ResourceManagerHandler<Material> {
 
-            friend class ResourceManager;
-            static const std::string FALLBACK_MATERIAL_SID;
+        friend class ResourceManager;
 
-        public:
-            //DESTRUCTOR
-            virtual ~MaterialManager();
+    public:
 
-            //METHODS
+        std::shared_ptr<Material> create();
+        std::shared_ptr<Material> create(const std::string& sid);
 
+        virtual bool hasResource(const std::string &) const;
 
-            /**
-             * From disk
-             */
-            Status reload();
+    private:
+        MaterialManager(const std::string& rootDir,
+                        ShaderManager& shaderManager,
+                        MapManager& mapManager);
+        MaterialManager(const MaterialManager&) = delete;
+        void operator=(const MaterialManager&) = delete;
 
-            std::shared_ptr<Material> create();
-            std::shared_ptr<Material> create(const std::string& sid);
+        void load(std::shared_ptr<Material> material,  const std::string& sid) override;
 
-            virtual bool hasResource(const std::string &) const;
-
-        private:
-            //CONSTRUCTORS
-            MaterialManager(const std::string& rootDir,
-                            ShaderManager& shaderManager,
-                            MapManager& mapManager);
-            MaterialManager(const MaterialManager&) = delete;
-            void operator=(const MaterialManager&) = delete;
-
-
-            //METHODS
-            Status load(std::shared_ptr<Material> material,  const std::string& sid) const;
-
-            //FIELDS
-            std::string                     mLocalDir;
-
-            ShaderManager&                  mShaderManager;
-            MapManager&                     mMapManager;
-            std::map<std::string, std::shared_ptr<Material>> mMaterials;
-            std::shared_ptr<Material>       mFallbackMaterial;
-        };
+        ShaderManager& mShaderManager;
+        MapManager& mMapManager;
+    };
 }
 
 #endif //_DMA_MATERIALMANAGER_HPP

@@ -20,6 +20,7 @@
 #include "utils/Log.hpp"
 
 #include <sstream>
+#include <stdexcept>
 
 constexpr auto TAG = "ObjReader";
 
@@ -31,8 +32,9 @@ namespace dma {
         //check that file exists
         bool exists = mInputStream.is_open();
         if (!exists) {
-            Log::error(TAG, "file " + path + " doesn't exist.");
-            assert(!"error while loading obj");
+            std::string error = "file " + path + " doesn't exist.";
+            Log::error(TAG, error);
+            throw std::runtime_error(error);
         }
     }
 

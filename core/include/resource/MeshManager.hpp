@@ -24,62 +24,45 @@
 #include <rendering/Vertex.hpp>
 #include <utils/GLES2Logger.hpp>
 
-#include "resource/ResourceManagerHandler.hpp"
 #include "utils/VertexIndices.hpp"
 #include "resource/Mesh.hpp"
 #include "glm/glm.hpp"
-
+#include "resource/GpuResourceManagerHandler.hpp"
 
 
 namespace dma {
 
-    class MeshManager : public ResourceManagerHandler<Mesh> {
+    class MeshManager : public GpuResourceManagerHandler<Mesh> {
+
 
         friend class ResourceManager;
 
     public:
+        MeshManager(const std::string &localDir);
         virtual ~MeshManager();
 
         /**
          * Load an anonymous mesh
          */
-        std::shared_ptr<Mesh> load(std::vector<glm::vec3>& positions,
-                                   std::vector<glm::vec2>& uvs,
-                                   std::vector<glm::vec3>& flatNormals,
-                                   std::vector<glm::vec3>& smoothNormals,
-                                   std::vector<VertexIndices> &indices);
-
-        /**
-         * From disk
-         */
-        Status reload();
-
-        /**
-         * From cache if any
-         */
-        Status refresh();
-
-        /**
-         * Clean all GPU resources
-         */
-        void wipe();
+        std::shared_ptr<Mesh> create(std::vector<glm::vec3> &positions,
+                                     std::vector<glm::vec2> &uvs,
+                                     std::vector<glm::vec3> &flatNormals,
+                                     std::vector<glm::vec3> &smoothNormals,
+                                     std::vector<VertexIndices> &indices);
 
         bool hasResource(const std::string &) const;
 
     private:
-        MeshManager(const std::string& rootDir);
         MeshManager(const MeshManager&) = delete;
         void operator=(const MeshManager&) = delete;
 
-        Status load(std::shared_ptr<Mesh> mesh, const std::string& sid) const;
-        Status load(std::shared_ptr<Mesh> mesh, const std::string& sid,
-                     std::vector<glm::vec3> &positions,
-                     std::vector<glm::vec2>& uvs,
-                     std::vector<glm::vec3>& flatNormals,
-                     std::vector<glm::vec3>& smoothNormals,
-                     std::vector<VertexIndices>& vertexIndices) const;
-
-        std::string mLocalDir;
+        void load(std::shared_ptr<Mesh> mesh, const std::string& sid) override;
+        void load(std::shared_ptr<Mesh> mesh, const std::string& sid,
+                    std::vector<glm::vec3> &positions,
+                    std::vector<glm::vec2>& uvs,
+                    std::vector<glm::vec3>& flatNormals,
+                    std::vector<glm::vec3>& smoothNormals,
+                    std::vector<VertexIndices>& vertexIndices) const;
     };
 }
 

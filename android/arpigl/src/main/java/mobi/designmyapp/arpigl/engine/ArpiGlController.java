@@ -440,7 +440,6 @@ public final class ArpiGlController implements Controller {
             }
 
             // unregister gesture detectors
-
             mFragment.getArpiGlView().setOnTouchListener(null);
             mScaleGestureDetector = null;
             mGestureDetector = null;

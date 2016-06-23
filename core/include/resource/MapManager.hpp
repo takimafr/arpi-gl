@@ -23,34 +23,21 @@
 #include <map>
 
 #include "resource/Map.hpp"
+#include "resource/GpuResourceManagerHandler.hpp"
 
 namespace dma {
 
-    class MapManager {
+    class MapManager : public GpuResourceManagerHandler<Map> {
 
     public:
-        MapManager(const std::string& dir);
-        virtual ~MapManager();
-
+        MapManager(const std::string& localDir);
         MapManager(const MapManager&) = delete;
         MapManager& operator=(const MapManager&) = delete;
 
-        void init();
-        std::shared_ptr<Map> acquire(const std::string& sid);
         bool hasResource(const std::string& sid) const;
 
-        void reload();
-        void refresh();
-        void wipe();
-        void unload();
-        void update();
-
     private:
-        void mLoadMap(std::shared_ptr<Map>, const std::string& sid);
-
-        std::map<std::string, std::shared_ptr<Map>> mMaps;
-        std::shared_ptr<Map> mFallbackMap;
-        std::string mMapDir;
+        void load(std::shared_ptr<Map>, const std::string& sid);
     };
 }
 

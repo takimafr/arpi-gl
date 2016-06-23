@@ -18,13 +18,16 @@
 #ifndef ARPIGL_LATLNGALT_HPP
 #define ARPIGL_LATLNGALT_HPP
 
+#include "LatLng.hpp"
+
 namespace dma {
 
-    class LatLngAlt {
+    class LatLngAlt : public LatLng {
 
     public:
-        LatLngAlt(double lat, double lng, float alt)  :
-                lat(lat),lng(lng), alt(alt) {}
+        LatLngAlt(double lat, double lng, float alt) :
+                LatLng(lat, lng),
+                alt(alt) {}
 
         LatLngAlt(double lat, double lng) :
                 LatLngAlt(lat, lng, 0.0f) {}
@@ -38,8 +41,6 @@ namespace dma {
                    && alt == other.alt;
         }
 
-        double lat;
-        double lng;
         float alt;
     };
 }

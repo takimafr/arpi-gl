@@ -25,7 +25,7 @@
 
 
 namespace dma {
-    class Material {
+    class Material : public Resource {
     	static constexpr int DMA_MAX_PASS_COUNT = 4;
         friend class MaterialManager;
 
@@ -33,7 +33,6 @@ namespace dma {
 
         Material();
         Material(const Material&);
-        virtual ~Material();
 
         inline bool isBackToFront() const { return mBackToFront; }
 
@@ -54,8 +53,6 @@ namespace dma {
         }
 
         void addPass(const Pass& pass);
-
-        void reset();
 
     private:
         //FIELDS

@@ -26,9 +26,9 @@ constexpr char TAG[] = "Scene";
 namespace dma {
 
 
-    Scene::Scene(ResourceManager* resourceManager,
-                 AnimationSystem* animationSystem,
-                 RenderingEngine* renderingEngine) :
+    Scene::Scene(std::shared_ptr<ResourceManager> resourceManager,
+                 std::shared_ptr<AnimationSystem> animationSystem,
+                 std::shared_ptr<RenderingEngine> renderingEngine) :
             mCamera(nullptr),
             mSkyBox(nullptr),
             mResourceManager(resourceManager),
@@ -48,7 +48,7 @@ namespace dma {
 
 
     Scene::~Scene() {
-        delete mSkyBox;
+        mSkyBox = nullptr;
     }
 
 
@@ -84,7 +84,7 @@ namespace dma {
         if (mSkyboxEnabled) {
             std::shared_ptr<CubeMap> cubeMap = mResourceManager->acquireCubeMap("skybox/" + sid);
             if (mSkyBox == nullptr) {
-                mSkyBox = new SkyBox();
+                mSkyBox = std::make_shared<SkyBox>();
                 mSkyBox->init(cubeMap, mResourceManager->acquireShaderProgram("skybox"));
             }
             mSkyBox->setCubeMap(cubeMap);
@@ -103,7 +103,6 @@ namespace dma {
         } else if (shouldDisable) {
             // don't forget to get the rendering engine to stop drawing the deleted skybox.
             mRenderingEngine->setSkyBox(nullptr);
-            delete mSkyBox;
             mSkyBox = nullptr;
         }
     }

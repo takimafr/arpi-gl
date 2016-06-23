@@ -22,19 +22,22 @@
 #include <set>
 #include <map>
 #include <memory>
+#include "resource/TrackFactory.hpp"
+#include <engine/Scene.hpp>
 
 #include "glm/glm.hpp"
 #include "engine/Scene.hpp"
-#include "engine/geo/Poi.hpp"
 #include "engine/geo/TileMap.hpp"
 #include "engine/geo/PoiParams.hpp"
 #include "engine/geo/LatLng.hpp"
 #include "engine/geo/GeoEngineCallbacks.hpp"
+#include "LatLng.hpp"
+
 
 namespace dma {
     namespace geo {
-        class TileMap;
-
+        class Poi;
+        class GeoEntity;
         /**
          * Manages a scene à la geo
          * @version 0.2.3
@@ -45,7 +48,6 @@ namespace dma {
              */
 
         public:
-
             GeoSceneManager(Scene& scene, ResourceManager& resourceManager);
             virtual ~GeoSceneManager();
 
@@ -62,26 +64,35 @@ namespace dma {
 
             void step();
 
+            std::shared_ptr<GeoEntity> createGeoEntity(const std::string& meshSid, const std::string& materialSid);
+            std::shared_ptr<GeoEntity> createGeoEntity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
+
+            void addGeoEntity(const std::string& sid, std::shared_ptr<GeoEntity> geoEntity);
+
+            void removeGeoEntity(const std::string& sid);
+
             /**
              * Convert world coordinates to openGL coordinates.
              */
             glm::vec3 mapPosition(double lat, double lon, double alt) const;
 
-            /**
-             * Adds the poi to the scene
-             */
-            bool addPoi(std::shared_ptr<Poi> poi);
+            glm::vec3 mapPosition(const LatLngAlt& coords) const;
 
-            /**
-             * remove the given Poi from the scene.
-             */
-            bool removePoi(const std::string& sid);
-
-            void removeAllPois();
-
-            bool hasPoi(const std::string& sid);
-
-            std::shared_ptr<Poi> getPoi(const std::string& sid);
+//            /**
+//             * Adds the poi to the scene
+//             */
+//            bool addPoi(std::shared_ptr<Poi> poi);
+//
+//            /**
+//             * remove the given Poi from the scene.
+//             */
+//            bool removePoi(const std::string& sid);
+//
+//            void removeAllPois();
+//
+//            bool hasPoi(const std::string& sid);
+//
+//            std::shared_ptr<Poi> getPoi(const std::string& sid);
 
             inline Scene& getScene() {
                 return mScene;
@@ -107,6 +118,9 @@ namespace dma {
             void orientateCamera(std::shared_ptr<glm::mat4> rotationMatrix);
 
             std::shared_ptr<Poi> pick(int screenX, int screenY);
+
+//            void addTrack(const std::string& sid, const std::vector<LatLngAlt>& geoPoints, float thickness, const Color& color);
+//            void removeTrack(const std::string& sid);
 
             /* ***
              * TILEMAP-PASSTHROUGHT
@@ -139,9 +153,10 @@ namespace dma {
             /* ***
              * ATTRIBUTES
              */
+        ResourceManager& mResourceManager;
             Scene& mScene;
             TileMap mTileMap;
-            std::map<std::string, std::shared_ptr<Poi>> mPOIs;
+            std::map<std::string, std::shared_ptr<GeoEntity>> mGeoEntities;
             LatLng mOrigin;
             LatLngAlt mCameraCoords;
             int mLastX;

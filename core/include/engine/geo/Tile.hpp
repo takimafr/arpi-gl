@@ -21,21 +21,24 @@
 #include "engine/Entity.hpp"
 #include "resource/Quad.hpp"
 #include "LatLng.hpp"
+#include "GeoEntity.hpp"
 
 namespace dma {
     namespace geo {
-        class Tile : public Entity {
+        class Tile : public GeoEntity {
 
             friend class TileMap;
             friend class GeoSceneManager;
 
         public:
-            Tile(std::shared_ptr<Quad> quad,
-                 std::shared_ptr<Material> material,
-                const LatLng& coords, int x, int y, int z);
+//            Tile(std::shared_ptr<Quad> quad,
+//                 std::shared_ptr<Material> material,
+//                 const LatLng& coords, int x, int y, int z,
+//                 GeoSceneManager& geoSceneManager);
 
             Tile(std::shared_ptr<Quad> quad,
-                 std::shared_ptr<Material> material);
+                 std::shared_ptr<Material> material,
+                 GeoSceneManager& geoSceneManager);
 
             virtual ~Tile();
 
@@ -44,13 +47,13 @@ namespace dma {
 //            bool operator<(const Tile& other) const;
 //            bool operator==(const Tile& other) const;
 
-            inline double getLat() const {
-                return mCoords.lat;
-            }
-
-            inline double getLng() const {
-                return mCoords.lng;
-            }
+//            inline double getLat() const {
+//                return mCoords.lat;
+//            }
+//
+//            inline double getLng() const {
+//                return mCoords.lng;
+//            }
 
             inline const Quad &getQuad() const {
                 return *mQuad;
@@ -74,7 +77,6 @@ namespace dma {
 
         private:
             //FIELDS
-            LatLng mCoords;
             int x;
             int y;
             int z;

@@ -21,10 +21,11 @@
 #include <utils/GLES2Logger.hpp>
 #include "common/Types.hpp"
 #include "utils/ExceptionType.hpp"
+#include "resource/GpuResource.hpp"
 #include <string>
 
 namespace dma {
-    class ShaderProgram {
+    class ShaderProgram : public GpuResource {
 
         friend class ShaderManager;
         static constexpr char TAG[] = "ShaderProgram";

@@ -35,25 +35,11 @@ namespace dma {
      */
     class ResourceManager {
 
-        /* ***
-         * FRIEND CLASS
-         */
         friend class Engine;
-
-        /* ***
-         * CONSTANTS
-         */
-        static constexpr char TAG[] = "ResourceManager";
 
     public:
 
-        /* ***
-         * CONSTRUCTOR & DESTRUCTOR
-         */
-        virtual ~ResourceManager();
-
-
-        Status init();
+        void init();
 
         /**
          * Reloads all current resources from disk
@@ -75,7 +61,7 @@ namespace dma {
         void unload();
 
 
-    private:
+    public:
         /**
          * Create a new resourceManager that will use the provided path as resource dir.
          * This constructor will create the required ShaderManager, MeshManager & TextureManager.
@@ -85,15 +71,6 @@ namespace dma {
         ResourceManager(const std::string&);
         ResourceManager(const ResourceManager &) = delete;
         void operator=(const ResourceManager &) = delete;
-
-    public:
-
-        /**
-         * @return true if the corresponding shader program exists.
-         */
-        inline bool hasShaderProgram(const std::string& sid) const {
-            return mShaderManager.hasResource(sid);
-        }
 
         /**
          * @return the ShaderProgram corresponding to the sid
@@ -107,13 +84,6 @@ namespace dma {
         }
 
         /**
-         * @return true if the corresponding mesh exists.
-         */
-        inline bool hasMesh(const std::string& sid) const {
-            return mMeshManager.hasResource(sid);
-        }
-
-        /**
          * @param const std::string& -
          *          SID of the mesh to load.
          * @param Status* -
@@ -122,6 +92,12 @@ namespace dma {
          */
         inline std::shared_ptr<Mesh> acquireMesh(const std::string& sid) {
             return mMeshManager.acquire(sid);
+        }
+
+        inline std::shared_ptr<Mesh> createMesh(std::vector<glm::vec3>& positions, std::vector<glm::vec2>& uvs,
+                                                std::vector<glm::vec3>& flatNormals, std::vector<glm::vec3>& smoothNormals,
+                                                std::vector<VertexIndices>& indices) {
+            return mMeshManager.create(positions, uvs, flatNormals, smoothNormals, indices);
         }
 
         /**
@@ -153,13 +129,6 @@ namespace dma {
          */
         inline std::shared_ptr<CubeMap> acquireCubeMap(const std::string &sid) {
             return mCubeMapManager.acquire(sid);
-        }
-
-        /**
-         * @return true if the corresponding material exists.
-         */
-        inline bool hasMaterial(const std::string& sid) const {
-            return mMaterialManager.hasResource(sid);
         }
 
         /**
@@ -207,14 +176,12 @@ namespace dma {
          * ATTRIBUTES
          */
 
-        std::string                mResourceDir;
-
-        ShaderManager              mShaderManager;
-    public: MeshManager                mMeshManager; //TODO remove public: used for building/tracks POC
-        MapManager                 mMapManager;
-        CubeMapManager             mCubeMapManager;
-        MaterialManager            mMaterialManager;
-        QuadFactory                mQuadFactory;
+        ShaderManager mShaderManager;
+        MeshManager mMeshManager;
+        MapManager mMapManager;
+        CubeMapManager mCubeMapManager;
+        MaterialManager mMaterialManager;
+        QuadFactory mQuadFactory;
     };
 
 }

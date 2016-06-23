@@ -22,7 +22,7 @@ namespace dma {
 
 
     Material::Material() :
-                    mPassCount(0), mBackToFront(false)
+            mPassCount(0), mBackToFront(false)
     {}
 
 
@@ -36,22 +36,8 @@ namespace dma {
         this->mBackToFront = material.mBackToFront;
     }
 
-
-
-    Material::~Material() {
-
-    }
-
-
-
     void Material::addPass(const Pass& pass) {
         mPasses[mPassCount++] = pass;
-    }
-
-
-    void Material::reset() {
-        mPassCount = 0;
-        mBackToFront = false;
     }
 
 

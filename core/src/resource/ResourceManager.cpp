@@ -18,44 +18,37 @@
 
 #include "resource/ResourceManager.hpp"
 
-#define TAG "ResourceManager"
+static constexpr auto TAG = "ResourceManager";
 
 namespace dma {
 
     ResourceManager::ResourceManager(const std::string& resourceDir) :
-        mResourceDir(resourceDir),
-        mShaderManager(mResourceDir + "shader/"),
-        mMeshManager(mResourceDir + "mesh/"),
-        mMapManager(mResourceDir + "texture/"),
-        mCubeMapManager(mResourceDir + "texture/cubemap/"),
-        mMaterialManager(mResourceDir + "material/", mShaderManager, mMapManager),
+        mShaderManager(resourceDir + "/shader"),
+        mMeshManager(resourceDir + "/mesh"),
+        mMapManager(resourceDir + "/texture"),
+        mCubeMapManager(resourceDir + "/texture/cubemap"),
+        mMaterialManager(resourceDir + "/material", mShaderManager, mMapManager),
         mQuadFactory()
     {}
 
-    ResourceManager::~ResourceManager() {
-    }
 
-    Status ResourceManager::init() {
+    void ResourceManager::init() {
         Log::trace(TAG, "Initializing ResourceManager...");
-
         mShaderManager.init();
         mMeshManager.init();
         mMapManager.init();
         mCubeMapManager.init();
         mMaterialManager.init();
         mQuadFactory.init();
-
         Log::trace(TAG, "ResourceManager initialized");
-        return STATUS_OK;
     }
 
     Status ResourceManager::refresh() {
         Log::trace(TAG, "Refreshing ResourceManager...");
-
-        if (mShaderManager.refresh() != STATUS_OK) return STATUS_KO;
+        mShaderManager.refresh();
         mMapManager.refresh();
         mCubeMapManager.refresh();
-        if (mMeshManager.refresh() != STATUS_OK) return STATUS_KO;
+        mMeshManager.refresh();
         mQuadFactory.refresh();
         Log::trace(TAG, "ResourceManager refreshed");
         return STATUS_OK;
@@ -63,11 +56,11 @@ namespace dma {
 
     Status ResourceManager::reload() {
         Log::trace(TAG, "Reloading ResourceManager...");
-        if (mShaderManager.reload() != STATUS_OK) return STATUS_KO;
+        mShaderManager.reload();
         mMapManager.reload();
         mCubeMapManager.reload();
-        if (mMeshManager.reload() != STATUS_OK) return STATUS_KO;
-        if (mMaterialManager.reload() != STATUS_OK) return STATUS_KO;
+        mMeshManager.reload();
+        mMaterialManager.reload();
         mQuadFactory.refresh();
         Log::trace(TAG, "ResourceManager reloaded");
         return STATUS_OK;
@@ -96,12 +89,12 @@ namespace dma {
     }
 
     void ResourceManager::update() {
-        Log::trace(TAG, "Updating ResourceManager...");
-        mMaterialManager.update();
-        mMeshManager.update();
-        mMapManager.update();
-        mCubeMapManager.update();
-        mShaderManager.update();
-        Log::trace(TAG, "ResourceManager updated");
+        Log::trace(TAG, "Pruning ResourceManager...");
+        mMaterialManager.prune();
+        mMeshManager.prune();
+        mMapManager.prune();
+        mCubeMapManager.prune();
+        mShaderManager.prune();
+        Log::trace(TAG, "ResourceManager pruned");
     }
 }

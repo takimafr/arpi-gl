@@ -23,9 +23,8 @@
 #include <algorithm>
 // Dma
 #include "engine/Engine.hpp"
-#include "engine/geo/Poi.hpp"
 
-#define TAG "Engine"
+constexpr auto TAG = "ENGINE";
 
 namespace dma {
 #ifndef FPS_PRINT_RATE
@@ -37,33 +36,27 @@ namespace dma {
      */
 
     Engine::Engine(const std::string& rootDir) :
-            mRootDir(rootDir),
-            mIsInit(false) {
-        Log::trace(TAG, "Creating Engine...");
-
-        mRootDir = Utils::addTrailingSlash(mRootDir);
-        mResourceManager = new ResourceManager(mRootDir);
-        mGlobalTimer = new Timer();
-        mRenderingEngine = new RenderingEngine(*mResourceManager);
-        mAnimationSystem = new AnimationSystem();
-        mScene = new Scene(mResourceManager, mAnimationSystem, mRenderingEngine);
-
-        Log::trace(TAG, "resource dir: %s", mRootDir.c_str());
-        assert(Utils::dirExists(mRootDir.c_str()));
-
-        Log::trace(TAG, "-----Engine created-----\n");
+            mGlobalTimer(std::make_shared<Timer>()),
+            mResourceManager(std::make_shared<ResourceManager>(rootDir)),
+            mRenderingEngine(std::make_shared<RenderingEngine>(*mResourceManager)),
+            mAnimationSystem(std::make_shared<AnimationSystem>()),
+            mScene(std::make_shared<Scene>(mResourceManager, mAnimationSystem, mRenderingEngine)),
+            mTrackFactory(std::make_shared<TrackFactory>(*mResourceManager)),
+            mIsInit(false)
+    {
+        Log::trace(TAG, "Engine created");
     }
 
 
 
     Engine::~Engine() {
         Log::trace(TAG, "Destroying Engine...");
-        delete mScene;
-        delete mAnimationSystem;
-        delete mResourceManager;
-        delete mGlobalTimer;
-        delete mRenderingEngine;
-        Log::trace(TAG, "-----Engine destroyed-----\n");
+        mScene = nullptr;
+        mAnimationSystem = nullptr;
+        mResourceManager = nullptr;
+        mGlobalTimer = nullptr;
+        mRenderingEngine = nullptr;
+        Log::trace(TAG, "Engine destroyed");
     }
 
     /* ***
@@ -116,12 +109,7 @@ namespace dma {
             return false;
         }
 
-        if (mResourceManager->init() != STATUS_OK) {
-            constexpr char error[] = "Error while initializing ResourceManager";
-            throwError(TAG, ExceptionType::UNKNOWN, error);
-            assert(false);
-            return false;
-        }
+        mResourceManager->init();
 
         // engine is not initialized.
         mIsInit = true;
@@ -189,11 +177,9 @@ namespace dma {
     }
 
 
-
     void Engine::addHUDElement(std::shared_ptr<HUDElement> hudElement) {
         mRenderingEngine->subscribeHUDElement(hudElement);
     }
-
 
 
     void Engine::mUpdateFPS() {

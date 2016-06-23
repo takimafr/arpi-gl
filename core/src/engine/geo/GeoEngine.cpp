@@ -19,6 +19,7 @@
 #include <fstream>
 #include <resource/Watermark.hpp>
 #include <utils/LocationReader.hpp>
+#include <utils/GeoUtils.hpp>
 #include "engine/geo/GeoEngine.hpp"
 #include "engine/geo/GeoSceneManager.hpp"
 
@@ -29,9 +30,9 @@ namespace dma {
 
 
         GeoEngine::GeoEngine(const std::string &resourceDir) :
-                mRootDir((!resourceDir.empty() && resourceDir.at(resourceDir.length() - 1) != '/') ? resourceDir + '/' : resourceDir),
+                mRootDir(resourceDir),
                 mEngine(resourceDir),
-                mPoiFactory(mEngine.getResourceManager()),
+                mPoiFactory(mGeoSceneManager, mEngine.getResourceManager()),
                 mGeoSceneManager(mEngine.getScene(), mEngine.getResourceManager()),
                 mDefaultCallbacks(new GeoEngineCallbacks()),
                 mCallbacks(mDefaultCallbacks)
@@ -49,17 +50,58 @@ namespace dma {
             bool res = mEngine.init();
             mGeoSceneManager.init();
 
-            std::ofstream out(mRootDir + "texture/watermark.png", std::ios::binary);
-            out.write((const char *) Watermark::DATA, Watermark::SIZE);
-            out.close();
-
             std::shared_ptr<HUDElement> watermark = std::make_shared<HUDElement>();
             watermark->x = 20;
             watermark->y = 200 + 20;
             watermark->width = 200;
             watermark->height = 200;
             watermark->textureSID = "watermark";
-            //mEngine.addHUDElement(watermark);
+            mEngine.addHUDElement(watermark);
+
+            //TODO remove: used for buildings/tracks demo
+            mGeoSceneManager.placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
+            // 1. Stringify the file
+            std::string json;
+            std::string path =  "assets-test/arpigl/locations.json";
+            Utils::bufferize(path, json);
+
+            rapidjson::Document document;
+            // 2. Create the DOM
+            document.Parse(json.c_str());
+            if (document.HasParseError()) {
+                std::string error = "Unable to parse Locations " + path;
+                Log::error(TAG, error);
+                throw std::runtime_error(error);
+            }
+            for (rapidjson::Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr) {
+                double lat = itr->value["lat"].GetDouble();
+                double lng = itr->value["lng"].GetDouble();
+                std::string id = itr->name.GetString();
+
+                std::string sid = "building/" + id;
+                std::shared_ptr<GeoEntity> building = mGeoSceneManager.createGeoEntity(sid, "building");
+                building->setCoords(LatLngAlt(lat, lng, 0.0));
+                mGeoSceneManager.addGeoEntity(sid, building);
+            }
+
+            float height = 1.0f;
+            LatLngAlt origin = LatLngAlt(48.870548, 2.305235, height);
+            std::shared_ptr<Mesh> trackMesh = mEngine.getTrackFactory().builder()
+                    .thickness(3.0f)
+                    .color(0.1098, 0.6, 1.0)
+                    .path()
+                    .point(GeoUtils::vector(origin, origin))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.870833, 2.304516, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.871491, 2.302542, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.872075, 2.303449, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.872434, 2.304050, height)))
+                    .build();
+
+            std::shared_ptr<Material> trackMaterial = mEngine.getTrackFactory().generateMaterial(Color(0.1098f, 0.6f, 1.0f));
+
+            auto track = mGeoSceneManager.createGeoEntity(trackMesh, trackMaterial);
+            track->setCoords(origin);
+            mGeoSceneManager.addGeoEntity("track0", track);
 
             return res;
         }

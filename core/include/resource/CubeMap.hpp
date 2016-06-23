@@ -26,33 +26,25 @@ namespace dma {
 
     public:
 
-        enum Face {
-            RIGHT  = 0,
-            LEFT   = 1,
-            TOP    = 2,
-            BOTTOM = 3,
-            BACK   = 4,
-            FRONT  = 5
-        };
-
-
         CubeMap();
         virtual ~CubeMap();
+
+
+        virtual void clearCache() override;
 
         /**
          * From disk
          */
-        Status load(const std::string& dirName);
+        void load(const std::string& dirName);
 
         /**
          * From cache if any
          */
-        Status refresh(const std::string& dirName);
+        void refresh(const std::string& dirName);
 
     private:
 
-        Status mLoadFromImages();
-        void mDeleteImages();
+        void mLoadFromImages();
 
         Image* mImages[6];
     };

@@ -38,11 +38,6 @@ constexpr auto TAG = "RenderingEngine";
 
 namespace dma {
 
-    /* ================= ROUTINES ========================*/
-
-
-
-
 
     /* ================= PUBLIC ========================*/
 

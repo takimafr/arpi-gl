@@ -31,6 +31,7 @@
 //std
 #include <string>
 #include <list>
+#include <resource/TrackFactory.hpp>
 
 //Dma
 #include "utils/ExceptionHandler.hpp"
@@ -129,26 +130,20 @@ namespace dma {
             return *mScene;
         }
 
+        inline TrackFactory &getTrackFactory() const {
+            return *mTrackFactory;
+        }
+
     private:
 
         void mUpdateFPS();
 
-        /* ***
-         * ATTRIBUTES
-         */
-        /** root direcrtory path */
-        std::string mRootDir;
-        /** The global timer */
-        Timer* mGlobalTimer;
-        /** The resource manager */
-        ResourceManager* mResourceManager;
-        /** The rendering engine */
-        RenderingEngine* mRenderingEngine;
-        /** The Scene manager */
-        Scene *mScene;
-        /** The animation system */
-        AnimationSystem* mAnimationSystem;
-        /** is engine properly initialized. */
+        std::shared_ptr<Timer> mGlobalTimer;
+        std::shared_ptr<ResourceManager> mResourceManager;
+        std::shared_ptr<RenderingEngine> mRenderingEngine;
+        std::shared_ptr<AnimationSystem> mAnimationSystem;
+        std::shared_ptr<Scene> mScene;
+        std::shared_ptr<TrackFactory> mTrackFactory;
         bool mIsInit;
 
 #ifdef DEBUG

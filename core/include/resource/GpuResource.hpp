@@ -14,23 +14,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-#include <resource/CubeMapManager.hpp>
+#ifndef ARPIGL_GPURESOURCE_HPP
+#define ARPIGL_GPURESOURCE_HPP
 
-constexpr auto TAG = "CubeMapManager";
-
+#include "resource/Resource.hpp"
 
 namespace dma {
+    class GpuResource : public Resource {
+    public:
+        virtual void wipe() = 0;
+    };
+}
 
-    CubeMapManager::CubeMapManager(const std::string& localDir) :
-            GpuResourceManagerHandler(localDir)
-    {}
-
-
-    void CubeMapManager::load(std::shared_ptr<CubeMap> cubeMap, const std::string &sid) {
-        std::string dirName = mLocalDir + "/" + sid;
-        cubeMap->load(dirName);
-        cubeMap->setSID(sid);
-    }
-
-} /* namespace dma */
+#endif //ARPIGL_GPURESOURCE_HPP

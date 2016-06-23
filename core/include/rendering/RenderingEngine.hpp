@@ -63,7 +63,7 @@ namespace dma {
         inline U32 getViewportWidth() const { return mViewportWidth; }
         inline U32 getViewportHeight() const { return mViewportHeight; }
 
-        inline void setSkyBox(SkyBox* skyBox) { mSkyBox = skyBox; }
+        inline void setSkyBox(std::shared_ptr<SkyBox> skyBox) { mSkyBox = skyBox; }
 
         inline void setLight(const Light& light) { mLight = light; }
 
@@ -95,7 +95,7 @@ namespace dma {
         void mDrawSkyBox();
 
         HUDSystem mHUDSystem;
-        SkyBox* mSkyBox;
+        std::shared_ptr<SkyBox> mSkyBox;
         Light mLight;
         const glm::mat4* mV;
         const glm::mat4* mP;

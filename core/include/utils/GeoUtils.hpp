@@ -20,6 +20,8 @@
 
 #include <cmath>
 #include <engine/geo/LatLng.hpp>
+#include <glm/vec3.hpp>
+#include <engine/geo/LatLngAlt.hpp>
 
 namespace dma {
     namespace geo {
@@ -67,6 +69,9 @@ namespace dma {
              * @return a clockwise angle from north in degrees
              */
             static double bearing(LatLng coords1, LatLng coords2);
+
+
+            static glm::vec3 vector(LatLngAlt coords1, LatLngAlt coords2);
 
         };
     }

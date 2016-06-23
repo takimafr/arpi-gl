@@ -17,7 +17,6 @@
 
 
 #include "engine/geo/Poi.hpp"
-#include "engine/geo/GeoSceneManager.hpp"
 
 #define POI_PASS 1
 
@@ -30,8 +29,9 @@ namespace dma {
         Poi::Poi(const std::string& sid,
                  std::shared_ptr<Mesh> mesh,
                  std::shared_ptr<Material> material,
-                 bool animated) :
-                Entity(mesh, material),
+                 bool animated,
+                 GeoSceneManager& geoSceneManager) :
+                GeoEntity(mesh, material, geoSceneManager),
                 mSID(sid),
                 mAnimated(animated),
                 mCurrentTranslationAnimation(nullptr),
@@ -57,22 +57,27 @@ namespace dma {
             delete mCurrentRotationAnimation;
         }
 
-
-
-        void Poi::setPosition(double lat, double lon, double alt) {
-            mLat = lat;
-            mLon = lon;
-            mAlt = alt;
-            mDirty = true;
+        void Poi::setCoords(const LatLngAlt &coords) {
+            GeoEntity::setCoords(coords);
+            animate();
         }
 
 
+//        void Poi::setPosition(double lat, double lon, double alt) {
+//            mLat = lat;
+//            mLon = lon;
+//            mAlt = alt;
+//            //mDirty = true;
+//        }
+//
+//
+//
+//        void Poi::getPosition(double* pos) {
+//            pos[0] = mLat;
+//            pos[1] = mLon;
+//            pos[2] = mAlt;
+//        }
 
-        void Poi::getPosition(double* pos) {
-            pos[0] = mLat;
-            pos[1] = mLon;
-            pos[2] = mAlt;
-        }
 
 
 

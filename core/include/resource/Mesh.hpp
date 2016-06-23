@@ -22,6 +22,7 @@
 #include "rendering/IndexBuffer.hpp"
 #include "rendering/VertexElement.hpp"
 #include "utils/VertexIndices.hpp"
+#include "resource/GpuResource.hpp"
 
 #include <vector>
 #include <set>
@@ -29,7 +30,7 @@
 #include <rendering/BoundingSphere.hpp>
 
 namespace dma {
-    class Mesh {
+    class Mesh : public GpuResource {
 
     public:
         Mesh();
@@ -83,7 +84,10 @@ namespace dma {
         /**
          * Clear OpenGL resources
          */
-        void wipe();
+        void wipe() override;
+
+        void clearCache() override;
+
 
     protected:
         //METHODS
@@ -93,7 +97,6 @@ namespace dma {
             return !positions.empty();
         }
 
-        void clearCache();
 
         //FIELDS
         std::string mSID;

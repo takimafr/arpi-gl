@@ -20,6 +20,7 @@
 #include <string.h>
 #include "utils/Utils.hpp"
 #include "engine/geo/TileMap.hpp"
+#include "engine/geo/Tile.hpp"
 
 #define DEFAULT_TILE_DIFFUSE_MAP "damier"
 
@@ -46,7 +47,8 @@ namespace dma {
 
 
 
-        TileMap::TileMap(ResourceManager& resourceManager) :
+        TileMap::TileMap(GeoSceneManager& geoSceneManager, ResourceManager& resourceManager) :
+                mGeoSceneManager(geoSceneManager),
                 mResourceManager(resourceManager),
                 mLastX(-1),
                 mLastY(-1),
@@ -70,7 +72,7 @@ namespace dma {
             for (int i = 0; i < SIZE * SIZE; ++i) {
                 std::shared_ptr<Quad> quad = mResourceManager.createQuad(1.0f, 1.0f);
                 std::shared_ptr<Material> mat = mResourceManager.createMaterial(TILE_MATERIAL); //material with default tile texture
-                std::shared_ptr<Tile> tile = std::make_shared<Tile>(quad, mat);
+                std::shared_ptr<Tile> tile = std::make_shared<Tile>(quad, mat, mGeoSceneManager); //TODO create TileFactory ?
                 //TODO remove set in material tile.json tile->setDiffuseMap(mResourceManager.acquireTexture(DEFAULT_TILE_DIFFUSE_MAP, &status));
                 tile->mDirty = true;
                 mTiles.push_back(tile);
@@ -260,7 +262,7 @@ namespace dma {
                     tile->setDiffuseMap(mResourceManager.acquireMap(DEFAULT_TILE_DIFFUSE_MAP));
                     mCallbacks->onTileRequest(tile->x, tile->y, tile->z);
                 }
-                tile->setDirty(true);
+                //TODO check if useful: tile->setDirty(true);
             }
         }
     }

@@ -19,6 +19,7 @@
 #include <fstream>
 #include <iterator>
 #include <sys/stat.h>
+#include <stdexcept>
 #include "utils/Utils.hpp"
 #include "utils/ExceptionHandler.hpp"
 
@@ -78,8 +79,9 @@ namespace dma {
         std::ifstream is;
         is.open(path.c_str(), std::ios::ate);
         if (!is.is_open()) {
-            Log::error(TAG, "Cannot open file %s", path.c_str());
-            return throwException(TAG, ExceptionType::IO, ("Cannot open file " + path).c_str());
+            std::string error = "Cannot open file " + path;
+            Log::error(TAG, error);
+            throw std::runtime_error(error);
         }
         length = is.tellg();
         is.seekg(0);

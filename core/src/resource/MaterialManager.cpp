@@ -24,33 +24,13 @@ constexpr auto TAG = "MaterialManager";
 
 namespace dma {
 
-    /*====================== PUBLIC =======================*/
-
-    MaterialManager::~MaterialManager() {
-    }
-
-
-    Status MaterialManager::reload() {
-        Log::trace(TAG, "Reloading MaterialManager...");
-
-        mFallback->reset();
-        load(mFallback, FALLBACK_SID);
-
-        for (auto& kv : mMaterials) {
-            const std::string& sid = kv.first;
-            auto material = kv.second;
-            if (material != nullptr) {
-                material->reset();
-                if (load(material, sid) != STATUS_OK) {
-                    Log::error(TAG, "Error while reloading material %s", sid.c_str());
-                    return STATUS_KO;
-                }
-            }
-        }
-
-        Log::trace(TAG, "MaterialManager reloaded");
-        return STATUS_OK;
-    }
+    MaterialManager::MaterialManager(const std::string &localDir,
+                                     ShaderManager& shaderManager,
+                                     MapManager& mapManager) :
+            ResourceManagerHandler(localDir),
+            mShaderManager(shaderManager),
+            mMapManager(mapManager)
+    {}
 
 
     bool MaterialManager::hasResource(const std::string & sid) const {
@@ -60,41 +40,29 @@ namespace dma {
     }
 
 
-    /*====================== PRIVATE =======================*/
-
-    MaterialManager::MaterialManager(const std::string &localDir,
-                                     ShaderManager& shaderManager,
-                                     MapManager& mapManager) :
-            mLocalDir(localDir),
-            mShaderManager(shaderManager),
-            mMapManager(mapManager)
-    {}
-
-
-    Status MaterialManager::load(std::shared_ptr<Material> material, const std::string& sid) const {
+    void MaterialManager::load(std::shared_ptr<Material> material, const std::string& sid) {
 
         Log::trace(TAG, "Loading material %s ...", sid.c_str());
 
-        std::string path = mLocalDir + sid + ".json";
+        std::string path = mLocalDir + "/" + sid + ".json";
 
         MaterialReader materialReader(path);
         Status status = materialReader.parse();
         if(status != STATUS_OK) {
-            Log::error(TAG, "Error while parsing material %s", path.c_str());
+            std::string error = "Error while parsing material " + path;
+            Log::error(TAG, error.c_str());
             assert(!"Error while parsing material");
-            return status;
+            throw std::runtime_error(error);
         }
 
         material->mSID = sid;
-
-        // from now, an error will be because of an invalid file.
-        const ExceptionType badFileException = ExceptionType::INVALID_FILE;
 
 
         /////////////////////////////////////////////////////////////////////////
         // Get the rendering order
         material->mBackToFront = materialReader.isBackToFront();
 
+        material->mPassCount = 0;
         /////////////////////////////////////////////////////////////////////////
         // Iterate over the passes.
         while (materialReader.nextPass()) {
@@ -128,9 +96,9 @@ namespace dma {
             // 3. Get the shader
             std::string shaderSID = materialReader.getShader();
             if (shaderSID.empty()) {
-                Log::error(TAG, "Invalid shader while parsing material %s", path.c_str());
-                assert(!"Invalid shader while parsing material");
-                return throwException(TAG, badFileException, "Invalid shader while parsing material " + path);
+                std::string error = "Invalid shader while parsing material " + path;
+                Log::error(TAG, error.c_str());
+                throw std::runtime_error(error);
             } else {
                 pass.setShaderProgram(mShaderManager.acquire(shaderSID));
             }
@@ -141,10 +109,9 @@ namespace dma {
                 std::string diffuseSID = materialReader.getDiffuseMap();
                 std::shared_ptr<Map> diffuseMap = mMapManager.acquire(diffuseSID);
                 if (!pass.getShaderProgram()->hasUniform(ShaderProgram::UniformSem::DM)) {
-                    Log::error(TAG, "Error while parsing %s: "
-                            "Shader doesn't have diffuseMap uniform", path.c_str());
-                    assert(!"Shader doesn't have diffuseMap uniform");
-                    return throwException(TAG, badFileException, "Error while parsing " + path + " : Shader doesn't have diffuseMap uniform");
+                    std::string error = "Shader " + path + "doesn't have diffuseMap uniform";
+                    Log::error(TAG, error.c_str());
+                    throw std::runtime_error(error);
                 }
 
                 pass.setDiffuseMap(diffuseMap);
@@ -153,10 +120,9 @@ namespace dma {
                 //Check if material can enable/disable the diffuse map
                 if (materialReader.hasDiffuseMapActivation()) {
                     if (!pass.getShaderProgram()->hasUniform(ShaderProgram::UniformSem::DM_ACTIVATION)) {
-                        Log::error(TAG, "Error while parsing %s: "
-                                "Shader doesn't have diffuse map activation uniform", path.c_str());
-                        assert(!"Shader doesn't have diffuse map activation uniform");
-                        return throwException(TAG, badFileException, "Error while parsing " + path + " : Shader doesn't have diffuse map activation uniform");
+                        std::string error = "Shader " + path + "doesn't have diffuse map activation uniform";
+                        Log::error(TAG, error.c_str());
+                        throw std::runtime_error(error);
                     }
                     pass.addFunc(Pass::Func::DIFFUSE_MAP_ACTIVATION);
                 }
@@ -166,16 +132,14 @@ namespace dma {
             // 5. Enable lighting computation if needed
             if (materialReader.hasLighting()) {
                 if (!pass.getShaderProgram()->hasAttribute(ShaderProgram::AttribSem::NORMAL)) {
-                    Log::error(TAG, "Error while parsing %s: "
-                            "Shader doesn't have normal attribute", path.c_str());
-                    assert(!"Shader doesn't have normal attribute");
-                    return throwException(TAG, badFileException, "Error while parsing " + path + " : Shader doesn't have normal attribute");
+                    std::string error = "Shader " + path + "doesn't have normal attribute";
+                    Log::error(TAG, error.c_str());
+                    throw std::runtime_error(error);
                 }
                 if (!pass.getShaderProgram()->hasUniform(ShaderProgram::UniformSem::N)) {
-                    Log::error(TAG, "Error while parsing %s: "
-                            "Shader doesn't have N uniform", path.c_str());
-                    assert(!"Shader doesn't have N uniform");
-                    return throwException(TAG, badFileException, "Error while parsing " + path + " : Shader doesn't have N uniform");
+                    std::string error = "Shader " + path + "doesn't have N uniform";
+                    Log::error(TAG, error.c_str());
+                    throw std::runtime_error(error);
                 }
                 // Enable flat or smooth shading
                 std::string lightingMode = materialReader.getLighting();
@@ -184,9 +148,9 @@ namespace dma {
                 } else if (lightingMode == "smooth") {
                     pass.addFunc(Pass::Func::LIGHTING_SMOOTH);
                 } else {
-                    Log::error(TAG, "bad lighting mode");
-                    assert(!"bad lighting mode");
-                    return throwException(TAG, badFileException, "Error while parsing " + path + " : bad lighting mode");
+                    std::string error = "Shader " + path + "has bad lighting mode";
+                    Log::error(TAG, error.c_str());
+                    throw std::runtime_error(error);
                 }
             }
 
@@ -200,10 +164,9 @@ namespace dma {
             // 7. Get the diffuse color if any
             if (materialReader.hasDiffuseColor()) {
                 if (!pass.getShaderProgram()->hasUniform(ShaderProgram::UniformSem::DIFFUSE_COLOR)) {
-                    Log::error(TAG, "Error while parsing %s: "
-                            "Shader doesn't have diffuse color uniform", path.c_str());
-                    assert(!"Shader doesn't have diffuse color uniform");
-                    return throwException(TAG, badFileException, "Error while parsing " + path + " : Shader doesn't have color uniform");
+                    std::string error = "Shader " + path + "doesn't have color uniform";
+                    Log::error(TAG, error.c_str());
+                    throw std::runtime_error(error);
                 }
                 glm::vec3 diffuseColor = materialReader.getDiffuseColor();
                 pass.setDiffuseColor(diffuseColor);
@@ -213,7 +176,6 @@ namespace dma {
             material->addPass(pass);
         }
         Log::trace(TAG, "Material %s loaded", sid.c_str());
-        return STATUS_OK;
     }
 
     std::shared_ptr<Material> MaterialManager::create() {

@@ -23,12 +23,11 @@
 #include "engine/geo/GeoEngineCallbacks.hpp"
 #include "engine/geo/PoiFactory.hpp"
 #include "engine/geo/GeoSceneManager.hpp"
+#include "engine/geo/Poi.hpp"
 
 
 namespace dma {
     namespace geo {
-
-        class GeoSceneManager;
 
         /**
          * 'Geo variation' of dma Engine, wrapped with a convenient interface.
@@ -110,16 +109,11 @@ namespace dma {
 
 
         public:
-            /* ***
-             * ATTRIBUTES
-             */
-            /** where resources are stored. */
-            std::string                                     mRootDir;
-            /** actual back-end dma::Engine. */
-            Engine                                          mEngine;
-            PoiFactory                                      mPoiFactory;
-            GeoSceneManager                                 mGeoSceneManager;
-            GeoEngineCallbacks                              *mDefaultCallbacks, *mCallbacks;
+            std::string mRootDir;
+            Engine mEngine;
+            PoiFactory mPoiFactory;
+            GeoSceneManager mGeoSceneManager;
+            GeoEngineCallbacks *mDefaultCallbacks, *mCallbacks;
             TaskScheduler mMessageQueue;
         };
 

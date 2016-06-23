@@ -28,10 +28,10 @@ namespace dma {
 
         Tile::Tile(std::shared_ptr<Quad> quad,
                    std::shared_ptr<Material> material,
-                   const LatLng& coords, int x, int y, int z) :
-                Entity(quad, material),
-                mCoords(coords),
-                x(x), y(y), z(z),
+//                   const LatLng& coords, int x, int y, int z,
+                   GeoSceneManager& geoSceneManager) :
+                GeoEntity(quad, material, geoSceneManager),
+                x(-1), y(-1), z(-1),
                 mQuad(quad)
         {
             pitch(-90.0f);
@@ -40,10 +40,10 @@ namespace dma {
 
 
 
-        Tile::Tile(std::shared_ptr<Quad> quad, std::shared_ptr<Material> material) :
-            Tile(quad, material, LatLng(), -1, -1, -1)
-        {
-        }
+//        Tile::Tile(std::shared_ptr<Quad> quad, std::shared_ptr<Material> material, GeoSceneManager& geoSceneManager) :
+//                Tile(quad, material, LatLng(), -1, -1, -1, geoSceneManager)
+//        {
+//        }
 
 
 

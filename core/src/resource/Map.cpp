@@ -16,6 +16,7 @@
 
 
 
+#include <stdexcept>
 #include "resource/Map.hpp"
 #include "utils/ExceptionHandler.hpp"
 
@@ -37,7 +38,7 @@ namespace dma {
             enableAnisotropy = true;
         } else {
             enableAnisotropy = false;
-            Log::warn(TAG, "Anisotropic filering not supported on this platform.");
+            Log::warn(TAG, "Anisotropic filtering not supported on this platform.");
         }
     }
 
@@ -52,81 +53,70 @@ namespace dma {
 
     Map::~Map() {
         delete mImage;
+        mImage = nullptr;
     }
 
 
+    void Map::clearCache() {
+        delete mImage;
+        mImage = nullptr;
+    }
 
-    Status Map::load(const std::string& filename) {
-
+    void Map::load(const std::string& filename) {
         Log::trace(TAG, "Loading 2D texture %s ...", filename.c_str());
 
-        if (mImage != nullptr) delete mImage;
-        mImage = new Image();
-        Status status = mImage->loadAsPNG(filename) ;
-        if (status != STATUS_OK) {
-            Log::error(TAG, "Unable to load map %s" , filename.c_str());
-            return status;
-        }
-        status = mLoadFromImage();
-        if (status != STATUS_OK) {
-            Log::error(TAG, "Unable to load map %s", filename.c_str());
-            return status;
-        }
+        if (mImage != nullptr) {
+            mLoadFromImage();
 
+        } else {
+            mImage = new Image();
+            mImage->loadAsPNG(filename);
+            mLoadFromImage();
+        }
         Log::trace(TAG, "2D texture %s loaded", filename.c_str());
-
         //TODO delete mImage if cache is off
-        return STATUS_OK;
     }
 
 
 
-    Status Map::load(const Image &image) {
+    void Map::load(const Image &image) {
         Log::trace(TAG, "Loading 2D texture from Image");
-
 
         if (mImage != nullptr) delete mImage;
         mImage = new Image(image);
+        mLoadFromImage() ;
 
-        Status status = mLoadFromImage() ;
-        if (status != STATUS_OK) {
-            Log::error(TAG, "Unable to load map from image");
-            assert("Unable to load map from image");
-            throwException(TAG, ExceptionType::UNKNOWN, "Unable to load map from image");
-            return status;
-        }
         Log::trace(TAG, "2D texture loaded");
-        return STATUS_OK;
     }
 
 
 
-    Status Map::refresh(const std::string &filename) {
+    void Map::refresh(const std::string &filename) {
         if (mImage == nullptr) {
             Log::trace(TAG, "Refreshing Map %s from disk", filename.c_str());
-            return load(filename);
+            load(filename);
         } else {
             Log::trace(TAG, "Refreshing Map %s from cache", filename.c_str());
-            return mLoadFromImage();
+            mLoadFromImage();
         }
     }
 
 
 
-    Status Map::refresh() {
+    void Map::refresh() {
         if (mImage == nullptr) {
             Log::error(TAG, "Refreshing Map that doesn't have cache");
             assert(!"Refreshing Map that doesn't have cache");
-            return throwException(TAG, ExceptionType::UNKNOWN, "Refreshing Map that doesn't have cache");
+            throw std::runtime_error("Refreshing Map that doesn't have cache");
         } else {
             Log::trace(TAG, "Refreshing Map %s from cache", getSID().c_str());
-            return mLoadFromImage();
+            mLoadFromImage();
         }
     }
 
 
 
-    Status Map::mLoadFromImage() {
+    void Map::mLoadFromImage() {
         /* generate texture */
         glGenTextures (1, &mHandle);
         Log::trace(TAG, "(GL texture handle : %d)", mHandle);
@@ -173,6 +163,5 @@ namespace dma {
         glBindTexture(GL_TEXTURE_2D, 0); //unbind texture
 
         //TODO delete mImage if cache is off
-        return STATUS_OK;
     }
 }

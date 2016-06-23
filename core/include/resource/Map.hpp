@@ -37,18 +37,19 @@ namespace dma {
             mImage = image;
         }
 
-        Status load(const std::string& filename);
+        virtual void clearCache() override;
+        void load(const std::string& filename);
         /**
          * Loads the map from the provided Image.
          * A copy will be kept in cache.
          */
-        Status load(const Image& image);
-        Status refresh(const std::string &filename);
-        Status refresh();
+        void load(const Image& image);
+        void refresh(const std::string &filename);
+        void refresh();
 
     private:
 
-        Status mLoadFromImage();
+        void mLoadFromImage();
 
         Image* mImage;
 

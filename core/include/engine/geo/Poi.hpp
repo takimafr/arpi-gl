@@ -27,10 +27,10 @@
 #include "engine/Entity.hpp"
 #include "animation/RotationAnimation.hpp"
 #include "LatLngAlt.hpp"
+#include "GeoEntity.hpp"
 
 namespace dma {
     namespace geo {
-        class GeoSceneManager;
 
         /**
          * Poi variation of an Entity. A poi, or Point of Interest, represents
@@ -39,10 +39,10 @@ namespace dma {
          *
          * @version 0.2.3
          */
-        class Poi : public Entity, public Selectable {
+        class Poi : public GeoEntity, public Selectable {
 
         public:
-            Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, bool animated);
+            Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, bool animated, GeoSceneManager& geoSceneManager);
             Poi(const Poi &) = delete;
             void operator=(const Poi &) = delete;
             virtual ~Poi();
@@ -55,28 +55,31 @@ namespace dma {
             /** /!\ CAN BE EMPTY */
             inline const std::string& getSid() const { return mSID; }
 
+            virtual void setCoords(const LatLngAlt &coords) override;
+
+
             /**
              * @param double*
              *              will be filled with { lat, lon, alt }.
              */
-            void getPosition(double*);
+//            void getPosition(double*);
 
 
-            /**
-             * Returns the latitude of the poi
-             */
-            inline double getLat() const { return mLat; }
-
-            /**
-             * Returns the longitude of the poi
-             */
-            inline double getLng() const { return mLon; }
-
-
-            /**
-             * Returns the longitude of the poi
-             */
-            inline double getAlt() const { return mAlt; }
+//            /**
+//             * Returns the latitude of the poi
+//             */
+//            inline double getLat() const { return mLat; }
+//
+//            /**
+//             * Returns the longitude of the poi
+//             */
+//            inline double getLng() const { return mLon; }
+//
+//
+//            /**
+//             * Returns the longitude of the poi
+//             */
+//            inline double getAlt() const { return mAlt; }
 
             /* ***
              * SETTERS
@@ -90,16 +93,16 @@ namespace dma {
              * @param double -
              *              altitude of this entity.
              */
-            void setPosition(double lat, double lon, double alt = 0.0);
+//            void setPosition(double lat, double lon, double alt = 0.0);
 
             /**
              * Set the poi position.
              * @param double pos[3]
              *              the position of the POI. Must be of length 3.
              */
-            inline void setPosition(double pos[3]) {
-                setPosition(pos[0], pos[1], pos[2]);
-            }
+//            inline void setPosition(double pos[3]) {
+//                setPosition(pos[0], pos[1], pos[2]);
+//            }
 
             void setColor(const Color& color);
 
@@ -121,25 +124,7 @@ namespace dma {
                 return mRenderingComponent->getRenderingPackages()[0]->getMaterial();
             }
 
-            inline std::shared_ptr<Mesh> getMesh() {
-                return mRenderingComponent->getMesh();
-            }
-
-            inline bool isDirty() const {
-                return mDirty;
-            }
-
-            inline void setDirty(bool dirty) {
-                mDirty = dirty;
-            }
-
             virtual bool intersects(const glm::vec3 &ray, const glm::vec3& origin);
-
-
-            /**
-             * Updates POI poisition & animation, against the provided GeoSceneMagager
-             */
-            //void update(const GeoSceneManager& sceneManager);
 
             /* ***
              * ATTRIBUTES
@@ -147,10 +132,6 @@ namespace dma {
 
         protected:
             const std::string mSID;
-            double mLat;
-            double mLon;
-            double mAlt;
-            bool mDirty;
             bool mAnimated;
             TranslationAnimation* mCurrentTranslationAnimation;
             RotationAnimation* mCurrentRotationAnimation;

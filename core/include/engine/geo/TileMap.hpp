@@ -18,7 +18,7 @@
 #ifndef _DMA_GEO_TILEMAP_HPP_
 #define _DMA_GEO_TILEMAP_HPP_
 
-#include "engine/geo/Tile.hpp"
+//#include "engine/geo/Tile.hpp"
 #include "engine/geo/GeoEngineCallbacks.hpp"
 #include "resource/ResourceManager.hpp"
 
@@ -27,6 +27,8 @@
 
 namespace dma {
     namespace geo {
+        class Tile;
+        class GeoSceneManager;
 
         class TileMap {
 
@@ -35,7 +37,7 @@ namespace dma {
              */
             static constexpr char       TAG[]               = "TileMap";
             static constexpr char       TILE_MATERIAL[]     = "tile";
-            static constexpr int        SIZE       = 9;
+            static constexpr int        SIZE       = 13;
             static constexpr int        OFFSET     = SIZE / 2;
             static constexpr int        ZOOM     = 20;
 
@@ -84,7 +86,7 @@ namespace dma {
             }
 
         private:
-            TileMap(ResourceManager&);
+            TileMap(GeoSceneManager&, ResourceManager&);
             TileMap(const TileMap&) = delete;
             void operator=(const TileMap&) = delete;
             virtual ~TileMap();
@@ -104,6 +106,7 @@ namespace dma {
             std::shared_ptr<Tile> findTile(int x, int y, int z);
 
             //Fields
+            GeoSceneManager& mGeoSceneManager;
             ResourceManager& mResourceManager;
             /** the last known center position. */
             int mLastX, mLastY;

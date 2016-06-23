@@ -21,35 +21,21 @@
 #include <string>
 #include <map>
 
-#include "resource/TextureManager.hpp"
 #include "resource/Map.hpp"
 #include "resource/CubeMap.hpp"
+#include "resource/GpuResourceManagerHandler.hpp"
 
 namespace dma {
 
-    class CubeMapManager {
+    class CubeMapManager : public GpuResourceManagerHandler<CubeMap> {
 
     public:
-        CubeMapManager(const std::string& dir);
-        virtual ~CubeMapManager();
-
+        CubeMapManager(const std::string& localDir);
         CubeMapManager(const CubeMapManager&) = delete;
         CubeMapManager& operator=(const CubeMapManager&) = delete;
 
-        void init();
-        std::shared_ptr<CubeMap> acquire(const std::string& sid);
-
-        void reload();
-        void refresh();
-        void wipe();
-        void unload();
-        void update();
-
     private:
-        void mLoadCubeMap(std::shared_ptr<CubeMap> cubeMap, const std::string& sid);
-
-        std::map<std::string, std::shared_ptr<CubeMap>> mCubeMaps;
-        std::string mDir;
+        void load(std::shared_ptr<CubeMap> cubeMap, const std::string& sid);
     };
 } /* namespace dma */
 

@@ -35,20 +35,19 @@
 //DMA
 #include "common/Types.hpp"
 #include "resource/Image.hpp"
+#include "GpuResource.hpp"
 
 namespace dma {
 
     /**
      * Stores information relative to a GL Texture (name, gl handle, etc...) .
      */
-    class Texture {
+    class Texture : public GpuResource {
 
         friend class TextureManager;
 
     public:
-
         Texture();
-        virtual ~Texture();
 
         Texture(const Texture&) = delete;
         Texture& operator=(const Texture&) = delete;
@@ -65,9 +64,9 @@ namespace dma {
             mSID = sid;
         }
 
-        virtual Status load(const std::string& filename) = 0;
-        virtual Status refresh(const std::string& filename) = 0;
-        virtual void wipe();
+        virtual void load(const std::string& filename) = 0;
+        virtual void refresh(const std::string& filename) = 0;
+        virtual void wipe() override;
 
     protected:
         // openGL handle to this texture.

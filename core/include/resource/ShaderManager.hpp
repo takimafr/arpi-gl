@@ -23,56 +23,38 @@
 #include <string>
 #include <map>
 
-#include "resource/ResourceManagerHandler.hpp"
+#include "resource/GpuResourceManagerHandler.hpp"
 #include "resource/ShaderProgram.hpp"
 #include "common/Types.hpp"
 
 namespace dma {
 
-    class ShaderManager : public ResourceManagerHandler<ShaderProgram> {
+    class ShaderManager : public GpuResourceManagerHandler<ShaderProgram> {
 
         friend class ResourceManager;
 
     public:
         virtual ~ShaderManager();
 
-        /**
-         * From disk
-         */
-        Status reload();
-
-        /**
-         * From cache if any
-         */
-        Status refresh();
-
-
-        /**
-         * Clean all GPU resources
-         */
-        void wipe();
-
-
         virtual bool hasResource(const std::string &) const;
 
 
     protected:
-        ShaderManager(const std::string& rootDir);
+        ShaderManager(const std::string& localDir);
         ShaderManager(const ShaderManager&) = delete;
         void operator=(const ShaderManager&) = delete;
 
-    private:
         /**
          * Loads the shader program corresponding to the sid from disk
          * and uploads it to the GPU.
          * This is the non-cached version: the shader source code won't remain in RAM
          **/
-        Status load(std::shared_ptr<ShaderProgram> shaderProgram, const std::string& sid) const;
+        void load(std::shared_ptr<ShaderProgram> shaderProgram, const std::string& sid) override;
 
         /**
         * Loads the shader program from the provided sources and uploads it to the GPU.
         */
-        Status load(std::shared_ptr<ShaderProgram> shaderProgram,
+        void load(std::shared_ptr<ShaderProgram> shaderProgram,
                      const std::string& sid,
                      const std::string& vertexSource,
                      const std::string& fragmentSource) const;
@@ -82,9 +64,6 @@ namespace dma {
          * Returns the OpenGL shader handle
          **/
         GLuint compile(const std::string &source, GLenum type) const;
-
-    private:
-        std::string mLocalDir;
     };
 
 }

@@ -35,14 +35,20 @@ namespace dma {
     }
 
 
-
     CubeMap::~CubeMap() {
-        mDeleteImages();
+        clearCache();
+    }
+
+    void CubeMap::clearCache() {
+        for (U32 i = 0; i < 6; ++i) {
+            delete mImages[i];
+            mImages[i] = nullptr;
+        }
     }
 
 
 
-    Status CubeMap::load(const std::string& dirName) {
+    void CubeMap::load(const std::string& dirName) {
         std::vector<std::string> faces;
         faces.push_back(dirName + "/right.png");
         faces.push_back(dirName + "/left.png");
@@ -53,32 +59,24 @@ namespace dma {
 
         Log::trace(TAG, "Loading Cube Map %s ...", dirName.c_str());
 
-        // Cache images
-        mDeleteImages();
-        for (GLuint i = 0; i < faces.size(); i++) {
-//            if (mImages[i] != nullptr) delete mImages[i];
-            Image *img = new Image();
-            mImages[i] = img;
-            Status status = img->loadAsPNG(faces[i], false);
-            if (status != STATUS_OK) {
-                return status;
+        if (mImages[0] != nullptr) {
+            Log::trace(TAG, "Refreshing CubeMap %s using cache", dirName.c_str());
+            mLoadFromImages();
+        } else {
+            for (GLuint i = 0; i < faces.size(); i++) {
+                Image *img = new Image();
+                mImages[i] = img;
+                img->loadAsPNG(faces[i], false);
             }
+           mLoadFromImages();
         }
-
-        if (mLoadFromImages() != STATUS_OK) {
-            Log::error(TAG, "Unable to load cube map %s", dirName.c_str());
-            assert(false);
-            return STATUS_KO;
-        }
-
         Log::trace(TAG, "Cube Map %s loaded", dirName.c_str());
         //TODO clear images if cache is off
-        return STATUS_OK;
     }
 
 
 
-    Status CubeMap::refresh(const std::string &dirName) {
+    void CubeMap::refresh(const std::string &dirName) {
         if (mImages[0] == nullptr) {
             Log::trace(TAG, "Refreshing CubeMap %s from disk", dirName.c_str());
             return load(dirName);
@@ -89,17 +87,7 @@ namespace dma {
     }
 
 
-
-    void CubeMap::mDeleteImages() {
-        for (U32 i = 0; i < 6; ++i) {
-            delete mImages[i];
-            mImages[i] = nullptr;
-        }
-    }
-
-
-
-    Status CubeMap::mLoadFromImages() {
+    void CubeMap::mLoadFromImages() {
         glGenTextures(1, &mHandle);
         //glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, mHandle);
@@ -131,6 +119,5 @@ namespace dma {
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0); //unbind texture
 
         //TODO clear images if cache is off
-        return STATUS_OK;
     }
 }

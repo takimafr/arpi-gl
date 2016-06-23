@@ -16,6 +16,7 @@
 
 
 
+#include <glm/gtc/constants.hpp>
 #include "utils/GeoUtils.hpp"
 #include "glm/glm.hpp"
 
@@ -61,5 +62,18 @@ namespace dma {
             double bearing = glm::degrees(atan2(y, x)); // [-180, 180]
             return glm::mod(bearing + 360.0, 360.0);
         }
+
+        glm::vec3 GeoUtils::vector(LatLngAlt coords1, LatLngAlt coords2) {
+            double bearing = GeoUtils::bearing(coords2, coords1);
+            double distance = GeoUtils::slc(coords2, coords1);
+            glm::vec3 res;
+            double theta = (glm::half_pi<double>() - glm::radians(bearing));
+            res.x = (float) (distance * cos(theta));
+            res.y = coords2.alt - coords1.alt;
+            res.z = (float) (-distance * sin(theta));
+            return res;
+        }
+
+
     }
 }
