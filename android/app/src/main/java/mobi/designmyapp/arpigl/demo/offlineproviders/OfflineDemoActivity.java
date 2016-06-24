@@ -35,8 +35,10 @@ import mobi.designmyapp.arpigl.demo.R;
  */
 public class OfflineDemoActivity extends AppCompatActivity {
 
-    private static final double EIFFEL_LAT = 48.8606;
-    private static final double EIFFEL_LON = 2.2960;
+//    private static final double EIFFEL_LAT = 48.8606;
+//    private static final double EIFFEL_LON = 2.2960;
+    private static final double ELYSEE_LAT = 48.8708735;
+    private static final double ELYSEE_LNG = 2.3036656;
 
     private ArpiGlController arpiController;
 
@@ -81,6 +83,6 @@ public class OfflineDemoActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Set user location to paris, to be able to see pois
-        arpiController.setCameraPosition(EIFFEL_LAT, EIFFEL_LON);
+        arpiController.setCameraPosition(ELYSEE_LAT, ELYSEE_LNG);
     }
 }

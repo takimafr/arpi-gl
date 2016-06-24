@@ -139,6 +139,21 @@ namespace dma {
             mGeoEntities.erase(sid);
         }
 
+
+        std::shared_ptr<GeoEntity> GeoSceneManager::getGeoEntity(const std::string &sid) {
+            if (mGeoEntities.find(sid) == mGeoEntities.end()) {
+                Log::warn(TAG, "GeoEntity %s not in the GeoScene", sid.c_str());
+                return nullptr;
+            }
+            return mGeoEntities[sid];
+        }
+
+
+        bool GeoSceneManager::hasGeoEntity(const std::string &sid) {
+            return mGeoEntities.find(sid) != mGeoEntities.end();
+        }
+
+
         glm::vec3 GeoSceneManager::mapPosition(double lat, double lon, double alt) const {
             double bearing = GeoUtils::bearing(LatLng(lat, lon), mOrigin);
             double distance = GeoUtils::slc(LatLng(lat, lon), mOrigin);
@@ -163,17 +178,8 @@ namespace dma {
                 auto ge = std::static_pointer_cast<GeoEntity>(e);
                 ge->setCoords(ge->getCoords());
             }
-//            // Reanimate POIs
-//            for (auto& kv : mPOIs) {
-//                auto poi = kv.second;
-//                poi->animate();
-//            }
 
-//            for (auto& kv : mPOIs) {
-//                kv.second->setDirty(true);
-//            }
-
-            for (auto tile : mTileMap.getTiles()) {
+            for (auto tile : mTileMap.getTiles()) {//TODO refacto
                 tile->setDirty(true);
             }
         }
@@ -190,58 +196,6 @@ namespace dma {
         }
 
 
-
-//        bool GeoSceneManager::addPoi(std::shared_ptr<Poi> poi) {
-//            if (hasPoi(poi->getSid())) {
-//                Log::warn(TAG, "GeoScene already contains Poi with SID = %s", poi->getSid().c_str());
-//                return false;
-//            }
-//            LatLngAlt coords = poi->getCoords();
-//            int x = GeoUtils::lng2tilex(coords.lng, ZOOM_LEVEL);
-//            int y = GeoUtils::lat2tiley(coords.lat, ZOOM_LEVEL);
-//            if (!TileMap::isInRange(x, y, mLastX, mLastY)) {
-//                Log::warn(TAG, "Trying to add poi %s that is out of the tile map range", poi->getSid().c_str());
-//                return false;
-//            }
-//            Log::debug(TAG, "Adding Poi %s", poi->getSid().c_str());
-//            mPOIs[poi->getSid()] = poi;
-//            mScene.addEntity(poi);
-//            return true;
-//        }
-//
-//
-//
-//        bool GeoSceneManager::removePoi(const std::string& sid) {
-//            if (mPOIs.find(sid) == mPOIs.end()) {
-//                Log::warn(TAG, "Trying to remove poi with SID = %s from the GeoScene that does not exist", sid.c_str());
-//                return false;
-//            }
-//            mScene.removeEntity(mPOIs[sid]);
-//            mPOIs.erase(sid);
-//            return true;
-//        }
-//
-//
-//
-//        void GeoSceneManager::removeAllPois() {
-//            for (auto& kv : mPOIs) {
-//                mScene.removeEntity(kv.second);
-//            }
-//            mPOIs.clear();
-//        }
-//
-//
-//
-//        bool GeoSceneManager::hasPoi(const std::string& sid) {
-//            return mPOIs.find(sid) != mPOIs.end();
-//        }
-
-
-        /* ***
-         * PRIVATE
-         */
-
-
         glm::vec3 GeoSceneManager::destinationPoint(double bearing, double distance) const {
             glm::vec3 res;
             double theta = (glm::half_pi<double>() - glm::radians(bearing));
@@ -250,17 +204,6 @@ namespace dma {
             res.z = (float) (-distance * sin(theta));
             return res;
         }
-
-
-//
-//        std::shared_ptr<Poi> GeoSceneManager::getPoi(const std::string &sid) {
-//            if (mPOIs.find(sid) == mPOIs.end()) {
-//                Log::warn(TAG, "No poi found with the sid %s", sid.c_str());
-//                return nullptr;
-//            }
-//            return mPOIs[sid];
-//        }
-
 
 
         void GeoSceneManager::placeCamera(const LatLng& coords) {

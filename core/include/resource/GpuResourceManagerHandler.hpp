@@ -32,7 +32,7 @@ namespace dma {
         virtual void wipe() {
             Log::trace(this->TAG, "Wiping...");
 
-            this->mFallback->wipe();
+//            this->mFallback->wipe();
 
             for (auto& kv : this->mResources) {
                 auto resource = kv.second;

@@ -71,6 +71,10 @@ namespace dma {
 
             void removeGeoEntity(const std::string& sid);
 
+            std::shared_ptr<GeoEntity> getGeoEntity(const std::string& sid);
+
+            bool hasGeoEntity(const std::string& sid);
+
             /**
              * Convert world coordinates to openGL coordinates.
              */
@@ -78,29 +82,10 @@ namespace dma {
 
             glm::vec3 mapPosition(const LatLngAlt& coords) const;
 
-//            /**
-//             * Adds the poi to the scene
-//             */
-//            bool addPoi(std::shared_ptr<Poi> poi);
-//
-//            /**
-//             * remove the given Poi from the scene.
-//             */
-//            bool removePoi(const std::string& sid);
-//
-//            void removeAllPois();
-//
-//            bool hasPoi(const std::string& sid);
-//
-//            std::shared_ptr<Poi> getPoi(const std::string& sid);
 
             inline Scene& getScene() {
                 return mScene;
             }
-
-            /* ***
-             * SETTERS
-             * ***/
 
             /**
              * Set the origin of the world.
@@ -118,9 +103,6 @@ namespace dma {
             void orientateCamera(std::shared_ptr<glm::mat4> rotationMatrix);
 
             std::shared_ptr<Poi> pick(int screenX, int screenY);
-
-//            void addTrack(const std::string& sid, const std::vector<LatLngAlt>& geoPoints, float thickness, const Color& color);
-//            void removeTrack(const std::string& sid);
 
             /* ***
              * TILEMAP-PASSTHROUGHT

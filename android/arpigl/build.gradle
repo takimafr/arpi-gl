@@ -13,31 +13,69 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.model.library'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+model {
+    android {
+        compileSdkVersion 23
+        buildToolsVersion "23.0.2"
 
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "0.3.4"
-    }
+        defaultConfig {
+            minSdkVersion.apiLevel 15
+            targetSdkVersion.apiLevel 23
+            versionCode 1
+            versionName "0.3.4"
+        }
 
-    sourceSets.main {
-        jniLibs.srcDir 'src/main/lib'
-    }
-
-
-    buildTypes {
-        debug {
-            jniDebuggable true
+        ndk {
+            moduleName = "arpigl"
+            ldLibs.addAll(['log', 'GLESv2', 'z'])
+            cppFlags.addAll(['-std=c++11', '-fexceptions', '-frtti', '-Wall', '-Wno-comment', '-Wno-strict-aliasing'])
+            cppFlags.addAll(['-I' + file("../../core/include"), '-I' + file("../../third"), '-I' + file("../../third/rapidjson"), '-I' + file("src/main/jni/ndk-modules")])
+            stl = 'c++_shared'
         }
     }
 
+    android.sources {
+        main {
+            jniLibs {
+                source {
+                    srcDir 'src/main/libs'
+                }
+            }
+        }
+    }
+
+//    sourceSets.main {
+//        jniLibs.srcDir 'src/main/lib'
+//    }
+
+//    android.buildTypes {
+//        debug {
+//            jniDebuggable true
+//        }
+//    }
+
 }
+
+// call regular ndk-build(.cmd) script from app directory
+task ndkBuild(type: Exec) {
+    commandLine 'ndk-build', '-C', file('src/main').absolutePath
+}
+
+tasks.all {
+    task ->
+        if (task.name.startsWith('compile') && task.name.contains('MainC')) {
+            task.enabled = false
+        }
+        if (task.name.startsWith('link')) {
+            task.enabled = false
+        }
+        if (task.name.endsWith('SharedLibrary') ) {
+            task.dependsOn ndkBuild
+        }
+}
+
 
 dependencies {
     compile fileTree(dir: 'lib', include: ['*.jar'])

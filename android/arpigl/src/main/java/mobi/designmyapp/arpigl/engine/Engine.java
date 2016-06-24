@@ -94,7 +94,7 @@ public final class Engine implements Controller {
      * callbacks to be notified on native engine event. This callback is set by
      * default to discard events.
      */
-    private NativeFallthroughEngineListener mNativeListener = new NativeFallthroughEngineListener();
+    private NativeFallthroughEngineListener mNativeListener;
 
     /* ***
      * CONSTRUCTOR
@@ -110,6 +110,8 @@ public final class Engine implements Controller {
     public Engine(Context context) {
 
         mContext = context;
+
+        mNativeListener = new NativeFallthroughEngineListener(mContext);
 
         // set the installation path, where resource assets are (will be)
         // copied.
@@ -461,97 +463,6 @@ public final class Engine implements Controller {
         }
     }
 
-    /**
-     * This class will be passed to the C++ engine to request tiles
-     */
-    private class NativeFallthroughEngineListener implements EngineListener {
-
-        /**
-         * address of the native c++ object.
-         */
-        private long mNativeAddr;
-
-        /**
-         * Wrapped listener
-         */
-        private EngineListener mEngineListener;
-
-        /**
-         * Gets the native c++ address.
-         *
-         * @return the native address
-         */
-        long getNativeAddr() {
-            return mNativeAddr;
-        }
-
-        public NativeFallthroughEngineListener() {
-            mNativeAddr = newEngineListener();
-        }
-
-        @Override
-        protected void finalize() throws Throwable {
-            super.finalize();
-            freeEngineListener(mNativeAddr);
-        }
-
-        public void setEngineListener(EngineListener engineListener) {
-            this.mEngineListener = engineListener;
-        }
-
-        @Override
-        public void onTileRequest(final int x, final int y, final int z) {
-            // MAY DEADLOCK IF RUN IN THE NATIVE THREAD
-            final Handler mainHandler = new Handler(mContext.getMainLooper());
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (mEngineListener != null) {
-                        mEngineListener.onTileRequest(x, y, z);
-                    }
-                }
-            };
-            mainHandler.post(runnable);
-        }
-
-        @Override
-        public void onPoiSelected(final String sid) {
-            // MAY DEADLOCK IF RUN IN THE NATIVE THREAD
-            final Handler mainHandler = new Handler(mContext.getMainLooper());
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (mEngineListener != null) {
-                        mEngineListener.onPoiSelected(sid);
-                    }
-                }
-            };
-            mainHandler.post(runnable);
-        }
-
-        @Override
-        public void onPoiDeselected(final String sid) {
-            // MAY DEADLOCK IF RUN IN THE NATIVE THREAD
-            final Handler mainHandler = new Handler(mContext.getMainLooper());
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (mEngineListener != null) {
-                        mEngineListener.onPoiDeselected(sid);
-                    }
-                }
-            };
-            mainHandler.post(runnable);
-        }
-
-        /* ***
-        * ENGINE LISTENER NATIVE METHODS
-        */
-        private native long newEngineListener();
-
-        private native void freeEngineListener(long nativeAddr);
-    }
-
     /* ***
      * NATIVE ROUTINES DEFINITION
      */
@@ -594,17 +505,17 @@ public final class Engine implements Controller {
 
     private native void setCameraRotation(long nativeInstanceAddr, float[] rotationMatrix);
 
-    private native void setCameraPosition2d(long nativeInstanceAddr, double lat, double lon);
+    private native void setCameraPosition2d(long nativeInstanceAddr, double lat, double lng);
 
-    private native void setCameraPosition(long nativeInstanceAddr, double lat, double lon, double alt, boolean animated);
+    private native void setCameraPosition(long nativeInstanceAddr, double lat, double lng, double alt, boolean animated);
 
     private native void zoom(long nativeInstanceAddr, float offset);
 
-    private native void setOrigin(long nativeInstanceAddr, double lat, double lon);
+    private native void setOrigin(long nativeInstanceAddr, double lat, double lng);
 
     private native void notifyTileAvailable(long nativeInstanceAddr, int x, int y, int z);
 
-    private native void setTileNamespace(long nativeInstanceAddr, String namespace);
+    private native void setTileNamespace(long nativeInstanceAddr, String ns);
 
     private native void updateTileDiffuseMaps(long nativeInstanceAddr);
 

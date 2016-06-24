@@ -14,20 +14,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
-#include <fstream>
-#include <resource/Watermark.hpp>
-#include <utils/LocationReader.hpp>
 #include <utils/GeoUtils.hpp>
+#include <rapidjson/document.h>
 #include "engine/geo/GeoEngine.hpp"
-#include "engine/geo/GeoSceneManager.hpp"
 
 constexpr char TAG[] = "PoiEngine";
 
 namespace dma {
     namespace geo {
-
 
         GeoEngine::GeoEngine(const std::string &resourceDir) :
                 mRootDir(resourceDir),
@@ -39,11 +33,9 @@ namespace dma {
         {}
 
 
-
         GeoEngine::~GeoEngine() {
 
         }
-
 
 
         bool GeoEngine::init() {
@@ -62,7 +54,7 @@ namespace dma {
             mGeoSceneManager.placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
             // 1. Stringify the file
             std::string json;
-            std::string path =  "assets-test/arpigl/locations.json";
+            std::string path = mRootDir + "/" + "buildings.json";
             Utils::bufferize(path, json);
 
             rapidjson::Document document;
@@ -115,9 +107,6 @@ namespace dma {
 
 
         void GeoEngine::reload() {
-            std::ofstream out(mRootDir + "texture/watermark.png", std::ios::binary);
-            out.write((const char *) Watermark::DATA, Watermark::SIZE);
-            out.close();
             mEngine.reload();
         }
 

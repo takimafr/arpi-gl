@@ -24,6 +24,7 @@ ENGINE_CPP :=  \
 GEO_ENGINE_CPP := \
     $(ROOT_PATH)/core/src/engine/geo/GeoEngine.cpp          \
     $(ROOT_PATH)/core/src/engine/geo/GeoEngineCallbacks.cpp \
+    $(ROOT_PATH)/core/src/engine/geo/GeoEntity.cpp          \
     $(ROOT_PATH)/core/src/engine/geo/Poi.cpp				\
     $(ROOT_PATH)/core/src/engine/geo/PoiFactory.cpp         \
     $(ROOT_PATH)/core/src/engine/geo/GeoSceneManager.cpp    \
@@ -66,8 +67,7 @@ RESOURCE_CPP :=  \
    $(ROOT_PATH)/core/src/resource/ShaderManager.cpp   \
    $(ROOT_PATH)/core/src/resource/ShaderProgram.cpp   \
    $(ROOT_PATH)/core/src/resource/Texture.cpp         \
-   $(ROOT_PATH)/core/src/resource/MapManager.cpp      \
-   $(ROOT_PATH)/core/src/resource/Watermark.cpp
+   $(ROOT_PATH)/core/src/resource/MapManager.cpp
 
 
 UTILS_CPP := \

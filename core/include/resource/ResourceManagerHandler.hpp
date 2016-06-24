@@ -35,8 +35,8 @@ namespace dma {
         }
 
         virtual void init() {
-            mFallback = std::make_shared<T>();
-            load(mFallback, FALLBACK_SID);
+//            mFallback = std::make_shared<T>();
+//            load(mFallback, FALLBACK_SID);
         }
 
         /**
@@ -48,9 +48,9 @@ namespace dma {
          * @return the loaded resource.
          */
         virtual std::shared_ptr<T> acquire(const std::string& sid) {
-            if (sid == FALLBACK_SID) {
-                return mFallback;
-            }
+//            if (sid == FALLBACK_SID) {
+//                return mFallback;
+//            }
             if (mResources.find(sid) == mResources.end()) {
                 std::shared_ptr<T> resource = std::make_shared<T>();
                 load(resource, sid);
@@ -67,9 +67,9 @@ namespace dma {
          */
         virtual void unload() {
             Log::trace(TAG, "Unloading...");
-            if (mFallback != nullptr) {
-                mFallback = nullptr; //release reference count
-            }
+//            if (mFallback != nullptr) {
+//                mFallback = nullptr; //release reference count
+//            }
             mResources.clear();
             mAnonymousResources.clear();
             Log::trace(TAG, "Unloaded done...");
@@ -81,7 +81,7 @@ namespace dma {
         virtual void refresh() {
             Log::trace(TAG, "Refreshing...");
 
-            load(mFallback, FALLBACK_SID);
+//            load(mFallback, FALLBACK_SID);
 
             for (auto& kv : mResources) {
                 const std::string& sid = kv.first;
@@ -101,7 +101,7 @@ namespace dma {
          */
         virtual void reload() {
             Log::trace(TAG, "Reloading...");
-            mFallback->clearCache();
+//            mFallback->clearCache();
             for (auto& kv : mResources) {
                 auto resource = kv.second;
                 if (resource != nullptr) {
@@ -125,11 +125,20 @@ namespace dma {
                     ++it;
                 }
             }
+
+            auto ar = mAnonymousResources.begin();
+            while (ar != mAnonymousResources.end()) {
+                if (ar->unique()) {
+                    ar = mAnonymousResources.erase(ar);
+                } else {
+                    ++ar;
+                }
+            }
         }
 
 
     protected:
-        static constexpr auto FALLBACK_SID = "fallback";
+//        static constexpr auto FALLBACK_SID = "fallback";
         static constexpr auto TAG = "ResourceManagerHandler";
 
         ResourceManagerHandler(const std::string& localDir) :
@@ -141,7 +150,7 @@ namespace dma {
          */
         virtual void load(std::shared_ptr<T> resource, const std::string& sid) = 0;
 
-        std::shared_ptr<T> mFallback;
+        //std::shared_ptr<T> mFallback; //TODO remove fallback ?
         std::map<std::string, std::shared_ptr<T>> mResources;
         std::vector<std::shared_ptr<T>> mAnonymousResources;
         std::string mLocalDir;
