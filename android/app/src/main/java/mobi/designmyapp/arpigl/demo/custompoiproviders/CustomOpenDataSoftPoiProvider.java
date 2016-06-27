@@ -67,7 +67,7 @@ public class CustomOpenDataSoftPoiProvider extends NetworkPoiProvider {
     }
 
     private static int getColorForLabelLike(String label) {
-        label = label.toLowerCase();
+        label = label.toLowerCase(Locale.ENGLISH);
         // Bouche de lavage
         if (label.contains("bla")) {
             return GREEN_CLEAN;

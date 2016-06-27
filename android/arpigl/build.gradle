@@ -17,7 +17,7 @@ apply plugin: 'com.android.model.library'
 
 model {
     android {
-        compileSdkVersion 23
+        compileSdkVersion 24
         buildToolsVersion "23.0.2"
 
         defaultConfig {
@@ -60,8 +60,18 @@ model {
 
 // call regular ndk-build(.cmd) script from app directory
 task ndkBuild(type: Exec) {
-    commandLine 'ndk-build', '-C', file('src/main').absolutePath
+    commandLine 'ndk-build', '-j8', '-C', file('src/main').absolutePath
 }
+
+task assetZip(type: Zip) {
+    description 'Zip the arpigl assets and copy to the assets directory.'
+    archiveName = 'arpigl-assets.zip'
+    from '../../assets'
+    destinationDir file('src/main/assets')
+}
+
+build.dependsOn assetZip
+
 
 tasks.all {
     task ->
@@ -79,5 +89,5 @@ tasks.all {
 
 dependencies {
     compile fileTree(dir: 'lib', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:24.0.0'
 }

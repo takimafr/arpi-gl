@@ -15,10 +15,11 @@
  */
 
 #include <utils/GeoUtils.hpp>
+#include <rapidjson.h>
 #include <rapidjson/document.h>
 #include "engine/geo/GeoEngine.hpp"
 
-constexpr char TAG[] = "PoiEngine";
+constexpr char TAG[] = "GeoEngine";
 
 namespace dma {
     namespace geo {
@@ -52,16 +53,18 @@ namespace dma {
 
             //TODO remove: used for buildings/tracks demo
             mGeoSceneManager.placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
+
             // 1. Stringify the file
             std::string json;
-            std::string path = mRootDir + "/" + "buildings.json";
+            std::string path = mRootDir + "/buildings.json";
             Utils::bufferize(path, json);
+            Log::warn(TAG, json);
 
             rapidjson::Document document;
             // 2. Create the DOM
-            document.Parse(json.c_str());
-            if (document.HasParseError()) {
-                std::string error = "Unable to parse Locations " + path;
+//            if (document.Parse(json.c_str()).HasParseError()) {
+            if (document.Parse(json.c_str()).HasParseError()) {
+                std::string error = "Unable to parse buildings " + path;
                 Log::error(TAG, error);
                 throw std::runtime_error(error);
             }
@@ -72,9 +75,10 @@ namespace dma {
 
                 std::string sid = "building/" + id;
                 std::shared_ptr<GeoEntity> building = mGeoSceneManager.createGeoEntity(sid, "building");
-                building->setCoords(LatLngAlt(lat, lng, 0.0));
+                building->setCoords(LatLngAlt(lat, lng, 0.1));
                 mGeoSceneManager.addGeoEntity(sid, building);
             }
+            Log::warn(TAG, "02");
 
             float height = 1.0f;
             LatLngAlt origin = LatLngAlt(48.870548, 2.305235, height);

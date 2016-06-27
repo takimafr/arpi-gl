@@ -121,7 +121,7 @@ namespace dma {
             int y = GeoUtils::lat2tiley(coords.lat, ZOOM_LEVEL);
             if (!TileMap::isInRange(x, y, mLastX, mLastY)) {
                 Log::warn(TAG, "Trying to add GeoEntity %s that is out of the tile map range", sid.c_str());
-                return;
+                //return;
             }
             Log::debug(TAG, "Adding GeoEntity %s", sid.c_str());
             mGeoEntities[sid] = geoEntity;

@@ -11,6 +11,14 @@ using namespace dma::geo;
 
 #define ENGINE(addr) ((GeoEngine*) addr)
 
+std::string cppString(JNIEnv* env, jstring str) {
+    if (!str) return std::string();
+    const jsize len = env->GetStringUTFLength(str);
+    const char* strChars = env->GetStringUTFChars(str, 0);
+    std::string res(strChars, len);
+    env->ReleaseStringUTFChars(str, strChars);
+    return res;
+}
 
 JNIEXPORT jlong JNICALL
 Java_mobi_designmyapp_arpigl_engine_Engine_newEngine(JNIEnv *env, jobject instance,
@@ -64,9 +72,9 @@ Java_mobi_designmyapp_arpigl_engine_Engine_addPoi__JLjava_lang_String_2Ljava_lan
         JNIEnv *env, jobject instance, jlong nativeInstanceAddr, jstring sid_, jstring shape_,
         jstring icon_, jfloat r, jfloat g, jfloat b, jdouble lat, jdouble lng, jdouble alt,
         jboolean animated) {
-    const char *sid = env->GetStringUTFChars(sid_, 0);
-    const char *shape = env->GetStringUTFChars(shape_, 0);
-    const char *icon = env->GetStringUTFChars(icon_, 0);
+    std::string sid = cppString(env, sid_);
+    std::string shape = cppString(env, shape_);
+    std::string icon = cppString(env, icon_);
 
 //    std::string icon = "";
     // icon is optional.
@@ -89,9 +97,7 @@ Java_mobi_designmyapp_arpigl_engine_Engine_addPoi__JLjava_lang_String_2Ljava_lan
         geoSceneManager.addGeoEntity(poi->getSid(), poi);
     });
 
-    env->ReleaseStringUTFChars(sid_, sid);
-    env->ReleaseStringUTFChars(shape_, shape);
-    env->ReleaseStringUTFChars(icon_, icon);
+
 }
 
 JNIEXPORT void JNICALL
@@ -99,15 +105,13 @@ Java_mobi_designmyapp_arpigl_engine_Engine_removePoi__JLjava_lang_String_2(JNIEn
                                                                            jobject instance,
                                                                            jlong nativeInstanceAddr,
                                                                            jstring sid_) {
-    const char *sid = env->GetStringUTFChars(sid_, 0);
+    std::string sid = cppString(env, sid_);
     // post message
     GeoEngine* engine = ENGINE(nativeInstanceAddr);
     GeoSceneManager& geoSceneManager = engine->getGeoSceneManager();
     engine->post([&geoSceneManager, sid]() {
         geoSceneManager.removeGeoEntity(sid);
     });
-
-    env->ReleaseStringUTFChars(sid_, sid);
 }
 
 JNIEXPORT void JNICALL
@@ -118,7 +122,7 @@ Java_mobi_designmyapp_arpigl_engine_Engine_setPoiPosition__JLjava_lang_String_2D
                                                                                    jdouble lat,
                                                                                    jdouble lng,
                                                                                    jdouble alt) {
-    const char *sid = env->GetStringUTFChars(sid_, 0);
+    std::string sid = cppString(env, sid_);
     const LatLngAlt coords(lat, lng, (float) alt);
     GeoEngine* engine = ENGINE(nativeInstanceAddr);
     GeoSceneManager& geoSceneManager = engine->getGeoSceneManager();
@@ -129,7 +133,6 @@ Java_mobi_designmyapp_arpigl_engine_Engine_setPoiPosition__JLjava_lang_String_2D
         }
     });
 
-    env->ReleaseStringUTFChars(sid_, sid);
 }
 
 JNIEXPORT void JNICALL
@@ -139,7 +142,7 @@ Java_mobi_designmyapp_arpigl_engine_Engine_setPoiColor__JLjava_lang_String_2FFF(
                                                                                 jstring sid_,
                                                                                 jfloat r, jfloat g,
                                                                                 jfloat b) {
-    const char *sid = env->GetStringUTFChars(sid_, 0);
+    std::string sid = cppString(env, sid_);
 
     const Color color = Color((float)r, (float)g, (float)b);
 
@@ -152,7 +155,6 @@ Java_mobi_designmyapp_arpigl_engine_Engine_setPoiColor__JLjava_lang_String_2FFF(
         }
     });
 
-    env->ReleaseStringUTFChars(sid_, sid);
 }
 
 JNIEXPORT jboolean JNICALL
@@ -172,9 +174,8 @@ Java_mobi_designmyapp_arpigl_engine_Engine_hasPoi__JLjava_lang_String_2(JNIEnv *
                                                                         jobject instance,
                                                                         jlong nativeInstanceAddr,
                                                                         jstring sid_) {
-    const char *sid = env->GetStringUTFChars(sid_, 0);
+    std::string sid = cppString(env, sid_);
     jboolean res = (jboolean) ENGINE(nativeInstanceAddr)->getGeoSceneManager().hasGeoEntity(sid); // must be called from OpenGL thread
-    env->ReleaseStringUTFChars(sid_, sid);
     return res;
 }
 
@@ -183,13 +184,12 @@ Java_mobi_designmyapp_arpigl_engine_Engine_setSkyBox__JLjava_lang_String_2(JNIEn
                                                                            jobject instance,
                                                                            jlong nativeInstanceAddr,
                                                                            jstring sid_) {
-    const char *sid = env->GetStringUTFChars(sid_, 0);
+    std::string sid = cppString(env, sid_);
     GeoEngine* engine = ENGINE(nativeInstanceAddr);
     Scene& scene = engine->getGeoSceneManager().getScene();
     engine->post([&scene, sid]() {
         scene.setSkyBox(sid);
     });
-    env->ReleaseStringUTFChars(sid_, sid);
 }
 
 JNIEXPORT void JNICALL
@@ -223,10 +223,10 @@ Java_mobi_designmyapp_arpigl_engine_Engine_setEngineListener(JNIEnv *env, jobjec
 }
 
 JNIEXPORT void JNICALL
-Java_mobi_designmyapp_arpigl_engine_Engine_setCameraRotation__JLfloat_3_093_2(JNIEnv *env,
-                                                                              jobject instance,
-                                                                              jlong nativeInstanceAddr,
-                                                                              jfloatArray rotationMatrix_) {
+Java_mobi_designmyapp_arpigl_engine_Engine_setCameraRotation(JNIEnv *env,
+                                                             jobject instance,
+                                                             jlong nativeInstanceAddr,
+                                                             jfloatArray rotationMatrix_) {
     jfloat *rotationMatrix = env->GetFloatArrayElements(rotationMatrix_, NULL);
     std::shared_ptr<glm::mat4> matrix = std::make_shared<glm::mat4>(glm::make_mat4(rotationMatrix));
 
@@ -306,13 +306,12 @@ Java_mobi_designmyapp_arpigl_engine_Engine_setTileNamespace__JLjava_lang_String_
                                                                                   jobject instance,
                                                                                   jlong nativeInstanceAddr,
                                                                                   jstring ns_) {
-    const char *ns = env->GetStringUTFChars(ns_, 0);
+    std::string ns = cppString(env, ns_);
     GeoEngine* engine = ENGINE(nativeInstanceAddr);
     GeoSceneManager& geoSceneManager = engine->getGeoSceneManager();
     engine->post([&geoSceneManager, ns]() {
         geoSceneManager.setTileNamespace(ns);
     });
-    env->ReleaseStringUTFChars(ns_, ns);
 }
 
 JNIEXPORT void JNICALL

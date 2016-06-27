@@ -73,3 +73,7 @@ obj/
 /Test-assert/
 /CMake/
 .DS_Store
+
+arpigl-assets.zip
+libs/
+obj/

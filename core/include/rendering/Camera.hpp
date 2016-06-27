@@ -37,7 +37,7 @@ namespace dma {
         static constexpr float DEFAULT_FOVY                 = 45.0f;
         /** default aspect ratio. */
         static constexpr float DEFAULT_ASPECT_RATIO         = 1.0f;
-        static constexpr float DEFAULT_NEAR_PLANE           = 0.1f;
+        static constexpr float DEFAULT_NEAR_PLANE           = 0.3f;
         static constexpr float DEFAULT_FAR_PLANE            = 500.0f;
 
 

@@ -1,0 +1,10 @@
+{
+  "backToFront": true,
+  "passes" : [
+    {
+      "cullMode": "none",
+      "shader": "track",
+      "diffuseColor": [0.1098, 0.6, 1.0]
+    }
+  ]
+}

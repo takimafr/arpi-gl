@@ -150,8 +150,8 @@ namespace dma {
         ///////////////////////////////////////////
         // 1. Draw front to back
         //TODO Blend ???
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//        glEnable(GL_BLEND);
+//        glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
         while (!mFrontToBack.empty()) {
             mDraw(mFrontToBack.top().renderingPackage, *mV, *mP);
             mFrontToBack.pop();
@@ -166,11 +166,17 @@ namespace dma {
 
         ///////////////////////////////////////////
         // 3. Draw back to front
+        glEnable(GL_BLEND);
+        glBlendEquation(GL_FUNC_SUBTRACT);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_ALPHA);
+        glDisable(GL_DEPTH_TEST);
         while (!mBackToFront.empty()) {
             mDraw(mBackToFront.top().renderingPackage, *mV, *mP);
             mBackToFront.pop();
         }
+        glBlendEquation(GL_FUNC_ADD);
         glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
 
 
 
@@ -182,7 +188,6 @@ namespace dma {
         for (auto hudElem : mHUDSystem.getHUDElements()) {
             for (auto rp : hudElem->mEntity->getRenderingComponent()->getRenderingPackages()) {
                 mDraw(rp, mHUDSystem.mV, mHUDSystem.mP);
-                //mDraw(rp, *mV, *mP);
             }
         }
         glDisable(GL_BLEND);

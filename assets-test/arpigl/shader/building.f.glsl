@@ -68,6 +68,6 @@ void main() {
     //diffuse = diffuse + light1.Ld * material.Kd * sDotN1;
 
 
-    gl_FragColor = vec4(ambient + diffuse, 1.0);
+    gl_FragColor = vec4(ambient + diffuse, 0.5);
 }
 

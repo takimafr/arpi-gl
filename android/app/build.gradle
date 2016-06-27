@@ -18,7 +18,7 @@ apply plugin: 'com.android.model.application'
 
 model {
     android {
-        compileSdkVersion 23
+        compileSdkVersion 24
         buildToolsVersion "23.0.2"
 
         defaultConfig {
@@ -37,7 +37,7 @@ model {
         }
         release {
             minifyEnabled true
-            proguardFiles.add(file('proguard-rules.pro'))
+//            proguardFiles.add(file('proguard-rules.pro'))
         }
     }
 }
@@ -45,7 +45,7 @@ model {
 dependencies {
     compile fileTree(dir: 'lib', include: ['*.jar'])
     compile project(':arpigl')
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:24.0.0'
     //debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     //releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
 }

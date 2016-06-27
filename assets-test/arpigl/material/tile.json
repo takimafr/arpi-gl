@@ -1,4 +1,5 @@
 {
+  "backToFront": true,
   "passes" : [
     {
       "cullMode": "none",
