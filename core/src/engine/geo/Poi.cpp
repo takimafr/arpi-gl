@@ -85,7 +85,6 @@ namespace dma {
             assert(Entity::isAnimable());
 
             if (mAnimated) {
-
                 if (mCurrentTranslationAnimation != nullptr) {
                     mAnimationComponent->remove(mCurrentTranslationAnimation);
                     delete mCurrentTranslationAnimation;

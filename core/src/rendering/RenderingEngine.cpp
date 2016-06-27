@@ -161,16 +161,16 @@ namespace dma {
         }
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA);
+        glBlendFuncSeparate(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA, GL_ONE, GL_ONE);
         glDisable(GL_DEPTH_TEST);
+        while (!mReverseTransparency.empty()) {
+            mDraw(mReverseTransparency.top().renderingPackage, *mV, *mP);
+            mReverseTransparency.pop();
+        }
         ///////////////////////////////////////////
         // 2. Draw the skybox (early depth testing) if any
         if (mSkyBox) {
             mDrawSkyBox();
-        }
-        while (!mReverseTransparency.empty()) {
-            mDraw(mReverseTransparency.top().renderingPackage, *mV, *mP);
-            mReverseTransparency.pop();
         }
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);

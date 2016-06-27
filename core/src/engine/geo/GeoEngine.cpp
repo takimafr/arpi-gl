@@ -97,6 +97,13 @@ namespace dma {
 
             auto track = mGeoSceneManager.createGeoEntity(trackMesh, trackMaterial);
             track->setCoords(origin);
+            track->addAnimationComponent();
+            AnimationComponent* animationComponent = track->getAnimationComponent();
+            TransformComponent& transformComponent = track->getTransformComponent();
+            animationComponent->add(new TranslationAnimation(transformComponent, //TODO remove: that is a leak
+                                                              transformComponent.getPosition(),
+                                                              transformComponent.getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
+                                                              6.0f, TranslationAnimation::Function::EASE, true, true));
             mGeoSceneManager.addGeoEntity("track0", track);
 
             return res;

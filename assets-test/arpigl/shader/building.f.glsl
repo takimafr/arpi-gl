@@ -31,7 +31,7 @@ varying vec3 v_normal;
 varying vec4 v_eyePosition;
 
 
-vec3 scene_ambient = vec3(0.75, 0.75, 0.75);
+vec3 scene_ambient = vec3(0.8, 0.8, 0.8);
 
 void main() {
 
@@ -52,8 +52,8 @@ void main() {
 
     vec3 normal = normalize(v_normal);
 
-    vec3 s0 = normalize(vec3(-u_light0.position));
-    vec3 s1 = normalize(vec3(u_light0.position));
+    vec3 s0 = normalize(vec3(u_light0.position));
+//    vec3 s1 = normalize(vec3(-u_light0.position));
     //vec3 s1 = normalize(vec3(light1.position - v_eyePosition));
 
     vec3 sEye = normalize(vec3(-v_eyePosition));
@@ -62,15 +62,21 @@ void main() {
     vec3 ambient = scene_ambient * material.Ka;// + scene_ambient * material.Ka * sDotNEye;
 
     float sDotN0 = max(dot(s0,normal), 0.0);
-    float sDotN1 = max(dot(s1,normal), 0.0);
+    float sDotN1 = max(dot(-s0,normal), 0.0);
 
-    vec3 diffuse = u_light0.Ld * material.Kd * (sDotN0 + sDotN1);
-    //diffuse = diffuse + light1.Ld * material.Kd * sDotN1;
+    vec3 diffuse = u_light0.Ld * material.Kd * (sDotN0 + sDotN1/2);
+//    vec3 diffuse = u_light0.Ld * material.Kd * sDotN0;
 
-    float distance = length(-v_eyePosition);
-    float opacity = smoothstep(0.0, 30.0, distance);
-    opacity = clamp(opacity, 0.8, 0.95);
+//    float opacity = (dot(vec3(0, 0, 1), normalize(vec3(v_eyePosition))) / 2.0);
+//    float vector_opacity = (1 - (dot(vec3(0, 0, 1), normalize(vec3(-v_eyePosition))))) * 2;
 
+    float distance = length(v_eyePosition);
+    float distance_opacity = smoothstep(0.0, 150.0, distance);
+    distance_opacity = clamp(distance_opacity, 0.0, 0.40);
+
+    float opacity = 0.5 + distance_opacity;
+
+//    gl_FragColor = vec4(ambient + diffuse, opacity);
     gl_FragColor = vec4(ambient + diffuse, opacity);
 }
 

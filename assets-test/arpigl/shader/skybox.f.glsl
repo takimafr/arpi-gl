@@ -11,6 +11,6 @@ varying vec3 v_tex_coord;
 
 void main() {
     vec4 texel = textureCube(u_cube_map, v_tex_coord);
-    texel.a = 0.0;
+    texel.a = 1.0;
     gl_FragColor = texel;
 }

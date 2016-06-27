@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    mGeoEngine.getGeoSceneManager().setTileNamespace("default");
+    mGeoEngine.getGeoSceneManager().setTileNamespace("light");
 
     // Replace the default camera with a FlyThrough camera
     mGeoEngine.getGeoSceneManager().getScene().setCamera(mFlyThroughCamera);
