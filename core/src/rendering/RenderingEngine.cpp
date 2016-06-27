@@ -34,7 +34,7 @@ constexpr auto TAG = "RenderingEngine";
 
 //#define CLEAR_COLOR 0.2f, 0.3f, 0.3f, 1.0f
 //#define CLEAR_COLOR 0.52941176470588235294f, 0.80784313725490196078f, 0.92156862745098039215f, 1.0f
-#define CLEAR_COLOR 1.f, 1.f, 1.f, 1.0f
+#define CLEAR_COLOR 1.f, 1.f, 1.f, 0.0f
 
 namespace dma {
 
@@ -115,7 +115,10 @@ namespace dma {
     void RenderingEngine::subscribe(RenderingPackage* package, bool back2front, float distanceFromCamera) {
         Entry e;
         e.renderingPackage = package;
-        if (back2front) {
+        std::string sid = package->mMaterial->getSID(); //TODO remove, used for buildings/tracks demo
+        if (sid == "tile") {
+            mReverseTransparency.push(e);
+        } else if (back2front) {
             e.distance = distanceFromCamera; //the farthest first
             mBackToFront.push(e);
 
@@ -157,28 +160,32 @@ namespace dma {
             mFrontToBack.pop();
         }
 
-
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA);
+        glDisable(GL_DEPTH_TEST);
         ///////////////////////////////////////////
         // 2. Draw the skybox (early depth testing) if any
         if (mSkyBox) {
             mDrawSkyBox();
         }
+        while (!mReverseTransparency.empty()) {
+            mDraw(mReverseTransparency.top().renderingPackage, *mV, *mP);
+            mReverseTransparency.pop();
+        }
+        glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
 
         ///////////////////////////////////////////
         // 3. Draw back to front
         glEnable(GL_BLEND);
-        glBlendEquation(GL_FUNC_SUBTRACT);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_ALPHA);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDisable(GL_DEPTH_TEST);
         while (!mBackToFront.empty()) {
             mDraw(mBackToFront.top().renderingPackage, *mV, *mP);
             mBackToFront.pop();
         }
-        glBlendEquation(GL_FUNC_ADD);
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
-
-
 
         ///////////////////////////////////////////
         // 4. Draw the HUD

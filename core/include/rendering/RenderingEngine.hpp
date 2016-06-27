@@ -104,6 +104,7 @@ namespace dma {
         F32 mAspectRatio;
         std::priority_queue<Entry> mFrontToBack;
         std::priority_queue<Entry> mBackToFront;
+        std::priority_queue<Entry> mReverseTransparency; //TODO remove, used for buildings/tracks demo
         GLuint mAttribIndices[ShaderProgram::AttribSem::AS_size];
     };
 }

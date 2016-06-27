@@ -10,5 +10,7 @@ uniform samplerCube u_cube_map;
 varying vec3 v_tex_coord;
 
 void main() {
-    gl_FragColor = textureCube(u_cube_map, v_tex_coord);
+    vec4 texel = textureCube(u_cube_map, v_tex_coord);
+    texel.a = 0.0;
+    gl_FragColor = texel;
 }

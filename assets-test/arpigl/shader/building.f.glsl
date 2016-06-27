@@ -67,7 +67,10 @@ void main() {
     vec3 diffuse = u_light0.Ld * material.Kd * (sDotN0 + sDotN1);
     //diffuse = diffuse + light1.Ld * material.Kd * sDotN1;
 
+    float distance = length(-v_eyePosition);
+    float opacity = smoothstep(0.0, 30.0, distance);
+    opacity = clamp(opacity, 0.8, 0.95);
 
-    gl_FragColor = vec4(ambient + diffuse, 0.5);
+    gl_FragColor = vec4(ambient + diffuse, opacity);
 }
 
