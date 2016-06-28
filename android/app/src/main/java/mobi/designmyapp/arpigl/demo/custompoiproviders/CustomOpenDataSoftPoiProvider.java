@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.graphics.Color;
 
 /**
@@ -49,8 +50,8 @@ public class CustomOpenDataSoftPoiProvider extends NetworkPoiProvider {
     private static final int GREEN_CLEAN = 0xFF088A4B;
     private static final int RED_HYDRANT = 0xFFB40404;
 
-    public CustomOpenDataSoftPoiProvider() {
-        super(FETCH_URL_PATTERN, OSMPoiProviderMapper.class);
+    public CustomOpenDataSoftPoiProvider(Context context) {
+        super(FETCH_URL_PATTERN, OSMPoiProviderMapper.class, context);
     }
 
     private static String getShapeFromColor(int color) {
@@ -139,7 +140,8 @@ public class CustomOpenDataSoftPoiProvider extends NetworkPoiProvider {
                             extractPoi(res, jso.getString("recordid"), fields.getString("info"), coordinateSets.getJSONArray(j));
                         }
                     } else {
-                        extractPoi(res, jso.getString("recordid"), fields.getString("info"), coordinateSets);
+                        String info = fields.has("info") ? fields.getString("info") : "";
+                        extractPoi(res, jso.getString("recordid"), info, coordinateSets);
                     }
                 }
 
@@ -169,8 +171,10 @@ public class CustomOpenDataSoftPoiProvider extends NetworkPoiProvider {
                     builder.latitude(latitude);
                     if (shape.equals("hydrant")) {
                         builder.altitude(0.1);
+                        builder.animated(false);
                     } else {
                         builder.altitude(POI_ALTITUDE);
+                        builder.animated(true);
                     }
                     builder.id(poiId);
                     Poi poi = builder.build();

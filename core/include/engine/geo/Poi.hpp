@@ -133,8 +133,8 @@ namespace dma {
         protected:
             const std::string mSID;
             bool mAnimated;
-            TranslationAnimation* mCurrentTranslationAnimation;
-            RotationAnimation* mCurrentRotationAnimation;
+            std::shared_ptr<TranslationAnimation> mCurrentTranslationAnimation;
+            std::shared_ptr<RotationAnimation> mCurrentRotationAnimation;
         };
     }
 }

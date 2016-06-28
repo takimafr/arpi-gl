@@ -14,6 +14,7 @@ without the express written permission of eBusiness Information.
 #include <rendering/FlyThroughCamera.hpp>
 #include <rapidjson/document.h>
 #include <resource/TrackFactory.hpp>
+#include <utils/GeoUtils.hpp>
 
 #include "utils/ObjReader.hpp"
 #include "engine/geo/GeoEngine.hpp"
@@ -49,6 +50,8 @@ float mCameraSpeed = 0.7f;
 
 std::shared_ptr<FlyThroughCamera> mFlyThroughCamera = std::make_shared<FlyThroughCamera>();
 
+std::vector<LatLngAlt> path;
+
 /* ***
  * PRIVATE FUNCTION DEFS
  */
@@ -68,23 +71,38 @@ void mHandleEvents() {
     if (keys[GLFW_KEY_R]) {
         mGeoEngine.wipe();
         mGeoEngine.refresh();
+        keys[GLFW_KEY_R] = false;
     }
-    if (keys[GLFW_KEY_T]) mGeoEngine.reload();
+    if (keys[GLFW_KEY_T]) {
+        mGeoEngine.reload();
+        keys[GLFW_KEY_T] = false;
+    }
     if (keys[GLFW_KEY_Y]) {
         skybox_enabled = !skybox_enabled;
         mGeoEngine.setSkyBox("FullMoon");
         mGeoEngine.setSkyBoxEnabled(skybox_enabled);
+        keys[GLFW_KEY_Y] = false;
     }
     if (keys[GLFW_KEY_U]) {
         skybox_enabled = !skybox_enabled;
         mGeoEngine.setSkyBoxEnabled(skybox_enabled);
         mGeoEngine.setSkyBox("SunSet");
+        keys[GLFW_KEY_U] = false;
     }
     if (keys[GLFW_KEY_J]) {
-        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(80.221595, 2.0371413, 5.0f), 0.9f, TranslationAnimation::Function::EASE);
+        static int i = 0;
+        static float speed = 50.0f;
+        glm::vec3 a = mGeoEngine.getGeoSceneManager().mapPosition(path[i]);
+        glm::vec3 b = mFlyThroughCamera->getPosition();
+        float length = glm::length<float>(b - a);
+        mGeoEngine.getGeoSceneManager().placeCamera(path[i], length / speed, TranslationAnimation::Function::LINEAR);
+        i = (i + 1) % path.size();
+        keys[GLFW_KEY_J] = false;
     }
     if (keys[GLFW_KEY_K]) {
-        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(81.221595, 2.0371413, 5.0f), 0.9f, TranslationAnimation::Function::EASE);
+        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.869252, 2.302800, 25.0f), 0.9f, TranslationAnimation::Function::EASE);
+        keys[GLFW_KEY_K] = false;
+//        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(81.221595, 2.0371413, 5.0f), 0.9f, TranslationAnimation::Function::EASE);
     }
 
     //////////////////////////////////////////////////////////////
@@ -197,11 +215,26 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    path.push_back(LatLngAlt(48.871069 , 2.303543, 15.0));
+    path.push_back(LatLngAlt(48.870690 , 2.303191, 15.0));
+    path.push_back(LatLngAlt(48.870307 , 2.302872, 15.0));
+    path.push_back(LatLngAlt(48.869945 , 2.302545, 15.0));
+    path.push_back(LatLngAlt(48.869571 , 2.302226, 15.0));
+    path.push_back(LatLngAlt(48.869250 , 2.302792, 15.0));
+    path.push_back(LatLngAlt(48.869504 , 2.303315, 15.0));
+    path.push_back(LatLngAlt(48.869871 , 2.304026, 15.0));
+    path.push_back(LatLngAlt(48.870169 , 2.304634, 15.0));
+    path.push_back(LatLngAlt(48.870515 , 2.305281, 15.0));
+    path.push_back(LatLngAlt(48.870706 , 2.304672, 15.0));
+    path.push_back(LatLngAlt(48.870926 , 2.303964, 15.0));
+
     mGeoEngine.getGeoSceneManager().setTileNamespace("light");
 
     // Replace the default camera with a FlyThrough camera
     mGeoEngine.getGeoSceneManager().getScene().setCamera(mFlyThroughCamera);
     mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
+//    mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.870515, 2.305284, 5.0));
+
 
     mGeoEngine.setSkyBoxEnabled(true);
 
@@ -212,7 +245,7 @@ int main(int argc, char** argv) {
             .animation(true)
             .color(Color(1.0f, 0.5f, 0.5f))
             .build();
-    poi1->setCoords(LatLngAlt(8.8294849, 2.3776109, 6.0));
+    poi1->setCoords(LatLngAlt(48.8708735, 2.3036656, 6.0));
     mGeoEngine.getGeoSceneManager().addGeoEntity(poi1->getSid(), poi1);
 
     std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()

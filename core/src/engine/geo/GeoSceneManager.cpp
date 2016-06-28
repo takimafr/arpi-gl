@@ -74,16 +74,11 @@ namespace dma {
 
 
         void GeoSceneManager::step() { //TODO optimization ?
-//            for (auto& kv : mPOIs) {
-//                auto poi = kv.second;
-//                if (poi->isDirty()) {
-//                    const glm::vec3 pos = mapPosition(poi->getLat(), poi->getLng(), poi->getAlt());
-//                    std::static_pointer_cast<Entity>(poi)->setPosition(pos);
+//            for (auto& kv : mGeoEntities) {
+//                if (auto poi = std::static_pointer_cast<Poi>(kv.second)) {
 //                    poi->animate();
-//                    poi->setDirty(false);
 //                }
 //            }
-
             for (auto tile : mTileMap.getTiles()) {
                 if (tile->isDirty()) {
                     LatLngAlt coords = tile->getCoords();
@@ -101,7 +96,10 @@ namespace dma {
 
         std::shared_ptr<GeoEntity> GeoSceneManager::createGeoEntity(const std::string &meshSid,
                                                                     const std::string &materialSid) {
-            return createGeoEntity(mResourceManager.acquireMesh(meshSid), mResourceManager.acquireMaterial(materialSid));
+            auto mesh = mResourceManager.acquireMesh(meshSid);
+            auto mat = mResourceManager.acquireMaterial(materialSid);
+            auto geoEntity = createGeoEntity(mesh, mat);
+            return geoEntity;
         }
 
         std::shared_ptr<GeoEntity> GeoSceneManager::createGeoEntity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) {
@@ -119,13 +117,11 @@ namespace dma {
             LatLngAlt coords = geoEntity->getCoords();
             int x = GeoUtils::lng2tilex(coords.lng, ZOOM_LEVEL);
             int y = GeoUtils::lat2tiley(coords.lat, ZOOM_LEVEL);
-            if (!TileMap::isInRange(x, y, mLastX, mLastY)) {
-                Log::warn(TAG, "Trying to add GeoEntity %s that is out of the tile map range", sid.c_str());
-                //return;
-            }
-            Log::debug(TAG, "Adding GeoEntity %s", sid.c_str());
             mGeoEntities[sid] = geoEntity;
-            mScene.addEntity(geoEntity);
+            if (TileMap::isInRange(x, y, mLastX, mLastY)) {
+                Log::debug(TAG, "Adding GeoEntity %s", sid.c_str());
+                mScene.addEntity(geoEntity);
+            }
         }
 
 
@@ -213,7 +209,7 @@ namespace dma {
 
 
         void GeoSceneManager::placeCamera(const LatLngAlt& coords) {
-            placeCamera(LatLngAlt(coords.lat, coords.lng, coords.alt), -1.0f, TranslationAnimation::Function::LINEAR);
+            placeCamera(coords, -1.0f, TranslationAnimation::Function::LINEAR);
         }
 
 
@@ -228,27 +224,31 @@ namespace dma {
                 if (GeoUtils::slc(LatLng(coords.lat, coords.lng), mOrigin) > ORIGIN_SHIFTING_TRESHOLD) {
                     setOrigin(coords.lat, coords.lng);
                     // Update the current camera position with no translation
-                    camera.setPosition(mapPosition(mCameraCoords.lat, mCameraCoords.lng, mCameraCoords.alt));
+                    camera.setPosition(mapPosition(mCameraCoords));
                 }
                 mTileMap.update(x0, y0);
 
                 for (auto &kv : mGeoEntities) {
-                    const std::string& sid = kv.first;
+//                    const std::string& sid = kv.first;
                     std::shared_ptr<GeoEntity> geoEntity = kv.second;
-                    LatLngAlt& coords = geoEntity->getCoords();
-                    int x = GeoUtils::lng2tilex(coords.lng, ZOOM_LEVEL);
-                    int y = GeoUtils::lat2tiley(coords.lat, ZOOM_LEVEL);
-                    if (!TileMap::isInRange(x, y, x0, y0)) {
+                    LatLngAlt& geoEntityCoords = geoEntity->getCoords();
+                    int x = GeoUtils::lng2tilex(geoEntityCoords.lng, ZOOM_LEVEL);
+                    int y = GeoUtils::lat2tiley(geoEntityCoords.lat, ZOOM_LEVEL);
+                    bool isInRange = TileMap::isInRange(x, y, x0, y0);
+                    bool wasInRange = TileMap::isInRange(x, y, mLastX, mLastY);
+                    if (wasInRange and !isInRange) {
                         mScene.removeEntity(geoEntity);
-                        mGeoEntities.erase(sid);
+                        //mGeoEntities.erase(sid);
+                    } else if (!wasInRange and isInRange) {
+                        mScene.addEntity(geoEntity);
                     }
                 }
             }
 
             glm::vec3 pos = mapPosition(coords.lat, coords.lng, coords.alt);
-            if (!TileMap::isInRange(mLastX, mLastY, x0, y0)) {
-                translationDuration = -1.0f;
-            }
+//            if (!TileMap::isInRange(mLastX, mLastY, x0, y0)) {
+//                translationDuration = -1.0f;
+//            }
             camera.setPosition(pos, translationDuration, translationFunction);
             mCameraCoords = coords;
             mLastX = x0;

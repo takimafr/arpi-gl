@@ -41,6 +41,10 @@ namespace dma {
                 }
             }
 
+            for (auto r : ResourceManagerHandler<T>::mAnonymousResources) {
+                r->wipe();
+            }
+
             Log::trace(this->TAG, "Wipe done.");
         }
 

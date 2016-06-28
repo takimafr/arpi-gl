@@ -16,6 +16,8 @@
 
 package mobi.designmyapp.arpigl.provider.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,6 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import mobi.designmyapp.arpigl.ArpiGlInstaller;
 import mobi.designmyapp.arpigl.event.PoiEvent;
 import mobi.designmyapp.arpigl.exception.PoiMapperException;
 import mobi.designmyapp.arpigl.mapper.PoiMapper;
@@ -37,6 +40,8 @@ import mobi.designmyapp.arpigl.model.Poi;
 import mobi.designmyapp.arpigl.model.Tile;
 import mobi.designmyapp.arpigl.provider.PoiProvider;
 import mobi.designmyapp.arpigl.util.ProjectionUtils;
+
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -70,6 +75,7 @@ public class NetworkPoiProvider extends PoiProvider<InputStream> {
     private Map<Tile.Id, Set<Poi>> mPoiCache;
     private UriParser mParser;
     private String mUri;
+    private final Context mContext;
 
     /**
      * Custom loader for network pois.
@@ -88,8 +94,9 @@ public class NetworkPoiProvider extends PoiProvider<InputStream> {
     }
 
 
-    public NetworkPoiProvider(String url, Class<? extends PoiMapper<InputStream>> poiMapperClass) {
+    public NetworkPoiProvider(String url, Class<? extends PoiMapper<InputStream>> poiMapperClass, Context context) {
         super(poiMapperClass);
+        mContext = context;
         mUri = url;
         mPoiCache = new LinkedHashMap<Tile.Id, Set<Poi>>() {
             private static final long serialVersionUID = 4251618832889955850L;
@@ -110,7 +117,7 @@ public class NetworkPoiProvider extends PoiProvider<InputStream> {
                 double[] coords = {(coords1[0] + coords2[0]) / 2, (coords1[1] + coords2[1]) / 2};
 
                 // As we have 5x5 tiles, the radius of the center tile will be multiplied by 5.
-                double radius = 5 * ProjectionUtils.circumscribedCircleRadiusInMeters(tile, 19);
+                double radius = 5 * ProjectionUtils.circumscribedCircleRadiusInMeters(tile, 20);
 
                 return uri.replace("{lat}", ProjectionUtils.COORDINATES_FORMAT.format(coords[0]))
                         .replace("{lon}", ProjectionUtils.COORDINATES_FORMAT.format(coords[1]))
@@ -142,18 +149,21 @@ public class NetworkPoiProvider extends PoiProvider<InputStream> {
 
                 String location = mParser.parse(ids[0], mUri);
 
-                URL url = new URL(location);
+                is = new FileInputStream(new File(mContext.getApplicationContext().getFilesDir(), ArpiGlInstaller.POIS_DIR + "/../ods.json"));
 
-                HttpURLConnection conn;
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECT_TIMEOUT);
-                conn.setRequestMethod("GET");
-                conn.setDoInput(true);
-                // Starts the query
-                conn.connect();
+//                URL url = new URL(location);
+//
+//                HttpURLConnection conn;
+//                conn = (HttpURLConnection) url.openConnection();
+//                conn.setReadTimeout(READ_TIMEOUT);
+//                conn.setConnectTimeout(CONNECT_TIMEOUT);
+//                conn.setRequestMethod("GET");
+//                conn.setDoInput(true);
+//                // Starts the query
+//                conn.connect();
+//
+//                is = conn.getInputStream();
 
-                is = conn.getInputStream();
                 return convert(is);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to download pois for tile :  " + ids[0] + " : " + e.getMessage());

@@ -47,7 +47,7 @@ public class ArpiGlView extends GLSurfaceView {
     /* ***
      * VIEW CONSTANTS
      */
-    private static final boolean DEFAULT_TRANSLUCENT = false;
+    private static final boolean DEFAULT_TRANSLUCENT = true;
     /**
      * RGBA_5650.
      */
@@ -187,6 +187,7 @@ public class ArpiGlView extends GLSurfaceView {
         private final int mDepthSize;
         private final int mStencilSize;
         private final int[] mValue = new int[1];
+
         public ConfigChooser(byte[] rgbaDepth, int depth, int stencil) {
             int i = 0;
             mRedSize = rgbaDepth[i++];

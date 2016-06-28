@@ -24,6 +24,7 @@ import org.json.JSONException;
 import java.io.IOException;
 
 import mobi.designmyapp.arpigl.ArpiGlInstaller;
+import mobi.designmyapp.arpigl.demo.custompoiproviders.CustomOpenDataSoftPoiProvider;
 import mobi.designmyapp.arpigl.engine.ArpiGlController;
 import mobi.designmyapp.arpigl.provider.impl.AssetsStoragePoiProvider;
 import mobi.designmyapp.arpigl.provider.impl.TileAssetProvider;
@@ -35,10 +36,12 @@ import mobi.designmyapp.arpigl.demo.R;
  */
 public class OfflineDemoActivity extends AppCompatActivity {
 
-//    private static final double EIFFEL_LAT = 48.8606;
+    //    private static final double EIFFEL_LAT = 48.8606;
 //    private static final double EIFFEL_LON = 2.2960;
     private static final double ELYSEE_LAT = 48.8708735;
     private static final double ELYSEE_LNG = 2.3036656;
+//    private static final double ELYSEE_LAT = 48.870515;
+//    private static final double ELYSEE_LNG = 2.305284;
 
     private ArpiGlController arpiController;
 
@@ -74,9 +77,9 @@ public class OfflineDemoActivity extends AppCompatActivity {
         // Your app should be bundled with a folder named 'tile' in assets/res/texture/tile
 
         // Add the assets poi storage provider which fetches pois from the offline offlinePois.json file, provided in assets/res
-        arpiController.addPoiProvider(new AssetsStoragePoiProvider(this, "offlinePois"));
-
-        arpiController.setTileProvider(new TileAssetProvider("offline-demo"));
+//        arpiController.addPoiProvider(new AssetsStoragePoiProvider(this, "offlinePois"));
+        arpiController.addPoiProvider(new CustomOpenDataSoftPoiProvider(this));
+        arpiController.setTileProvider(new TileAssetProvider("light"));
     }
 
     @Override

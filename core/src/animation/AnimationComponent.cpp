@@ -22,7 +22,7 @@ namespace dma {
 
 
     AnimationComponent::AnimationComponent(TransformComponent &transformComponent) :
-                        mTransformComponent(transformComponent)
+            mTransformComponent(transformComponent)
     {}
 
 
@@ -34,7 +34,7 @@ namespace dma {
 
 
     void AnimationComponent::update(float dt) {
-        std::list<Animation*>::iterator it = mAnimations.begin();
+        auto it = mAnimations.begin();
         while (it != mAnimations.end()) {
             (*it)->update(dt);
             if ((*it)->isFinished()) {

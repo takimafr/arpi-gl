@@ -47,8 +47,8 @@ namespace dma {
 
 
     Camera::~Camera() {
-        delete mCurrentTranslationAnimation;
-        delete mCurrentSlerpAnimation;
+//        delete mCurrentTranslationAnimation;
+//        delete mCurrentSlerpAnimation;
     }
 
 
@@ -78,7 +78,7 @@ namespace dma {
             //remove current animation
             if (mCurrentTranslationAnimation != nullptr) {
                 mAnimationComponent.remove(mCurrentTranslationAnimation);
-                delete mCurrentTranslationAnimation;
+//                delete mCurrentTranslationAnimation;
                 mCurrentTranslationAnimation = nullptr;
             }
             mTransformComponent.setPosition(position);
@@ -93,7 +93,7 @@ namespace dma {
         }
         else {
             // translates to position
-            mCurrentTranslationAnimation = new TranslationAnimation(mTransformComponent,
+            mCurrentTranslationAnimation = std::make_shared<TranslationAnimation>(mTransformComponent,
                                                                     mTransformComponent.getPosition(),
                                                                     position, duration,
                                                                     translationFunction);
@@ -105,12 +105,11 @@ namespace dma {
 
 
     void Camera::setOrientation(const glm::quat& orientation, float duration) {
-
         if (duration <= 0.0f) {
             // remove current animation
             if (mCurrentSlerpAnimation != nullptr) {
                 mAnimationComponent.remove(mCurrentSlerpAnimation);
-                delete mCurrentSlerpAnimation;
+//                delete mCurrentSlerpAnimation;
                 mCurrentSlerpAnimation = nullptr;
             }
             mTransformComponent.setOrientation(orientation);
@@ -124,7 +123,7 @@ namespace dma {
         }
         else {
             // slerp the rotation
-            mCurrentSlerpAnimation = new SlerpAnimation(mTransformComponent,
+            mCurrentSlerpAnimation = std::make_shared<SlerpAnimation>(mTransformComponent,
                                                         mTransformComponent.getOrientationQuat(),
                                                         orientation, duration, false);
             mAnimationComponent.add(mCurrentSlerpAnimation);

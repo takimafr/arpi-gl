@@ -53,12 +53,12 @@ namespace dma {
 
             //TODO remove: used for buildings/tracks demo
             mGeoSceneManager.placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
+//            mGeoSceneManager.placeCamera(LatLngAlt(48.870515, 2.305284, 5.0));
 
             // 1. Stringify the file
             std::string json;
             std::string path = mRootDir + "/buildings.json";
             Utils::bufferize(path, json);
-            Log::warn(TAG, json);
 
             rapidjson::Document document;
             // 2. Create the DOM
@@ -78,7 +78,6 @@ namespace dma {
                 building->setCoords(LatLngAlt(lat, lng, 0.1));
                 mGeoSceneManager.addGeoEntity(sid, building);
             }
-            Log::warn(TAG, "02");
 
             float height = 1.0f;
             LatLngAlt origin = LatLngAlt(48.870548, 2.305235, height);
@@ -100,10 +99,10 @@ namespace dma {
             track->addAnimationComponent();
             AnimationComponent* animationComponent = track->getAnimationComponent();
             TransformComponent& transformComponent = track->getTransformComponent();
-            animationComponent->add(new TranslationAnimation(transformComponent, //TODO remove: that is a leak
-                                                              transformComponent.getPosition(),
-                                                              transformComponent.getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
-                                                              6.0f, TranslationAnimation::Function::EASE, true, true));
+            animationComponent->add(std::make_shared<TranslationAnimation>(transformComponent, //TODO remove: that is a leak
+                                                                           transformComponent.getPosition(),
+                                                                           transformComponent.getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
+                                                                           6.0f, TranslationAnimation::Function::EASE, true, true));
             mGeoSceneManager.addGeoEntity("track0", track);
 
             return res;

@@ -171,8 +171,8 @@ namespace dma {
          */
         TransformComponent mTransformComponent;
         AnimationComponent mAnimationComponent;
-        TranslationAnimation* mCurrentTranslationAnimation; //TODO smart pointer
-        SlerpAnimation* mCurrentSlerpAnimation; //TODO smart pointer
+        std::shared_ptr<TranslationAnimation> mCurrentTranslationAnimation; //TODO smart pointer
+        std::shared_ptr<SlerpAnimation> mCurrentSlerpAnimation; //TODO smart pointer
         glm::mat4 mView;
         float mZoom;
         float mBaseFov;

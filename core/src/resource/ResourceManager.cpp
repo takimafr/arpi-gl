@@ -34,11 +34,6 @@ namespace dma {
 
     void ResourceManager::init() {
         Log::trace(TAG, "Initializing ResourceManager...");
-        mShaderManager.init();
-        mMeshManager.init();
-        mMapManager.init();
-        mCubeMapManager.init();
-        mMaterialManager.init();
         mQuadFactory.init();
         Log::trace(TAG, "ResourceManager initialized");
     }
@@ -88,7 +83,7 @@ namespace dma {
         Log::trace(TAG, "ResourceManager wiped");
     }
 
-    void ResourceManager::update() {
+    void ResourceManager::prune() {
         Log::trace(TAG, "Pruning ResourceManager...");
         mMaterialManager.prune();
         mMeshManager.prune();

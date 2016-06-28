@@ -34,11 +34,6 @@ namespace dma {
 
         }
 
-        virtual void init() {
-//            mFallback = std::make_shared<T>();
-//            load(mFallback, FALLBACK_SID);
-        }
-
         /**
          * Load the resource identified by SID.
          * @param const std::string& -
@@ -48,9 +43,6 @@ namespace dma {
          * @return the loaded resource.
          */
         virtual std::shared_ptr<T> acquire(const std::string& sid) {
-//            if (sid == FALLBACK_SID) {
-//                return mFallback;
-//            }
             if (mResources.find(sid) == mResources.end()) {
                 std::shared_ptr<T> resource = std::make_shared<T>();
                 load(resource, sid);
@@ -67,9 +59,6 @@ namespace dma {
          */
         virtual void unload() {
             Log::trace(TAG, "Unloading...");
-//            if (mFallback != nullptr) {
-//                mFallback = nullptr; //release reference count
-//            }
             mResources.clear();
             mAnonymousResources.clear();
             Log::trace(TAG, "Unloaded done...");
@@ -80,8 +69,6 @@ namespace dma {
          */
         virtual void refresh() {
             Log::trace(TAG, "Refreshing...");
-
-//            load(mFallback, FALLBACK_SID);
 
             for (auto& kv : mResources) {
                 const std::string& sid = kv.first;
@@ -101,12 +88,9 @@ namespace dma {
          */
         virtual void reload() {
             Log::trace(TAG, "Reloading...");
-//            mFallback->clearCache();
             for (auto& kv : mResources) {
                 auto resource = kv.second;
-                if (resource != nullptr) {
-                    resource->clearCache();
-                }
+                resource->clearCache();
             }
             refresh();
             Log::trace(TAG, "Reload done.");

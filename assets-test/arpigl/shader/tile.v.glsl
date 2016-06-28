@@ -9,6 +9,5 @@ varying vec2 v_uv;
 void main() {
     vec4 position = vec4(a_position, 1.0);
     v_uv = a_uv;
-
     gl_Position = u_MVP * position;
 }

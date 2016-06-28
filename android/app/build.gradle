@@ -22,7 +22,7 @@ model {
         buildToolsVersion "23.0.2"
 
         defaultConfig {
-            applicationId "mobi.designmyapp.arpigl.demo"
+            applicationId "io.jawg.arpigl.demo"
             minSdkVersion.apiLevel 15
             targetSdkVersion.apiLevel 23
             versionCode 1

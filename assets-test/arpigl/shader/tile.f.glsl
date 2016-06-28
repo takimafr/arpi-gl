@@ -10,7 +10,5 @@ uniform sampler2D u_diffuse_map;
 varying vec2 v_uv;
 
 void main() {
-    vec4 texel = texture2D(u_diffuse_map, v_uv);
-    texel.a = 1.0;
-	gl_FragColor = texel;
+	gl_FragColor = texture2D(u_diffuse_map, v_uv);
 }

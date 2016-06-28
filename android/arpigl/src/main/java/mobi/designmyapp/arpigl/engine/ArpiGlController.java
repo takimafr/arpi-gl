@@ -72,13 +72,13 @@ public final class ArpiGlController implements Controller {
     public static final int MAP_ZOOM = 20;
 
     private static final float MIN_ALTITUDE = 1.0f;
-    private static final float MAX_ALTITUDE = 15.0f;
+    private static final float MAX_ALTITUDE = 20.0f;
 
     /**
      * debug tag.
      */
     private static final String TAG = ArpiGlController.class.getSimpleName();
-    private static final int TILE_CACHE_SIZE = 250;
+    private static final int TILE_CACHE_SIZE = 3000;
 
     /* ***
      * ATTRIBUTES

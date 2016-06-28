@@ -16,6 +16,7 @@
 
 package mobi.designmyapp.arpigl.demo.custompoiproviders;
 
+import android.content.Context;
 import android.graphics.Color;
 
 import org.json.JSONArray;
@@ -45,8 +46,8 @@ public class CustomGooglePlacesPoiProvider extends NetworkPoiProvider {
     public static final String FETCH_URL_PATTERN = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lon}&radius={radius}&types=food&key={key}";
     public static final double POI_ALTITUDE = 5.0;                                                                                                                                                                                                                 // in
 
-    public CustomGooglePlacesPoiProvider(final String apiKey) {
-        super(FETCH_URL_PATTERN, GoogleMapsPlacesPoiProviderMapper.class);
+    public CustomGooglePlacesPoiProvider(final String apiKey, Context context) {
+        super(FETCH_URL_PATTERN, GoogleMapsPlacesPoiProviderMapper.class, context);
 
         setUriParser(new UriParser() {
             @Override
@@ -56,7 +57,7 @@ public class CustomGooglePlacesPoiProvider extends NetworkPoiProvider {
                 double[] coords = {(coords1[0] + coords2[0]) / 2, (coords1[1] + coords2[1]) / 2};
 
                 // As we have 5x5 tiles, the radius of the center tile will be multiplied by 5.
-                double radius = 5 * ProjectionUtils.circumscribedCircleRadiusInMeters(tile, 19);
+                double radius = 5 * ProjectionUtils.circumscribedCircleRadiusInMeters(tile, 20);
 
                 return uri.replace("{lat}", ProjectionUtils.COORDINATES_FORMAT.format(coords[0]))
                         .replace("{lon}", ProjectionUtils.COORDINATES_FORMAT.format(coords[1]))

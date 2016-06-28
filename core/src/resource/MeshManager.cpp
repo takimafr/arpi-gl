@@ -396,6 +396,8 @@ namespace dma {
         mesh->smoothNormals = smoothNormals;
         mesh->vertexIndices = vertexIndices;
 
+        mesh->mSID = sid;
+
         Log::trace(TAG, "Mesh %s loaded", sid.c_str());
     }
 }

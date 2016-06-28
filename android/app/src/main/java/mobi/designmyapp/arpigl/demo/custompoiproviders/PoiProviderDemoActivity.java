@@ -73,10 +73,10 @@ public class PoiProviderDemoActivity extends AppCompatActivity {
         // Add our custom Poi Providers
         // This one will download pois from one of the opendatasoft.com
         // public datasets
-        arpiController.addPoiProvider(new CustomOpenDataSoftPoiProvider());
+        arpiController.addPoiProvider(new CustomOpenDataSoftPoiProvider(this));
 
         // This one will fetch pois (food) from the google places API
-        arpiController.addPoiProvider(new CustomGooglePlacesPoiProvider("AIzaSyBULbG_upfRjG5nrh9x5MSaBbc6lIWilHU"));
+        arpiController.addPoiProvider(new CustomGooglePlacesPoiProvider("AIzaSyBULbG_upfRjG5nrh9x5MSaBbc6lIWilHU", this));
 
         // Set the poi selection listener
         arpiController.setPoiSelectionListener(new PoiSelectionListener() {

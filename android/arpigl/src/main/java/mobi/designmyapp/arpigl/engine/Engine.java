@@ -171,6 +171,7 @@ public final class Engine implements Controller {
     public void refresh() {
         throwIfNotInstalled("refresh()");
         if (isInit()) {
+            wipe(mNativeInstanceAddr);
             refresh(mNativeInstanceAddr);
             updateTileDiffuseMaps(mNativeInstanceAddr);
         } else {

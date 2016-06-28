@@ -1,8 +1,9 @@
 {
+  "backToFront": true,
   "passes" : [
     {
       "cullMode": "none",
-      "shader": "textured",
+      "shader": "tile",
       "diffuseMap": "damier"
     }
   ]

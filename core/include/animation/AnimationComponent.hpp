@@ -24,6 +24,7 @@
 
 #include <list>
 #include <algorithm>
+#include <memory>
 
 namespace dma {
 
@@ -45,7 +46,7 @@ namespace dma {
          * @param const Animation* -
          *          the animation to add.
          */
-        inline void add(Animation* animation) {
+        inline void add(std::shared_ptr<Animation> animation) {
             mAnimations.push_back(animation);
         }
 
@@ -54,11 +55,8 @@ namespace dma {
          * @param const Animation* -
          *          the animation to remove.
          */
-        inline void remove(Animation *animation) {
-            std::list<Animation*>::iterator it = std::find(mAnimations.begin(), mAnimations.end(), animation);
-            if (it != mAnimations.end()) {
-                mAnimations.remove(animation);
-            }
+        inline void remove(std::shared_ptr<Animation> animation) {
+            mAnimations.remove(animation);
         }
 
         /**
@@ -77,7 +75,7 @@ namespace dma {
          * ATTRIBUTES
          */
         TransformComponent& mTransformComponent;
-        std::list<Animation*> mAnimations;
+        std::list<std::shared_ptr<Animation>> mAnimations;
     };
 }
 

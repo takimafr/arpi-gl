@@ -20,11 +20,7 @@
 
 #include "rendering/RenderingEngine.hpp"
 
-#include "utils/Log.hpp"
 #include "utils/ExceptionHandler.hpp"
-#include "utils/GLES2Logger.hpp"
-#include "utils/GLUtils.hpp"
-#include "utils/Utils.hpp"
 
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/ext.hpp"
@@ -53,7 +49,6 @@ namespace dma {
 
 
     RenderingEngine::~RenderingEngine() {
-        //unload();
     }
 
 
@@ -152,9 +147,7 @@ namespace dma {
 
         ///////////////////////////////////////////
         // 1. Draw front to back
-        //TODO Blend ???
-//        glEnable(GL_BLEND);
-//        glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
+
         while (!mFrontToBack.empty()) {
             mDraw(mFrontToBack.top().renderingPackage, *mV, *mP);
             mFrontToBack.pop();
@@ -177,15 +170,10 @@ namespace dma {
 
         ///////////////////////////////////////////
         // 3. Draw back to front
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDisable(GL_DEPTH_TEST);
         while (!mBackToFront.empty()) {
             mDraw(mBackToFront.top().renderingPackage, *mV, *mP);
             mBackToFront.pop();
         }
-        glDisable(GL_BLEND);
-        glEnable(GL_DEPTH_TEST);
 
         ///////////////////////////////////////////
         // 4. Draw the HUD
@@ -213,8 +201,6 @@ namespace dma {
 
         std::shared_ptr<Mesh> mesh = package->mMesh;
         std::shared_ptr<Material> material = package->mMaterial;
-
-        //Log::debug(TAG, "%s", glm::to_string(*(package->M)).c_str());
 
         const glm::mat4 MV = V * package->M;
         const glm::mat4 MVP = P * MV;

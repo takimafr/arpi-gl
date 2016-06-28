@@ -158,7 +158,7 @@ namespace dma {
                 }
             }
 
-            mResourceManager.update(); // unload unused resources
+            mResourceManager.prune(); // unload unused resources
 
             mLastX = x0;
             mLastY = y0;

@@ -169,7 +169,7 @@ namespace dma {
         /**
          * Updates all resources: ie unload unused resources
          */
-        void update();
+        void prune();
 
     private:
         /* ***

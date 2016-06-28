@@ -53,8 +53,8 @@ namespace dma {
 
 
         Poi::~Poi() {
-            delete mCurrentTranslationAnimation;
-            delete mCurrentRotationAnimation;
+//            delete mCurrentTranslationAnimation;
+//            delete mCurrentRotationAnimation;
         }
 
         void Poi::setCoords(const LatLngAlt &coords) {
@@ -87,25 +87,25 @@ namespace dma {
             if (mAnimated) {
                 if (mCurrentTranslationAnimation != nullptr) {
                     mAnimationComponent->remove(mCurrentTranslationAnimation);
-                    delete mCurrentTranslationAnimation;
+                    //delete mCurrentTranslationAnimation;
                 }
 
                 if (mCurrentRotationAnimation != nullptr) {
                     mAnimationComponent->remove(mCurrentRotationAnimation);
-                    delete mCurrentRotationAnimation;
+                    //delete mCurrentRotationAnimation;
                 }
 
                 mCurrentTranslationAnimation =
-                        new TranslationAnimation(*mTransformComponent,
-                                                 mTransformComponent->getPosition(),
-                                                 mTransformComponent->getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
-                                                 6.0f, TranslationAnimation::Function::EASE, true, true);
+                        std::make_shared<TranslationAnimation>(*mTransformComponent,
+                                                               mTransformComponent->getPosition(),
+                                                               mTransformComponent->getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
+                                                               6.0f, TranslationAnimation::Function::EASE, true, true);
                 mAnimationComponent->add(mCurrentTranslationAnimation);
 
                 mCurrentRotationAnimation =
-                        new RotationAnimation(*mTransformComponent,
-                                              8.0f, true, 360.0f,
-                                              glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f)));
+                        std::make_shared<RotationAnimation>(*mTransformComponent,
+                                                            8.0f, true, 360.0f,
+                                                            glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f)));
                 mAnimationComponent->add(mCurrentRotationAnimation);
             }
         }
@@ -127,10 +127,10 @@ namespace dma {
 
         void Poi::deanimate() {
             mAnimationComponent->remove(mCurrentTranslationAnimation);
-            delete mCurrentTranslationAnimation;
+//            delete mCurrentTranslationAnimation;
             mCurrentTranslationAnimation = nullptr;
             mAnimationComponent->remove(mCurrentRotationAnimation);
-            delete mCurrentRotationAnimation;
+//            delete mCurrentRotationAnimation;
             mCurrentRotationAnimation = nullptr;
         }
 

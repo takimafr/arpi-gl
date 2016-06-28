@@ -3,7 +3,7 @@
   "passes" : [
     {
       "cullMode": "front",
-      "shader": "silhouette",
+      "shader": "silhouette-alpha",
       "diffuseColor": [0.0, 0.0, 0.0],
       "scaling": true,
       "depthWriting": true
