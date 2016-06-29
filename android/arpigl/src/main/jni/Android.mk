@@ -8,6 +8,8 @@ ANIMATION_CPP := \
      $(ROOT_PATH)/core/src/animation/Animation.cpp      		\
      $(ROOT_PATH)/core/src/animation/AnimationComponent.cpp   	\
      $(ROOT_PATH)/core/src/animation/AnimationSystem.cpp		\
+     $(ROOT_PATH)/core/src/animation/GeoPathAnimation.cpp		\
+     $(ROOT_PATH)/core/src/animation/PathAnimation.cpp		\
      $(ROOT_PATH)/core/src/animation/RotationAnimation.cpp		\
      $(ROOT_PATH)/core/src/animation/SlerpAnimation.cpp       	\
      $(ROOT_PATH)/core/src/animation/TranslationAnimation.cpp 	

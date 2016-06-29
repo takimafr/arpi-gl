@@ -75,22 +75,22 @@ namespace dma {
 
         void GeoSceneManager::step() { //TODO optimization ?
 //            for (auto& kv : mGeoEntities) {
-//                if (auto poi = std::static_pointer_cast<Poi>(kv.second)) {
+//                if (auto poi = std::dynamic_pointer_cast<Poi>(kv.second)) {
 //                    poi->animate();
 //                }
 //            }
-            for (auto tile : mTileMap.getTiles()) {
-                if (tile->isDirty()) {
-                    LatLngAlt coords = tile->getCoords();
-                    double lat = coords.lat;
-                    double lon = coords.lng;
-                    glm::vec3 dest = mapPosition(lat, lon, 0.0);
-                    dest.x = dest.x + (tile->getQuad().getWidth() / 2.0f);
-                    dest.z = dest.z + (tile->getQuad().getHeight() / 2.0f);
-                    tile->setPosition(dest);
-                    tile->setDirty(false);
-                }
-            }
+//            for (auto tile : mTileMap.getTiles()) {
+//                if (tile->isDirty()) {
+//                    LatLngAlt coords = tile->getCoords();
+//                    double lat = coords.lat;
+//                    double lon = coords.lng;
+//                    glm::vec3 dest = mapPosition(lat, lon, 0.0);
+//                    dest.x = dest.x + (tile->getQuad().getWidth() / 2.0f);
+//                    dest.z = dest.z + (tile->getQuad().getHeight() / 2.0f);
+//                    tile->setPosition(dest);
+//                    tile->setDirty(false);
+//                }
+//            }
         }
 
 

@@ -158,7 +158,7 @@ namespace dma {
                 }
             }
 
-            mResourceManager.prune(); // unload unused resources
+            //mResourceManager.prune(); // unload unused resources TODO removed for buildings / tracks demo
 
             mLastX = x0;
             mLastY = y0;
@@ -186,7 +186,6 @@ namespace dma {
 
 
         Status TileMap::mUpdateTile(std::shared_ptr<Tile> tile, double lat, double lng, float width, float height, int x , int y, int z) {
-
             tile->x = x;
             tile->y = y;
             tile->z = z;
@@ -208,6 +207,12 @@ namespace dma {
 
             tile->setDiffuseMap(diffuseMap);
             tile->setDirty(true);
+            glm::vec3 dest = mGeoSceneManager.mapPosition(lat, lng, 0.0);
+            dest.x = dest.x + (tile->getQuad().getWidth() / 2.0f);
+            dest.z = dest.z + (tile->getQuad().getHeight() / 2.0f);
+            tile->setPosition(dest);
+            tile->setDirty(false);
+
             //Log::trace(TAG, "Tile (%d, %d, %d) updated, diffuse map: %s", x, y, z, diffuseMap->getSID().c_str());
             return STATUS_OK;
         }

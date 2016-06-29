@@ -36,10 +36,12 @@ namespace dma {
                 mAnimated(animated),
                 mCurrentTranslationAnimation(nullptr),
                 mCurrentRotationAnimation(nullptr)
-
         {
-            addAnimationComponent();
-            setScale(glm::vec3(0.5f));
+            if (mAnimated) {
+                addAnimationComponent();
+                animate();
+            }
+            // TODO remove setScale(glm::vec3(0.5f));
         }
 
 //        Poi::Poi(const std::string& sid) :

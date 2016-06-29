@@ -170,10 +170,17 @@ namespace dma {
 
         ///////////////////////////////////////////
         // 3. Draw back to front
+        glEnable(GL_BLEND);
+//        glDisable(GL_DEPTH_TEST);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         while (!mBackToFront.empty()) {
             mDraw(mBackToFront.top().renderingPackage, *mV, *mP);
             mBackToFront.pop();
         }
+        glDisable(GL_BLEND);
+//        glEnable(GL_DEPTH_TEST);
+
+
 
         ///////////////////////////////////////////
         // 4. Draw the HUD

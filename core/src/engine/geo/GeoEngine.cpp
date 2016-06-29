@@ -17,6 +17,7 @@
 #include <utils/GeoUtils.hpp>
 #include <rapidjson.h>
 #include <rapidjson/document.h>
+#include <animation/GeoPathAnimation.hpp>
 #include "engine/geo/GeoEngine.hpp"
 
 constexpr char TAG[] = "GeoEngine";
@@ -80,17 +81,49 @@ namespace dma {
             }
 
             float height = 1.0f;
-            LatLngAlt origin = LatLngAlt(48.870548, 2.305235, height);
+//            LatLngAlt origin = LatLngAlt(48.870548, 2.305235, height);
+//            std::shared_ptr<Mesh> trackMesh = mEngine.getTrackFactory().builder()
+//                    .thickness(3.0f)
+//                    .color(0.1098, 0.6, 1.0)
+//                    .path()
+//                    .point(GeoUtils::vector(origin, origin))
+//                    .point(GeoUtils::vector(origin, LatLngAlt(48.870833, 2.304516, height)))
+//                    .point(GeoUtils::vector(origin, LatLngAlt(48.871491, 2.302542, height)))
+//                    .point(GeoUtils::vector(origin, LatLngAlt(48.872075, 2.303449, height)))
+//                    .point(GeoUtils::vector(origin, LatLngAlt(48.872434, 2.304050, height)))
+//                    .build();
+
+            LatLngAlt origin = LatLngAlt(48.870690, 2.303191, height);
             std::shared_ptr<Mesh> trackMesh = mEngine.getTrackFactory().builder()
                     .thickness(3.0f)
                     .color(0.1098, 0.6, 1.0)
                     .path()
                     .point(GeoUtils::vector(origin, origin))
-                    .point(GeoUtils::vector(origin, LatLngAlt(48.870833, 2.304516, height)))
-                    .point(GeoUtils::vector(origin, LatLngAlt(48.871491, 2.302542, height)))
-                    .point(GeoUtils::vector(origin, LatLngAlt(48.872075, 2.303449, height)))
-                    .point(GeoUtils::vector(origin, LatLngAlt(48.872434, 2.304050, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.870307 , 2.302872, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.869945 , 2.302545, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.869571 , 2.302226, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.869250 , 2.302792, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.869504 , 2.303315, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.869871 , 2.304026, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.870169 , 2.304634, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.870515 , 2.305281, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.870706 , 2.304672, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.870926 , 2.303964, height)))
+                    .point(GeoUtils::vector(origin, LatLngAlt(48.871069 , 2.303543, height)))
                     .build();
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870690 , 2.303191, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870307 , 2.302872, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869945 , 2.302545, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869571 , 2.302226, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869250 , 2.302792, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869504 , 2.303315, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869871 , 2.304026, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870169 , 2.304634, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870515 , 2.305281, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870706 , 2.304672, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870926 , 2.303964, 15.0)));
+//            path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.871069 , 2.303543, 15.0)));
+
 
             std::shared_ptr<Material> trackMaterial = mEngine.getTrackFactory().generateMaterial(Color(0.1098f, 0.6f, 1.0f));
 
@@ -104,6 +137,24 @@ namespace dma {
                                                                            transformComponent.getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
                                                                            6.0f, TranslationAnimation::Function::EASE, true, true));
             mGeoSceneManager.addGeoEntity("track0", track);
+
+            std::vector<LatLngAlt> points;
+            points.push_back(LatLngAlt(48.871069 , 2.303543, 15.0));
+            points.push_back(LatLngAlt(48.870690 , 2.303191, 15.0));
+            points.push_back(LatLngAlt(48.870307 , 2.302872, 15.0));
+            points.push_back(LatLngAlt(48.869945 , 2.302545, 15.0));
+            points.push_back(LatLngAlt(48.869571 , 2.302226, 15.0));
+            points.push_back(LatLngAlt(48.869250 , 2.302792, 15.0));
+            points.push_back(LatLngAlt(48.869504 , 2.303315, 15.0));
+            points.push_back(LatLngAlt(48.869871 , 2.304026, 15.0));
+            points.push_back(LatLngAlt(48.870169 , 2.304634, 15.0));
+            points.push_back(LatLngAlt(48.870515 , 2.305281, 15.0));
+            points.push_back(LatLngAlt(48.870706 , 2.304672, 15.0));
+            points.push_back(LatLngAlt(48.870926 , 2.303964, 15.0));
+
+            Camera& camera = mGeoSceneManager.getScene().getCamera();
+            camera.getAnimationComponent().add(std::make_shared<GeoPathAnimation>(camera.getTransformComponent(), points, 25.0f, true, mGeoSceneManager));
+
 
             return res;
         }

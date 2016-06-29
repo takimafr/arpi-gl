@@ -15,6 +15,8 @@ without the express written permission of eBusiness Information.
 #include <rapidjson/document.h>
 #include <resource/TrackFactory.hpp>
 #include <utils/GeoUtils.hpp>
+#include <animation/PathAnimation.hpp>
+#include <animation/GeoPathAnimation.hpp>
 
 #include "utils/ObjReader.hpp"
 #include "engine/geo/GeoEngine.hpp"
@@ -235,6 +237,21 @@ int main(int argc, char** argv) {
     mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
 //    mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.870515, 2.305284, 5.0));
 
+//    std::vector<glm::vec3> path2;
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.871069 , 2.303543, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870690 , 2.303191, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870307 , 2.302872, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869945 , 2.302545, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869571 , 2.302226, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869250 , 2.302792, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869504 , 2.303315, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.869871 , 2.304026, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870169 , 2.304634, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870515 , 2.305281, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870706 , 2.304672, 15.0)));
+//    path2.push_back(mGeoEngine.getGeoSceneManager().mapPosition(LatLngAlt(48.870926 , 2.303964, 15.0)));
+//    mFlyThroughCamera->getAnimationComponent().add(std::make_shared<PathAnimation>(mFlyThroughCamera->getTransformComponent(), path2, 50.0f, true));
+//    mFlyThroughCamera->getAnimationComponent().add(std::make_shared<GeoPathAnimation>(mFlyThroughCamera->getTransformComponent(), path, 25.0f, true, mGeoEngine.getGeoSceneManager()));
 
     mGeoEngine.setSkyBoxEnabled(true);
 

@@ -16,6 +16,8 @@
 
 package mobi.designmyapp.arpigl.demo.offlineproviders;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -24,8 +26,10 @@ import org.json.JSONException;
 import java.io.IOException;
 
 import mobi.designmyapp.arpigl.ArpiGlInstaller;
+import mobi.designmyapp.arpigl.demo.SplashScreenActivity;
 import mobi.designmyapp.arpigl.demo.custompoiproviders.CustomOpenDataSoftPoiProvider;
 import mobi.designmyapp.arpigl.engine.ArpiGlController;
+import mobi.designmyapp.arpigl.model.Poi;
 import mobi.designmyapp.arpigl.provider.impl.AssetsStoragePoiProvider;
 import mobi.designmyapp.arpigl.provider.impl.TileAssetProvider;
 import mobi.designmyapp.arpigl.ui.ArpiGlFragment;
@@ -49,16 +53,34 @@ public class OfflineDemoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // We usually use a splashscreen to do this.. But in case you don't,
+//        // We usually use a splashscreen to do this.. But in case you don't,
+//        // this is your last chance to check if the resources are installed in
+//        // order to be able to use the ArpiGlController
+//        final ArpiGlInstaller installer = ArpiGlInstaller.getInstance(this);
+//        if (!installer.isInstalled()) {
+//            try {
+//                installer.install();
+//            } catch (final IOException | JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        // we usually use a splashscreen to do this.. But in case you don't,
         // this is your last chance to check if the resources are installed in
-        // order to be able to use the ArpiGlController
+        // order to be able to use the ArpiGlCotroller
         final ArpiGlInstaller installer = ArpiGlInstaller.getInstance(this);
         if (!installer.isInstalled()) {
-            try {
-                installer.install();
-            } catch (final IOException | JSONException e) {
-                e.printStackTrace();
-            }
+            // Start the SplashScreenActivity that will take care of the
+            // resource installation.
+            // Of course you can provide your own SplashScreen.
+            Intent intent = new Intent(this, SplashScreenActivity.class);
+            // Supply our activity class in order to get restarted once the
+            // installation finishes
+            intent.putExtra(SplashScreenActivity.EXTRA_CALLING_ACTIVITY_CLASS, this.getClass());
+            startActivity(intent);
+            finish(); // Don't forget to finish and return as we need to be
+            // recreated after installation
+            return;
         }
 
         setContentView(R.layout.activity_demo);
@@ -87,5 +109,35 @@ public class OfflineDemoActivity extends AppCompatActivity {
         super.onResume();
         // Set user location to paris, to be able to see pois
         arpiController.setCameraPosition(ELYSEE_LAT, ELYSEE_LNG);
+
+        Poi poi1 = Poi.builder()
+                .id("poi1")
+                .position(48.871267, 2.303551, 3.0)
+                .animated(true)
+                .color(Color.LTGRAY)
+                .icon("logo_ebusiness")
+                .shape("balloon")
+                .build();
+        arpiController.addPoi(poi1);
+
+        Poi poi2 = Poi.builder()
+                .id("poi2")
+                .position(48.869142, 2.302800, 3.0)
+                .animated(true)
+                .color(Color.LTGRAY)
+                .icon("logo_ebusiness")
+                .shape("balloon")
+                .build();
+        arpiController.addPoi(poi2);
+
+        Poi poi3 = Poi.builder()
+                .id("poi3")
+                .position(48.870617, 2.305284, 3.0)
+                .animated(true)
+                .color(Color.LTGRAY)
+                .icon("logo_ebusiness")
+                .shape("balloon")
+                .build();
+        arpiController.addPoi(poi3);
     }
 }

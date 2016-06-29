@@ -46,11 +46,6 @@
         <activity
             android:name="mobi.designmyapp.arpigl.demo.MenuDemoActivity"
             android:label="@string/title_activity_demo" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="mobi.designmyapp.arpigl.demo.SplashScreenActivity"
@@ -61,7 +56,13 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name="mobi.designmyapp.arpigl.demo.offlineproviders.OfflineDemoActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            </activity>
         <activity
             android:name="mobi.designmyapp.arpigl.demo.sensortrigger.SensorTriggerDemoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />

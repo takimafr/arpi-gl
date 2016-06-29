@@ -82,21 +82,19 @@ namespace dma {
                 mCurrentTranslationAnimation = nullptr;
             }
             mTransformComponent.setPosition(position);
-        }
-        else if (mCurrentTranslationAnimation != nullptr) {
+        } else if (mCurrentTranslationAnimation != nullptr) {
             if (mCurrentTranslationAnimation->isFinished()) {
                 mAnimationComponent.add(mCurrentTranslationAnimation);
             }
             mCurrentTranslationAnimation->refresh(mTransformComponent.getPosition(),
                                                   position,
                                                   duration);
-        }
-        else {
+        } else {
             // translates to position
             mCurrentTranslationAnimation = std::make_shared<TranslationAnimation>(mTransformComponent,
-                                                                    mTransformComponent.getPosition(),
-                                                                    position, duration,
-                                                                    translationFunction);
+                                                                                  mTransformComponent.getPosition(),
+                                                                                  position, duration,
+                                                                                  translationFunction);
             mAnimationComponent.add(mCurrentTranslationAnimation);
         }
     }
@@ -124,8 +122,8 @@ namespace dma {
         else {
             // slerp the rotation
             mCurrentSlerpAnimation = std::make_shared<SlerpAnimation>(mTransformComponent,
-                                                        mTransformComponent.getOrientationQuat(),
-                                                        orientation, duration, false);
+                                                                      mTransformComponent.getOrientationQuat(),
+                                                                      orientation, duration, false);
             mAnimationComponent.add(mCurrentSlerpAnimation);
         }
     }

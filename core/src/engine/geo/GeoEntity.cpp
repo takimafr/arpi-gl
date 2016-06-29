@@ -12,7 +12,6 @@ namespace dma {
         void GeoEntity::setCoords(const dma::LatLngAlt &coords) {
             mCoords = coords;
             setPosition(mGeoSceneManager.mapPosition(coords));
-
         }
 
 

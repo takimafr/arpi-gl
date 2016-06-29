@@ -18,8 +18,8 @@
 <resources>
 
     <!-- GLOBALS -->
-    <string name="app_name">Arpi Gl Demo</string>
-    <string name="title_activity_demo">Arpi Gl Demo</string>
+    <string name="app_name">ArpiGL Demo</string>
+    <string name="title_activity_demo">ArpiGL Demo</string>
 
     <!-- SplashScreen -->
     <string name="splashscreen_message">Loading…</string>

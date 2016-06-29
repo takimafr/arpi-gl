@@ -431,7 +431,7 @@ public final class Poi {
          * @return the poi
          */
         public Poi build() {
-            return new Poi(mPoiId, mShapeId, mIcon , mColor, mLatitude, mLongitude, mAltitude);
+            return new Poi(mPoiId, mShapeId, mIcon , mColor, mLatitude, mLongitude, mAltitude, mAnimated);
         }
     }
 
