@@ -152,9 +152,18 @@ namespace dma {
             points.push_back(LatLngAlt(48.870706 , 2.304672, 15.0));
             points.push_back(LatLngAlt(48.870926 , 2.303964, 15.0));
 
-            Camera& camera = mGeoSceneManager.getScene().getCamera();
-            camera.getAnimationComponent().add(std::make_shared<GeoPathAnimation>(camera.getTransformComponent(), points, 25.0f, true, mGeoSceneManager));
+//            Camera& camera = mGeoSceneManager.getScene().getCamera();
+//            camera.getAnimationComponent().add(std::make_shared<GeoPathAnimation>(camera.getTransformComponent(), points, 25.0f, true, mGeoSceneManager));
 
+            auto flag = mPoiFactory.builder()
+                    .icon("flag")
+                    .shape("flag")
+                    .sid("flag")
+                    .color(Color(1.0f, 1.0f, 1.0f))
+                    .animation(false)
+                    .build();
+            flag->setCoords(LatLngAlt(48.871069 , 2.303543, 0.0));
+            mGeoSceneManager.addGeoEntity("flag", flag);
 
             return res;
         }

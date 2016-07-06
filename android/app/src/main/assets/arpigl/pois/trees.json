@@ -1,0 +1,86 @@
+{
+  "POIs": [
+    {
+      "sid": "tree01",
+      "lat": 48.870734,
+      "lon": 2.305187,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "AA0000",
+      "icon": "tree",
+      "animated": false
+    },
+    {
+      "sid": "tree02",
+      "lat": 48.870840,
+      "lon": 2.304956,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "0000AA",
+      "icon": "tree"
+    },
+    {
+      "sid": "tree03",
+      "lat": 48.870903,
+      "lon": 2.304699,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "AA0000",
+      "icon": "tree"
+    },
+    {
+      "sid": "tree04",
+      "lat": 48.870970,
+      "lon": 2.304463,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "0000AA",
+      "icon": "tree"
+    },
+    {
+      "sid": "tree05",
+      "lat": 48.871034,
+      "lon": 2.304270,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "AA0000",
+      "icon": "tree"
+    },
+    {
+      "sid": "tree06",
+      "lat": 48.871084,
+      "lon": 2.304066,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "0000AA",
+      "icon": "tree"
+    },
+    {
+      "sid": "tree07",
+      "lat": 48.871158,
+      "lon": 2.303779,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "AA0000",
+      "icon": "tree"
+    },
+    {
+      "sid": "tree08",
+      "lat": 48.871207,
+      "lon": 2.303554,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "0000AA",
+      "icon": "tree"
+    },
+    {
+      "sid": "tree09",
+      "lat": 48.871253,
+      "lon": 2.303374,
+      "alt": 0.0,
+      "shape": "tree",
+      "color": "AA0000",
+      "icon": "tree"
+    }
+  ]
+}

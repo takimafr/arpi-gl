@@ -115,7 +115,7 @@ public class OfflineDemoActivity extends AppCompatActivity {
                 .position(48.871267, 2.303551, 3.0)
                 .animated(true)
                 .color(Color.LTGRAY)
-                .icon("logo_ebusiness")
+                .icon("jawg")
                 .shape("balloon")
                 .build();
         arpiController.addPoi(poi1);
@@ -125,7 +125,7 @@ public class OfflineDemoActivity extends AppCompatActivity {
                 .position(48.869142, 2.302800, 3.0)
                 .animated(true)
                 .color(Color.LTGRAY)
-                .icon("logo_ebusiness")
+                .icon("jawg")
                 .shape("balloon")
                 .build();
         arpiController.addPoi(poi2);
@@ -135,7 +135,7 @@ public class OfflineDemoActivity extends AppCompatActivity {
                 .position(48.870617, 2.305284, 3.0)
                 .animated(true)
                 .color(Color.LTGRAY)
-                .icon("logo_ebusiness")
+                .icon("jawg")
                 .shape("balloon")
                 .build();
         arpiController.addPoi(poi3);

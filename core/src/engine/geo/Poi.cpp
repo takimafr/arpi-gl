@@ -37,11 +37,14 @@ namespace dma {
                 mCurrentTranslationAnimation(nullptr),
                 mCurrentRotationAnimation(nullptr)
         {
+            if (mSID == "flag") {
+                setScale(glm::vec3(5.0f));
+            }
             if (mAnimated) {
                 addAnimationComponent();
                 animate();
             }
-            // TODO remove setScale(glm::vec3(0.5f));
+//            setScale(glm::vec3(2.0f));
         }
 
 //        Poi::Poi(const std::string& sid) :
@@ -84,7 +87,7 @@ namespace dma {
 
 
         void Poi::animate() {
-            assert(Entity::isAnimable());
+            //assert(Entity::isAnimable());
 
             if (mAnimated) {
                 if (mCurrentTranslationAnimation != nullptr) {

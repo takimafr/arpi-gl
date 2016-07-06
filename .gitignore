@@ -77,3 +77,5 @@ obj/
 arpigl-assets.zip
 libs/
 obj/
+
+*.so
