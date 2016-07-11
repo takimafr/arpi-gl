@@ -24,6 +24,8 @@
 
 namespace dma {
 
+    enum { NEAR = 0, FAR = 1, TOP = 2, BOTTOM = 3, LEFT = 4, RIGHT = 5 };
+
 
     Frustum::Frustum() {
 

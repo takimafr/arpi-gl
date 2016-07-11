@@ -21,8 +21,6 @@
 #include "glm/glm.hpp"
 
 namespace dma {
-    namespace geo {
-
 
         double GeoUtils::slc(LatLng coords1, LatLng coords2) {
 
@@ -74,6 +72,4 @@ namespace dma {
             return res;
         }
 
-
-    }
 }

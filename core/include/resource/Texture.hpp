@@ -29,10 +29,6 @@
 
 #include <string>
 
-//libpng
-#include "libpng/png.h"
-
-//DMA
 #include "common/Types.hpp"
 #include "resource/Image.hpp"
 #include "GpuResource.hpp"

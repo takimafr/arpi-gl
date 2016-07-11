@@ -287,7 +287,6 @@ namespace dma {
         U16 currentVertexIndex = 0;
         //create Vertex objects out of VertexIndices.
         for (const VertexIndices& vi : vertexIndices) {
-
             // if Vertex object of this indices doesn't exist already
             if (indexMap.find(vi) == indexMap.end()) {
                 //create it & refer to it.

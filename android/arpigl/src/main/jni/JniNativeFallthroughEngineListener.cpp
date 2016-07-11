@@ -10,7 +10,6 @@ extern "C" {
 #endif
 
 using namespace dma;
-using namespace dma::geo;
 
 #define TAG "jni_NativeFallthroughEngineListener"
 

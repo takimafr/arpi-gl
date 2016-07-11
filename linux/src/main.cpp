@@ -19,12 +19,11 @@ without the express written permission of eBusiness Information.
 #include <animation/GeoPathAnimation.hpp>
 
 #include "utils/ObjReader.hpp"
-#include "engine/geo/GeoEngine.hpp"
-#include "engine/geo/Poi.hpp"
+#include "geo/GeoEngine.hpp"
+#include "geo/Poi.hpp"
 
 
 using namespace dma;
-using namespace dma::geo;
 
 #define TAG "Main"
 
@@ -102,9 +101,9 @@ void mHandleEvents() {
         keys[GLFW_KEY_J] = false;
     }
     if (keys[GLFW_KEY_K]) {
-        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.869252, 2.302800, 25.0f), 0.9f, TranslationAnimation::Function::EASE);
+//        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(48.869252, 2.302800, 25.0f), 0.9f, TranslationAnimation::Function::EASE);
+        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(81.221595, 2.0371413, 5.0f), 0.9f, TranslationAnimation::Function::EASE);
         keys[GLFW_KEY_K] = false;
-//        mGeoEngine.getGeoSceneManager().placeCamera(LatLngAlt(81.221595, 2.0371413, 5.0f), 0.9f, TranslationAnimation::Function::EASE);
     }
 
     //////////////////////////////////////////////////////////////

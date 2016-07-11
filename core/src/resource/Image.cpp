@@ -22,9 +22,8 @@
 #include "utils/Utils.hpp"
 #include <fstream>
 
-#include <string.h>
-#include <pngconf.h>
 #include <stdexcept>
+#include <cstring>
 
 
 constexpr auto TAG = "Image";
@@ -40,7 +39,7 @@ namespace dma {
 
     void memoryReadCallback(png_structp png, png_bytep data, png_size_t size) {
         ByteBuffer* userData = ((ByteBuffer*)png_get_io_ptr(png));
-        memcpy(data, userData->data + userData->offset, size);
+        std::memcpy(data, userData->data + userData->offset, size);
         userData->offset += size;
     }
 
@@ -249,7 +248,7 @@ namespace dma {
         }
 
         /* read magic number to ensure this file is a png */
-        if (fread (magic, sizeof (magic), 1, file) <= 0) {
+        if (fread(magic, sizeof (magic), 1, file) <= 0) {
             fclose(file);
             std::string error = "cannot read " + fname + " magic number";
             Log::error(TAG, error.c_str());
@@ -257,7 +256,7 @@ namespace dma {
         }
 
         /* check for valid magic number */
-        if (!png_check_sig (magic, sizeof (magic))) {
+        if (!png_check_sig(magic, sizeof (magic))) {
             onPngError(file, fname, "is not a valid PNG file");
             throw std::runtime_error(fname + " is not a valid PNG file");
         }
@@ -309,8 +308,8 @@ namespace dma {
 
         /* retrieve updated information in IHDR (png header) */
         png_get_IHDR (png_ptr, info_ptr,
-                      (png_uint_32*)(&mWidth),
-                      (png_uint_32*)(&mHeight),
+                      (png_uint_32p)(&mWidth),
+                      (png_uint_32p)(&mHeight),
                       &bit_depth, &color_type,
                       NULL, NULL, NULL);
 
@@ -406,7 +405,7 @@ namespace dma {
 
         png_read_info(pngPtr, infoPtr);
 
-        png_int_32 depth, colorType;
+        int depth, colorType;
         png_uint_32 width, height;
         png_get_IHDR(pngPtr, infoPtr, &width, &height,
                      &depth, &colorType, NULL, NULL, NULL);

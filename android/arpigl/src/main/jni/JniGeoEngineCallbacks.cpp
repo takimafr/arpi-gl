@@ -18,81 +18,69 @@
 #include <string>
 
 #include "JniGeoEngineCallbacks.hpp"
-#include "utils/Log.hpp"
 
 #define TAG = "JniGeoEngineCallbacks";
 
 namespace dma {
-    namespace geo {
 
+    JniGeoEngineCallbacks::JniGeoEngineCallbacks(JavaVM* javaVM, jobject listener,
+                                                 jmethodID onTileRequest,
+                                                 jmethodID onPoiSelected,
+                                                 jmethodID onPoiDeselected) :
+            mJavaVM(javaVM),
+            mListener(listener),
+            mOnTileRequest(onTileRequest),
+            mOnPoiSelected(onPoiSelected),
+            mOnPoiDeselected(onPoiDeselected)
+    {
 
+    }
 
-        JniGeoEngineCallbacks::JniGeoEngineCallbacks(JavaVM* javaVM, jobject listener,
-                                                     jmethodID onTileRequest,
-                                                     jmethodID onPoiSelected,
-                                                     jmethodID onPoiDeselected) :
-                mJavaVM(javaVM),
-                mListener(listener),
-                mOnTileRequest(onTileRequest),
-                mOnPoiSelected(onPoiSelected),
-                mOnPoiDeselected(onPoiDeselected)
-        {
+    JniGeoEngineCallbacks::~JniGeoEngineCallbacks() {
+    }
 
-        }
+    void JniGeoEngineCallbacks::onTileRequest(int x, int y, int z) {
 
+        JNIEnv* env;
+        mJavaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
+        assert(env != nullptr); // should be called from the already attached OpenGL thread
 
-        JniGeoEngineCallbacks::~JniGeoEngineCallbacks() {
-        }
+        env->CallVoidMethod(mListener, mOnTileRequest, x, y, z);
 
+        //TODO
+        //if (env->ExceptionCheck()) {
+        //    env->ExceptionDescribe();
+        //}
+    }
 
+    void JniGeoEngineCallbacks::onPoiSelected(const std::string &sid) {
 
-        void JniGeoEngineCallbacks::onTileRequest(int x, int y, int z) {
+        JNIEnv* env;
+        mJavaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
+        assert(env != nullptr); // should be called from the already attached OpenGL thread
 
-            JNIEnv* env;
-            mJavaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-            assert(env != nullptr); // should be called from the already attached OpenGL thread
+        jstring jsid = env->NewStringUTF(sid.c_str());
+        env->CallVoidMethod(mListener, mOnPoiSelected, jsid);
 
-            env->CallVoidMethod(mListener, mOnTileRequest, x, y, z);
+        //TODO
+        //if (env->ExceptionCheck()) {
+        //    env->ExceptionDescribe();
+        //}
+    }
 
-            //TODO
-            //if (env->ExceptionCheck()) {
-            //    env->ExceptionDescribe();
-            //}
-        }
+    void JniGeoEngineCallbacks::onPoiDeselected(const std::string &sid) {
 
+        JNIEnv* env;
+        mJavaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
+        assert(env != nullptr); // should be called from the already attached OpenGL thread
 
+        jstring jsid = env->NewStringUTF(sid.c_str());
+        env->CallVoidMethod(mListener, mOnPoiDeselected, jsid);
 
-        void JniGeoEngineCallbacks::onPoiSelected(const std::string &sid) {
+        //TODO
+        //if (env->ExceptionCheck()) {
+        //    env->ExceptionDescribe();
+        //}
+    }
 
-            JNIEnv* env;
-            mJavaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-            assert(env != nullptr); // should be called from the already attached OpenGL thread
-
-            jstring jsid = env->NewStringUTF(sid.c_str());
-            env->CallVoidMethod(mListener, mOnPoiSelected, jsid);
-
-            //TODO
-            //if (env->ExceptionCheck()) {
-            //    env->ExceptionDescribe();
-            //}
-        }
-
-
-
-        void JniGeoEngineCallbacks::onPoiDeselected(const std::string &sid) {
-
-            JNIEnv* env;
-            mJavaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
-            assert(env != nullptr); // should be called from the already attached OpenGL thread
-
-            jstring jsid = env->NewStringUTF(sid.c_str());
-            env->CallVoidMethod(mListener, mOnPoiDeselected, jsid);
-
-            //TODO
-            //if (env->ExceptionCheck()) {
-            //    env->ExceptionDescribe();
-            //}
-        }
-
-    } /* namespace geo */
 } /* namespace dma */

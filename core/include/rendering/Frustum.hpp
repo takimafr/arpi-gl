@@ -25,8 +25,6 @@ namespace dma {
 
     class Frustum {
 
-        enum { NEAR = 0, FAR = 1, TOP = 2, BOTTOM = 3, LEFT = 4, RIGHT = 5};
-
         Plane mPlanes[6];
         float mNear, mFar, mAspectRatio, mFovY;
         float nw, nh, fw, fh;

@@ -20,7 +20,7 @@
 #include <glm/vec3.hpp>
 #include <vector>
 #include <engine/Entity.hpp>
-#include <engine/geo/LatLngAlt.hpp>
+#include <geo/LatLngAlt.hpp>
 #include "resource/MeshManager.hpp"
 #include "resource/ResourceManager.hpp"
 #include "utils/Color.hpp"

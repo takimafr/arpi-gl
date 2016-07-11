@@ -21,7 +21,7 @@
 #include "common/Types.hpp"
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-#include "libpng/png.h"
+#include <libpng16/png.h>
 #include <string>
 
 namespace dma {

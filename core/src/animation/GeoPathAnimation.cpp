@@ -7,12 +7,6 @@ namespace dma {
         return d / speed;
     }
 
-//    float getTime(LatLngAlt& a, LatLngAlt& b, float speed) {
-//        float d = glm::length<float>(glm::vec3(b.lat, b.lng, b.alt) - glm::vec3(a.lat, a.lng, a.alt));
-//        return d / speed;
-//    }
-
-
     GeoPathAnimation::GeoPathAnimation(TransformComponent &transformComponent,
                                        std::vector<LatLngAlt> &path,
                                        float speed, bool loop,
@@ -61,20 +55,7 @@ namespace dma {
         from.y = y;
         to.y = y;
 
-//        LatLngAlt from = mPath[i-1];
-//        LatLngAlt to = mPath[i];
-
-//        glm::vec3 mix = glm::mix(glm::vec3(from.lat, from.lng, from.alt),
-//                                 glm::vec3(to.lat, to.lng, to.alt), x);
-//
-//        mGeoSceneManager.placeCamera(LatLngAlt(mix.x, mix.y, mix.z));
-
-//        float a = x * x;
-//        float b = 1.0f - x;
-//        float c = b * b;
-        float interpolant = x;// a / (a + c);
-
-        mTransformComponent->setPosition(glm::mix(from, to, interpolant));
+        mTransformComponent->setPosition(glm::mix(from, to, x));
     }
 
 }

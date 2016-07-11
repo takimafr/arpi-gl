@@ -19,62 +19,60 @@
 #define _DMA_GEOUTILS_HPP_
 
 #include <cmath>
-#include <engine/geo/LatLng.hpp>
+#include <geo/LatLng.hpp>
 #include <glm/vec3.hpp>
-#include <engine/geo/LatLngAlt.hpp>
+#include <geo/LatLngAlt.hpp>
 
 namespace dma {
-    namespace geo {
 
-        class GeoUtils {
+    class GeoUtils {
 
-        public:
-
-
-            static inline int lng2tilex(double lon, int z) {
-                return (int)(floor((lon + 180.0) / 360.0 * (double)(1 << z)));
-            }
+    public:
 
 
-
-            static inline int lat2tiley(double lat, int z) {
-                return (int)(floor((1.0 - log( tan(lat * M_PI/180.0) + 1.0 / cos(lat * M_PI/180.0)) / M_PI) / 2.0 * (double)(1 << z)));
-            }
+        static inline int lng2tilex(double lon, int z) {
+            return (int)(floor((lon + 180.0) / 360.0 * (double)(1 << z)));
+        }
 
 
 
-            static inline double tilex2long(int x, int z) {
-                return x / (double)(1 << z) * 360.0 - 180;
-            }
+        static inline int lat2tiley(double lat, int z) {
+            return (int)(floor((1.0 - log( tan(lat * M_PI/180.0) + 1.0 / cos(lat * M_PI/180.0)) / M_PI) / 2.0 * (double)(1 << z)));
+        }
 
 
 
-            static inline double tiley2lat(int y, int z) {
-                double n = M_PI - 2.0 * M_PI * y / (double)(1 << z);
-                return 180.0 / M_PI * atan(0.5 * (exp(n) - exp(-n)));
-            }
+        static inline double tilex2long(int x, int z) {
+            return x / (double)(1 << z) * 360.0 - 180;
+        }
 
 
-            /**
-            * Spherical Law of Cosines
-            * Returns the distance in meter between coords1 and coords2
-            */
-            static double slc(LatLng coords1, LatLng coords2);
+
+        static inline double tiley2lat(int y, int z) {
+            double n = M_PI - 2.0 * M_PI * y / (double)(1 << z);
+            return 180.0 / M_PI * atan(0.5 * (exp(n) - exp(-n)));
+        }
 
 
-            /**
-             * Computes the bearing between 2 coordinates from coords2 to coords1.
-             * @param coords1 the arrival point
-             * @param coords2 the starting point
-             * @return a clockwise angle from north in degrees
-             */
-            static double bearing(LatLng coords1, LatLng coords2);
+        /**
+        * Spherical Law of Cosines
+        * Returns the distance in meter between coords1 and coords2
+        */
+        static double slc(LatLng coords1, LatLng coords2);
 
 
-            static glm::vec3 vector(LatLngAlt coords1, LatLngAlt coords2);
+        /**
+         * Computes the bearing between 2 coordinates from coords2 to coords1.
+         * @param coords1 the arrival point
+         * @param coords2 the starting point
+         * @return a clockwise angle from north in degrees
+         */
+        static double bearing(LatLng coords1, LatLng coords2);
 
-        };
-    }
+
+        static glm::vec3 vector(LatLngAlt coords1, LatLngAlt coords2);
+
+    };
 }
 
 #endif //_DMA_GEOUTILS_HPP_

@@ -1,13 +1,12 @@
 #include <jni.h>
 
-#include "engine/geo/GeoEngine.hpp"
+#include "geo/GeoEngine.hpp"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 using namespace dma;
-using namespace dma::geo;
 
 #define ENGINE(addr) ((GeoEngine*) addr)
 

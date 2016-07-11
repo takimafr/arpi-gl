@@ -1,10 +1,8 @@
 #ifndef ARPIGL_GEOPATHANIMATION_HPP
 #define ARPIGL_GEOPATHANIMATION_HPP
 
-#include <engine/geo/LatLngAlt.hpp>
-#include <engine/geo/GeoSceneManager.hpp>
-
-using namespace dma::geo;
+#include <geo/LatLngAlt.hpp>
+#include <geo/GeoSceneManager.hpp>
 
 namespace dma {
 

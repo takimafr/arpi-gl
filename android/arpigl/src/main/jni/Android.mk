@@ -23,15 +23,16 @@ ENGINE_CPP :=  \
     $(ROOT_PATH)/core/src/engine/Scene.cpp                 \
     $(ROOT_PATH)/core/src/engine/TransformComponent.cpp
 
-GEO_ENGINE_CPP := \
-    $(ROOT_PATH)/core/src/engine/geo/GeoEngine.cpp          \
-    $(ROOT_PATH)/core/src/engine/geo/GeoEngineCallbacks.cpp \
-    $(ROOT_PATH)/core/src/engine/geo/GeoEntity.cpp          \
-    $(ROOT_PATH)/core/src/engine/geo/Poi.cpp				\
-    $(ROOT_PATH)/core/src/engine/geo/PoiFactory.cpp         \
-    $(ROOT_PATH)/core/src/engine/geo/GeoSceneManager.cpp    \
-    $(ROOT_PATH)/core/src/engine/geo/Tile.cpp               \
-    $(ROOT_PATH)/core/src/engine/geo/TileMap.cpp
+GEO_CPP := \
+    $(ROOT_PATH)/core/src/geo/GeoEngine.cpp          \
+    $(ROOT_PATH)/core/src/geo/GeoEngineCallbacks.cpp \
+    $(ROOT_PATH)/core/src/geo/GeoEntity.cpp          \
+    $(ROOT_PATH)/core/src/geo/Poi.cpp				         \
+    $(ROOT_PATH)/core/src/geo/PoiFactory.cpp         \
+    $(ROOT_PATH)/core/src/geo/GeoSceneManager.cpp    \
+    $(ROOT_PATH)/core/src/geo/Tile.cpp               \
+    $(ROOT_PATH)/core/src/geo/TileMap.cpp            \
+    $(ROOT_PATH)/core/src/geo/vector_tile.cpp
 
 ASYNC_CPP := \
     $(ROOT_PATH)/core/src/async/TaskScheduler.cpp
@@ -74,17 +75,17 @@ RESOURCE_CPP :=  \
 
 
 UTILS_CPP := \
-   $(ROOT_PATH)/core/src/utils/GeoUtils.cpp             \
+   $(ROOT_PATH)/core/src/utils/GeoUtils.cpp           \
    $(ROOT_PATH)/core/src/utils/GeoSceneReader.cpp 		\
-   $(ROOT_PATH)/core/src/utils/GLUtils.cpp 				\
+   $(ROOT_PATH)/core/src/utils/GLUtils.cpp 				    \
    $(ROOT_PATH)/core/src/utils/MaterialReader.cpp 		\
-   $(ROOT_PATH)/core/src/utils/ObjReader.cpp 			\
-   $(ROOT_PATH)/core/src/utils/Utils.cpp 				\
+   $(ROOT_PATH)/core/src/utils/ObjReader.cpp 			    \
+   $(ROOT_PATH)/core/src/utils/Utils.cpp 				      \
    utils/Log.cpp
 
 
 JNI_CPP := \
-    JniGeoEngineCallbacks.cpp                                                  \
+    JniGeoEngineCallbacks.cpp                      \
     JniEngine.cpp                                  \
     JniNativeFallthroughEngineListener.cpp
 
@@ -98,13 +99,13 @@ $(LOCAL_PATH)/ndk-modules
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 LOCAL_LDLIBS    := -llog -lGLESv2 -lz
-LOCAL_STATIC_LIBRARIES := png
+LOCAL_STATIC_LIBRARIES := png16 protobuf
 
 LOCAL_SRC_FILES :=   \
     $(ANIMATION_CPP) \
     $(COMMON_CPP)    \
     $(ENGINE_CPP)    \
-    $(GEO_ENGINE_CPP)\
+    $(GEO_CPP)\
     $(JNI_CPP)  	 \
     $(ASYNC_CPP)     \
     $(RENDERING_CPP) \
@@ -121,5 +122,6 @@ LOCAL_CFLAGS 			+= -O3 -DNDEBUG -DFPS_PRINT_RATE="5.0"
 endif
 
 include $(BUILD_SHARED_LIBRARY)
-$(call import-module, libpng)
+$(call import-module, libprotobuf)
+$(call import-module, libpng16)
 

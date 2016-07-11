@@ -34,7 +34,7 @@ namespace dma {
 
 
     Mesh::~Mesh() {
-
+        wipe();
     }
 
 
