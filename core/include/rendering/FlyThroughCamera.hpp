@@ -35,6 +35,8 @@ namespace dma {
 
         void forward(const float offset);
         void backward(const float offset);
+        void top(const float offset);
+        void bottom(const float offset);
         void strafeRight(const float offset);
         void strafeLeft(const float offset);
         void pitch(const float offset);

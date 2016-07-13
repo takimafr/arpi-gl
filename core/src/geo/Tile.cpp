@@ -45,14 +45,7 @@ namespace dma {
         }
 
 
-
-        std::shared_ptr<Map> Tile::getDiffuseMap() {
-            return getMaterial()->getPass(TILE_PASS_INDEX).getDiffuseMap();
-        }
-
-
-
-        std::shared_ptr<Material> Tile::getMaterial() {
+    std::shared_ptr<Material> Tile::getMaterial() {
             return mRenderingComponent->getRenderingPackages()[0]->getMaterial();
         }
 }

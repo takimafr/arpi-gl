@@ -68,6 +68,8 @@ void mHandleEvents() {
     if (keys[GLFW_KEY_S]) mFlyThroughCamera->backward(mCameraSpeed);
     if (keys[GLFW_KEY_A]) mFlyThroughCamera->strafeLeft(mCameraSpeed);
     if (keys[GLFW_KEY_D]) mFlyThroughCamera->strafeRight(mCameraSpeed);
+    if (keys[GLFW_KEY_SPACE]) mFlyThroughCamera->top(mCameraSpeed);
+    if (keys[GLFW_KEY_LEFT_CONTROL]) mFlyThroughCamera->bottom(mCameraSpeed);
 
     if (keys[GLFW_KEY_R]) {
         mGeoEngine.wipe();
@@ -140,8 +142,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 
 void mouseCallback(GLFWwindow* window, int button, int action, int mods) {
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-        glfwGetCursorPos(mWindow, &lastX, &lastY);
+        glfwGetCursorPos(window, &lastX, &lastY);
         mRMBToggled = true;
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
@@ -151,11 +154,15 @@ void mouseCallback(GLFWwindow* window, int button, int action, int mods) {
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double screenX, screenY;
-        glfwGetCursorPos(mWindow, &screenX, &screenY);
+        glfwGetCursorPos(window, &screenX, &screenY);
         mGeoEngine.getGeoSceneManager().pick((int) screenX, (int) screenY);
     }
 }
 
+
+void windowFocusCallback(GLFWwindow *window, int focused) {
+
+}
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     mFlyThroughCamera->zoom((float) (yoffset * 0.1f));
@@ -290,9 +297,7 @@ int main(int argc, char** argv) {
     glfwSetKeyCallback(mWindow, keyCallback);
     glfwSetMouseButtonCallback(mWindow, mouseCallback);
     glfwSetScrollCallback(mWindow, scrollCallback);
-
-
-
+    glfwSetWindowFocusCallback(mWindow, windowFocusCallback);
 
     /////////////////////////////////////////////////////////
     // Start main loop

@@ -7,6 +7,7 @@
 #include <memory>
 #include <resource/Mesh.hpp>
 #include <resource/ResourceManager.hpp>
+#include "ShapeTypes.hpp"
 
 namespace dma {
     class ShapeFactory {
@@ -14,7 +15,7 @@ namespace dma {
     public:
         ShapeFactory(ResourceManager& resourceManger);
 
-        std::shared_ptr<Mesh> polygon(const std::vector<std::vector<glm::vec2>>& polygons);
+        std::shared_ptr<Mesh> polygon(const Polygon& polygon);
 
     private:
         ResourceManager& mResourceManager;

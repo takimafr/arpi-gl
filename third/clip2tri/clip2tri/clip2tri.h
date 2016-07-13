@@ -46,10 +46,10 @@ private:
    Path upscaleClipperPoints(const vector<Point> &inputPolygon);
 
    // These operate on a vector of polygons
-   Paths upscaleClipperPoints(const vector<vector<Point> > &inputPolygons);
+   Paths upscaleClipperPoints(const vector<vector<Point>> &inputPolygons);
    vector<vector<Point> > downscaleClipperPoints(const Paths &inputPolygons);
 
-   bool mergePolysToPolyTree(const vector<vector<Point> > &inputPolygons, PolyTree &solution);
+   bool mergePolysToPolyTree(const vector<vector<Point>> &inputPolygons, PolyTree &solution);
 
    bool triangulateComplex(vector<Point> &outputTriangles, const Path &outline,
          const PolyTree &polyTree, bool ignoreFills = true, bool ignoreHoles = false);
@@ -58,8 +58,8 @@ public:
    clip2tri();
    virtual ~clip2tri();
 
-   void triangulate(const vector<vector<Point> > inputPolygons, vector<Point> &outputTriangles,
-         const vector<Point> boundingPolygon);
+   void triangulate(const vector<vector<Point>>& inputPolygons, vector<Point> &outputTriangles,
+         const vector<Point>& boundingPolygon);
 };
 
 } /* namespace c2t */

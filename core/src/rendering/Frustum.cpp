@@ -18,7 +18,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "rendering/Frustum.hpp"
-#include "utils/Log.hpp"
 
 #define TAG "Frustum"
 

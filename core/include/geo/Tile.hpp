@@ -50,8 +50,6 @@ namespace dma {
 
         void setDiffuseMap(std::shared_ptr<Map> diffuseMap);
 
-        std::shared_ptr<Map> getDiffuseMap();
-
         std::shared_ptr<Material> getMaterial();
 
     private:

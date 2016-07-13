@@ -46,7 +46,13 @@ namespace dma {
         Camera::translate(-mDirection * offset);
     }
 
+    void FlyThroughCamera::top(const float offset) {
+        Camera::translate(mUp * offset);
+    }
 
+    void FlyThroughCamera::bottom(const float offset) {
+        Camera::translate(-mUp * offset);
+    }
 
     void FlyThroughCamera::strafeRight(const float offset) {
         glm::vec3 right = glm::cross(glm::vec3(mDirection), glm::vec3(mUp));

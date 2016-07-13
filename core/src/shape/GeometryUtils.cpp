@@ -64,7 +64,7 @@ namespace dma {
         }
     }
 
-    void GeometryUtils::index(std::vector<glm::vec3> &triangles, std::vector<glm::vec3>& positions, std::vector<U32> &indices) {
+    void GeometryUtils::index(const std::vector<glm::vec3> &triangles, std::vector<glm::vec3>& positions, std::vector<U32> &indices) {
         for (auto& v : triangles) {
             U32 i = 0;
             for (; i < positions.size(); ++i) {
@@ -76,6 +76,15 @@ namespace dma {
                 positions.push_back(v);
             }
             indices.push_back(i);
+        }
+    }
+
+    void GeometryUtils::scale(Polygon &polygon, float scaleX, float scaleY) {
+        for (Ring& ring : polygon) {
+            for (auto& p : ring) {
+                p.x *= scaleX;
+                p.y *= scaleY;
+            }
         }
     }
 

@@ -1,56 +1,77 @@
-#include <clip2tri/clip2tri.h>
 #include <shape/GeometryUtils.hpp>
+#include <poly2tri/poly2tri.h>
 #include "shape/ShapeFactory.hpp"
 
 using namespace std;
-using namespace c2t;
+using namespace p2t;
 using namespace glm;
 
+namespace {
+
+    std::vector<glm::vec3> mapToVec3(const std::vector<Triangle *> &triangles) {
+        std::vector<glm::vec3> res;
+        res.reserve(triangles.size());
+        for (auto t : triangles) {
+            for (int i = 0; i < 3; ++i) {
+                Point* p = t->GetPoint(i);
+                res.push_back(glm::vec3(p->x, 0.0f, p->y));
+            }
+        }
+        return res;
+    }
+
+}
 
 namespace dma {
 
     ShapeFactory::ShapeFactory(ResourceManager& resourceManager) :
-        mResourceManager(resourceManager)
+            mResourceManager(resourceManager)
     {}
 
-    shared_ptr<Mesh> ShapeFactory::polygon(const vector<vector<vec2>>& polygons) {
-        vector<vector<Point>> inputPolygons;
-        inputPolygons.reserve(polygons.size());
+    shared_ptr<Mesh> ShapeFactory::polygon(const Polygon& polygon) {
+        vector<vector<Point*>> inputPolygons;
+        inputPolygons.reserve(polygon.size());
 
         float xmin, xmax, ymin, ymax;
-        xmin = xmax = polygons[0][0].x;
-        ymin = ymax = polygons[0][0].y;
+        xmin = xmax = polygon[0][0].x;
+        ymin = ymax = polygon[0][0].y;
 
-        for (auto& poly : polygons) {
-            vector<Point> inputPoly(poly.size());
+
+        for (auto& ring : polygon) {
+            vector<Point*> inputRing;
+            inputRing.reserve(ring.size());
             // Reverse the order for poly2tri
-            for (auto it = poly.rbegin(); it != poly.rend(); ++it) {
+            for (auto it = ring.rbegin(); it != ring.rend(); ++it) {
                 auto& p = *it;
                 if (p.x < xmin) xmin = p.x;
                 if (p.x > xmax) xmax = p.x;
                 if (p.y < ymin) ymin = p.y;
                 if (p.y > ymax) ymax = p.y;
-                inputPoly.push_back(Point(p.x, p.y));
+                inputRing.push_back(new Point(p.x, p.y));
             }
-            inputPolygons.push_back(inputPoly);
+            inputPolygons.push_back(inputRing);
         }
 
-        vector<Point> bounds;
-        bounds.push_back(Point(xmin, ymin));
-        bounds.push_back(Point(xmin, ymax));
-        bounds.push_back(Point(xmax, ymax));
-        bounds.push_back(Point(xmax, ymin));
+        const auto& outer = inputPolygons[0];
 
-        vector<Point> outputTriangles;
+        CDT cdt(outer);
 
-        clip2tri clip2tri;
-        clip2tri.triangulate(inputPolygons, outputTriangles, bounds);
+        for (unsigned i = 1; i < inputPolygons.size(); ++i) {
+            cdt.AddHole(inputPolygons[i]);
+        }
+
+        cdt.Triangulate();
+
+       auto outputTriangles = cdt.GetTriangles();
 
         // Map to glm::vec3
-        std::vector<glm::vec3> triangles;
-        triangles.reserve(outputTriangles.size());
-        for (auto& p : outputTriangles) {
-            triangles.push_back(glm::vec3(p.x, 0.0f, p.y));
+        std::vector<glm::vec3> triangles = mapToVec3(outputTriangles);
+
+        // Clear resources
+        for (auto& ring : inputPolygons) {
+            for (auto& p : ring) {
+                delete p;
+            }
         }
 
         std::vector<glm::vec3> positions;
