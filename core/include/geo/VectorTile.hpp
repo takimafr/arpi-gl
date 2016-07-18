@@ -1,7 +1,7 @@
 #ifndef ARPIGL_VECTORTILE_HPP
 #define ARPIGL_VECTORTILE_HPP
 
-#include "vector_tile.hpp"
+#include "geo/tile/mvt/vector_tile.hpp"
 
 namespace dma {
 

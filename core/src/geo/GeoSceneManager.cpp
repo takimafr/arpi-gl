@@ -18,7 +18,7 @@
 
 #include <utils/GeoUtils.hpp>
 #include "geo/GeoSceneManager.hpp"
-#include "geo/Tile.hpp"
+#include "geo/tile/Tile.hpp"
 #include "utils/GeoSceneReader.hpp"
 #include "geo/Poi.hpp"
 
@@ -35,7 +35,7 @@ namespace dma {
         GeoSceneManager::GeoSceneManager(Scene& scene, ResourceManager& resourceManager) :
                 mResourceManager(resourceManager),
                 mScene(scene),
-                mTileMap(*this, resourceManager),
+                mTileMap(resourceManager, mOrigin),
                 mLastX(-1),
                 mLastY(-1)
         {
@@ -49,14 +49,14 @@ namespace dma {
         void GeoSceneManager::init() {
             mTileMap.init();
             for (std::shared_ptr<Tile> tile : mTileMap.getTiles()) {
-                mScene.addEntity(tile);
+                mScene.addEntity(tile->mGeoEntity);
             }
         }
 
         void GeoSceneManager::unload() {
             Log::trace(TAG, "Unloading GeoSceneManager...");
             for (std::shared_ptr<Tile> tile : mTileMap.getTiles()) {
-                mScene.removeEntity(tile);
+                mScene.removeEntity(tile->mGeoEntity);
             }
             mTileMap.unload();
             mScene.unload();
@@ -74,7 +74,7 @@ namespace dma {
         }
 
         std::shared_ptr<GeoEntity> GeoSceneManager::createGeoEntity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) {
-            return std::make_shared<GeoEntity>(mesh, material, *this);
+            return std::make_shared<GeoEntity>(mesh, material, mOrigin);
         }
 
         void GeoSceneManager::addGeoEntity(const std::string& sid, std::shared_ptr<GeoEntity> geoEntity) {
@@ -115,12 +115,8 @@ namespace dma {
             return mGeoEntities.find(sid) != mGeoEntities.end();
         }
 
-        glm::vec3 GeoSceneManager::mapPosition(double lat, double lon, double alt) const {
-            double bearing = GeoUtils::bearing(LatLng(lat, lon), mOrigin);
-            double distance = GeoUtils::slc(LatLng(lat, lon), mOrigin);
-            glm::vec3 dest = destinationPoint(bearing, distance);
-            dest.y = (float) alt;
-            return dest;
+        glm::vec3 GeoSceneManager::mapPosition(double lat, double lng, double alt) const {
+            return GeoUtils::vector(LatLngAlt(mOrigin.lat, mOrigin.lng, 0.0f), LatLngAlt(lat, lng, alt));
         }
 
         glm::vec3 GeoSceneManager::mapPosition(const LatLngAlt &coords) const {
@@ -230,7 +226,7 @@ namespace dma {
             if (intersected.empty()) {
                 if (mSelected != nullptr) {
                     mSelected->getMaterial()->getPass(0).setDiffuseColor(glm::vec3(0.0f, 0.0f, 0.0f));
-                    mTileMap.mCallbacks->onPoiDeselected(mSelected->getSid()); //TODO shared pointer etc... see TODO below
+                    mTileMap.getCallbacks()->onPoiDeselected(mSelected->getSid()); //TODO shared pointer etc... see TODO below
                     mSelected = nullptr;
                 }
                 return nullptr;
@@ -254,12 +250,12 @@ namespace dma {
             closest->getMaterial()->getPass(0).setDiffuseColor(glm::vec3(0.8f, 0.1f, 0.3f));
             if (mSelected != nullptr && mSelected->getSid() != closest->getSid()) {
                 mSelected->getMaterial()->getPass(0).setDiffuseColor(glm::vec3(0.0f, 0.0f, 0.0f));
-                mTileMap.mCallbacks->onPoiDeselected(mSelected->getSid()); //TODO see TODO below
+                mTileMap.getCallbacks()->onPoiDeselected(mSelected->getSid()); //TODO see TODO below
             }
             mSelected = closest;
 
             // Notify listener TODO keep reference and use shared pointer
-            mTileMap.mCallbacks->onPoiSelected(mSelected->getSid());
+            mTileMap.getCallbacks()->onPoiSelected(mSelected->getSid());
 
             return closest;
         }
@@ -267,6 +263,13 @@ namespace dma {
         void GeoSceneManager::updateTileDiffuseMaps() {
             mTileMap.updateDiffuseMaps();
         }
+
+    void GeoSceneManager::setStyle(const std::string& json)  {
+        StyleParser styleParser;
+        mTileMap.setStyle(styleParser.parse(json));
+    }
+
+
 }
 
 

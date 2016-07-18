@@ -54,6 +54,7 @@ namespace dma {
     Map::~Map() {
         delete mImage;
         mImage = nullptr;
+        wipe();
     }
 
 

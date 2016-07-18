@@ -32,21 +32,12 @@ namespace dma {
         vector<vector<Point*>> inputPolygons;
         inputPolygons.reserve(polygon.size());
 
-        float xmin, xmax, ymin, ymax;
-        xmin = xmax = polygon[0][0].x;
-        ymin = ymax = polygon[0][0].y;
-
-
         for (auto& ring : polygon) {
             vector<Point*> inputRing;
             inputRing.reserve(ring.size());
             // Reverse the order for poly2tri
             for (auto it = ring.rbegin(); it != ring.rend(); ++it) {
                 auto& p = *it;
-                if (p.x < xmin) xmin = p.x;
-                if (p.x > xmax) xmax = p.x;
-                if (p.y < ymin) ymin = p.y;
-                if (p.y > ymax) ymax = p.y;
                 inputRing.push_back(new Point(p.x, p.y));
             }
             inputPolygons.push_back(inputRing);

@@ -116,7 +116,7 @@ namespace dma {
             poiPass.setLightingMode(Pass::Func::LIGHTING_SMOOTH);
         }
 
-        return std::make_shared<Poi>(mSid, mesh, material, mAnimated, mGeoSceneManager);
+        return std::make_shared<Poi>(mSid, mesh, material, mAnimated, mGeoSceneManager.getOrigin());
     }
 
 } /* namespace dma */

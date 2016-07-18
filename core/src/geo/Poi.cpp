@@ -29,8 +29,8 @@ namespace dma {
                  std::shared_ptr<Mesh> mesh,
                  std::shared_ptr<Material> material,
                  bool animated,
-                 GeoSceneManager& geoSceneManager) :
-                GeoEntity(mesh, material, geoSceneManager),
+                 LatLng& geoSceneOrigin) :
+                GeoEntity(mesh, material, geoSceneOrigin),
                 mSID(sid),
                 mAnimated(animated),
                 mCurrentTranslationAnimation(nullptr),

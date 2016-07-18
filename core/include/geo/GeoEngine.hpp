@@ -95,15 +95,21 @@ namespace dma {
             mEngine.setSurfaceSize(width, height);
         }
 
-        virtual inline void setSkyBox(const std::string& sid) {
+        inline void setSkyBox(const std::string& sid) {
             mGeoSceneManager.getScene().setSkyBox(sid);
         }
 
-        virtual inline void setSkyBoxEnabled(bool enabled) {
+        inline void setSkyBoxEnabled(bool enabled) {
             mGeoSceneManager.getScene().setSkyBoxEnabled(enabled);
         }
 
-        virtual void setCallback(GeoEngineCallbacks* callbacks);
+        inline void setStyle(const std::string& style) {
+            std::string json;
+            Utils::bufferize(mRootDir + "/" + style + ".json", json);
+            mGeoSceneManager.setStyle(json);
+        }
+
+        void setCallback(GeoEngineCallbacks* callbacks);
 
 
     public:

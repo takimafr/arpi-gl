@@ -21,8 +21,10 @@
 #include "geo/GeoEngine.hpp"
 #include <utils/triangulate/Geometry.hpp>
 #include <shape/ShapeFactory.hpp>
-#include <mvt/GeometryMapper.hpp>
+#include <geo/tile/mvt/GeometryMapper.hpp>
 #include <shape/GeometryUtils.hpp>
+#include <geo/VectorTile.hpp>
+#include <geo/tile/StyleParser.hpp>
 
 constexpr char TAG[] = "GeoEngine";
 

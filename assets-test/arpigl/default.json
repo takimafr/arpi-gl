@@ -1,0 +1,20 @@
+{
+  "version": 8,
+  "name": "test",
+  "sources": {
+    "light": {
+      "type": "raster",
+      "tiles": [
+        "file://light/{z}/{x}/{y}.png"
+      ]
+    }
+  },
+  "layers": [
+    {
+      "id": "base",
+      "source": "light",
+      "type": "raster"
+    }
+  ]
+}
+

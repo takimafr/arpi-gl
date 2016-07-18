@@ -58,7 +58,7 @@ namespace dma {
         * Spherical Law of Cosines
         * Returns the distance in meter between coords1 and coords2
         */
-        static double slc(LatLng coords1, LatLng coords2);
+        static double slc(const LatLng& coords1, const LatLng& coords2);
 
 
         /**
@@ -67,10 +67,10 @@ namespace dma {
          * @param coords2 the starting point
          * @return a clockwise angle from north in degrees
          */
-        static double bearing(LatLng coords1, LatLng coords2);
+        static double bearing(const LatLng& coords1, const LatLng& coords2);
 
 
-        static glm::vec3 vector(LatLngAlt coords1, LatLngAlt coords2);
+        static glm::vec3 vector(const LatLngAlt& coords1, const LatLngAlt& coords2);
 
     };
 }

@@ -24,10 +24,11 @@
 #include <memory>
 #include "resource/TrackFactory.hpp"
 #include <engine/Scene.hpp>
+#include <geo/tile/StyleParser.hpp>
 
 #include "glm/glm.hpp"
 #include "engine/Scene.hpp"
-#include "geo/TileMap.hpp"
+#include "geo/tile/TileMap.hpp"
 #include "geo/PoiParams.hpp"
 #include "geo/LatLng.hpp"
 #include "geo/GeoEngineCallbacks.hpp"
@@ -60,6 +61,10 @@ namespace dma {
          * unload the currently loaded scene.
          */
         void unload();
+
+        inline LatLng& getOrigin() {
+            return mOrigin;
+        }
 
         std::shared_ptr<GeoEntity> createGeoEntity(const std::string& meshSid, const std::string& materialSid);
         std::shared_ptr<GeoEntity> createGeoEntity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
@@ -109,6 +114,8 @@ namespace dma {
          * @return Status::OK if tile could be loaded.
          */
         Status notifyTileAvailable(int x, int y, int z);
+
+        void setStyle(const std::string& style);
 
         void setCallbacks(GeoEngineCallbacks* callbacks);
 

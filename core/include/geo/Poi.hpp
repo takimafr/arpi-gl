@@ -40,7 +40,7 @@ namespace dma {
     class Poi : public GeoEntity, public Selectable {
 
     public:
-        Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, bool animated, GeoSceneManager& geoSceneManager);
+        Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, bool animated, LatLng& geoSceneOrigin);
         Poi(const Poi &) = delete;
         void operator=(const Poi &) = delete;
         virtual ~Poi();

@@ -29,7 +29,6 @@ namespace dma {
             mHandle(0)
     {}
 
-
     void Texture::wipe() {
         Log::trace(TAG, "Trying to delete texture handle %d", mHandle);
         if (mHandle != 0 && glIsTexture(mHandle) == GL_TRUE) {
@@ -38,5 +37,7 @@ namespace dma {
             mHandle = 0;
         }
     }
+
+
 
 } /* namespace dma */

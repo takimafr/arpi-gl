@@ -29,7 +29,7 @@ namespace dma {
         LatLng() :
                 LatLng(0.0, 0.0) {}
 
-        inline bool operator==(const LatLng& other) {
+        inline bool operator==(const LatLng& other) const {
             return lat == other.lat && lng == other.lng;
         }
 

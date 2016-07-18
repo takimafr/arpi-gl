@@ -22,7 +22,7 @@
 
 namespace dma {
 
-        double GeoUtils::slc(LatLng coords1, LatLng coords2) {
+        double GeoUtils::slc(const LatLng& coords1, const LatLng& coords2) {
 
             if (coords1 == coords2) {
                 return 0.0;
@@ -50,7 +50,7 @@ namespace dma {
 
 
 
-        double GeoUtils::bearing(LatLng coords1, LatLng coords2) {
+        double GeoUtils::bearing(const LatLng& coords1, const LatLng& coords2) {
             double dlambda = glm::radians(coords1.lng - coords2.lng);
             double phi1 = glm::radians(coords2.lat);
             double phi2 = glm::radians(coords1.lat);
@@ -61,7 +61,7 @@ namespace dma {
             return glm::mod(bearing + 360.0, 360.0);
         }
 
-        glm::vec3 GeoUtils::vector(LatLngAlt coords1, LatLngAlt coords2) {
+        glm::vec3 GeoUtils::vector(const LatLngAlt& coords1, const LatLngAlt& coords2) {
             double bearing = GeoUtils::bearing(coords2, coords1);
             double distance = GeoUtils::slc(coords2, coords1);
             glm::vec3 res;

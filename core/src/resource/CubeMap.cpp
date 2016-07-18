@@ -37,6 +37,7 @@ namespace dma {
 
     CubeMap::~CubeMap() {
         clearCache();
+        wipe();
     }
 
     void CubeMap::clearCache() {

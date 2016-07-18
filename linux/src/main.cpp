@@ -17,6 +17,7 @@ without the express written permission of eBusiness Information.
 #include <utils/GeoUtils.hpp>
 #include <animation/PathAnimation.hpp>
 #include <animation/GeoPathAnimation.hpp>
+#include <future>
 
 #include "utils/ObjReader.hpp"
 #include "geo/GeoEngine.hpp"
@@ -212,7 +213,7 @@ int main(int argc, char** argv) {
 
     // init glfw
     if (!mInitGlfwContext()) {
-        Log::error(TAG, "error while initializing gl context. Abording...");
+        Log::error(TAG, "error while initializing gl context. Aborting...");
         assert(false);
         return -1;
     }
@@ -236,7 +237,9 @@ int main(int argc, char** argv) {
     path.push_back(LatLngAlt(48.870706 , 2.304672, 15.0));
     path.push_back(LatLngAlt(48.870926 , 2.303964, 15.0));
 
-    mGeoEngine.getGeoSceneManager().setTileNamespace("light");
+//    mGeoEngine.getGeoSceneManager().setTileNamespace("light");
+
+    mGeoEngine.setStyle("default");
 
     // Replace the default camera with a FlyThrough camera
     mGeoEngine.getGeoSceneManager().getScene().setCamera(mFlyThroughCamera);
@@ -305,10 +308,7 @@ int main(int argc, char** argv) {
     mainLoop();
     Log::info(TAG, "Main loop finished");
 
-    //mEngine.removePoi("poi3");
-
     mGeoEngine.unload();
-
 
     Log::info(TAG, "Terminating...");
     glfwDestroyWindow(mWindow);

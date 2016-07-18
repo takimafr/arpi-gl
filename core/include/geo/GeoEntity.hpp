@@ -10,16 +10,19 @@ namespace dma {
     class GeoEntity : public Entity {
 
     public:
-        GeoEntity(const std::shared_ptr<Mesh> &mesh, const std::shared_ptr<Material> &material,
-                  GeoSceneManager &geoSceneManager);
+        GeoEntity(const std::shared_ptr<Mesh> &mesh,
+                  const std::shared_ptr<Material> &material,
+                  LatLng& geoSceneOrigin);
 
         inline LatLngAlt &getCoords() { return mCoords; }
 
         virtual void setCoords(const LatLngAlt &coords);
 
+        virtual void setCoords(const LatLng &coords);
+
     protected:
         LatLngAlt mCoords;
-        GeoSceneManager &mGeoSceneManager;
+        LatLng& mGeoSceneOrigin;
     };
 }
 
