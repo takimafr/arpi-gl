@@ -13,14 +13,13 @@ namespace dma {
     class TileFactory {
 
     public:
-        TileFactory(ResourceManager& resourceManager, LatLng& geoSceneOrigin);
+        TileFactory(ResourceManager& resourceManager);
 
         std::shared_ptr<Tile> create();
         std::shared_ptr<Tile> create(int x, int y, int z);
 
     private:
         ResourceManager& mResourceManager;
-        LatLng& mGeoSceneOrigin;
     };
 }
 

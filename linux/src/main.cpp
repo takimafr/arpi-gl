@@ -272,7 +272,7 @@ int main(int argc, char** argv) {
             .color(Color(1.0f, 0.5f, 0.5f))
             .build();
     poi1->setCoords(LatLngAlt(48.8708735, 2.3036656, 6.0));
-    mGeoEngine.getGeoSceneManager().addGeoEntity(poi1->getSid(), poi1);
+    mGeoEngine.getGeoSceneManager().addGeoEntity(poi1);
 
     std::shared_ptr<Poi> poi2 = mGeoEngine.getPoiFactory().builder()
             .sid("poi2")
@@ -280,7 +280,7 @@ int main(int argc, char** argv) {
             .color(Color(0.4f, 0.2f, 0.7f))
             .build();
     poi2->setCoords(LatLngAlt(45.784448, 4.854478, 6.0));
-    mGeoEngine.getGeoSceneManager().addGeoEntity(poi2->getSid(), poi2);
+    mGeoEngine.getGeoSceneManager().addGeoEntity(poi2);
 
     std::shared_ptr<Poi> poi3 = mGeoEngine.getPoiFactory().builder()
             .sid("poi3")
@@ -289,7 +289,7 @@ int main(int argc, char** argv) {
             .color(Color(0.7f, 0.4f, 0.2f))
             .build();
     poi3->setCoords(LatLngAlt(45.784648, 4.854978, 6.0));
-    mGeoEngine.getGeoSceneManager().addGeoEntity(poi3->getSid(), poi3);
+    mGeoEngine.getGeoSceneManager().addGeoEntity(poi3);
 
     // set viewport size.
     mGeoEngine.setSurfaceSize(mWidth, mHeight);

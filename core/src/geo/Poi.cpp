@@ -28,10 +28,8 @@ namespace dma {
         Poi::Poi(const std::string& sid,
                  std::shared_ptr<Mesh> mesh,
                  std::shared_ptr<Material> material,
-                 bool animated,
-                 LatLng& geoSceneOrigin) :
-                GeoEntity(mesh, material, geoSceneOrigin),
-                mSID(sid),
+                 bool animated) :
+                GeoEntity(sid, mesh, material),
                 mAnimated(animated),
                 mCurrentTranslationAnimation(nullptr),
                 mCurrentRotationAnimation(nullptr)

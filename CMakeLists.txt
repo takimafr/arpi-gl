@@ -43,7 +43,7 @@ add_compile_options(-std=c++11)
 # ---- main ---- #
 add_executable(arpigl-linux ${CORE_SOURCE_FILES} ${LINUX_SOURCE_FILES} ${CLIP2TRI_SOURCE_FILES} linux/src/main.cpp)
 link_directories(${CONAN_LIB_DIRS})
-target_link_libraries(arpigl-linux glfw ${GLFW_LIBRARIES} ${CONAN_LIBS})
+target_link_libraries(arpigl-linux glfw ${GLFW_LIBRARIES} ${CONAN_LIBS} png16)
 
 
 # ---- test ---- #

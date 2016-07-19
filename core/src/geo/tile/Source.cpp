@@ -12,6 +12,13 @@ namespace dma {
         }
     }
 
+    Source::~Source() {
+    }
+
+    std::vector<BYTE> Source::fetch(int x, int y, int z) const {
+        return mTileProvider->fetch(x, y, z);
+    }
+
 }
 
 

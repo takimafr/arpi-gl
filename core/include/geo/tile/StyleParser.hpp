@@ -11,6 +11,8 @@ namespace dma {
     class StyleParser {
 
     public:
+        StyleParser();
+
         Style parse(const std::string& json);
 
     private:
@@ -22,6 +24,7 @@ namespace dma {
 
         void parseTileJson(const rapidjson::Value& value, Source& source);
 
+        std::string mFile;
         std::map<std::string, Source> mSources;
         std::vector<Layer> mLayers;
     };

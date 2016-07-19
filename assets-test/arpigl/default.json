@@ -5,7 +5,13 @@
     "light": {
       "type": "raster",
       "tiles": [
-        "file://light/{z}/{x}/{y}.png"
+        "file://tile/light/{z}/{x}/{y}.png"
+      ]
+    },
+    "buildings": {
+      "type": "vector",
+      "tiles": [
+        "file://tile/buildings/{z}/{x}/{y}.mvt"
       ]
     }
   },
@@ -14,6 +20,12 @@
       "id": "base",
       "source": "light",
       "type": "raster"
+    },
+    {
+      "id": "buildings",
+      "source": "buildings",
+      "type": "extrude",
+      "source-layer": "buildings"
     }
   ]
 }

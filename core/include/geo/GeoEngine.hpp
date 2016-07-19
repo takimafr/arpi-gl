@@ -104,9 +104,7 @@ namespace dma {
         }
 
         inline void setStyle(const std::string& style) {
-            std::string json;
-            Utils::bufferize(mRootDir + "/" + style + ".json", json);
-            mGeoSceneManager.setStyle(json);
+            mGeoSceneManager.setStyle(mRootDir + "/" + style + ".json");
         }
 
         void setCallback(GeoEngineCallbacks* callbacks);

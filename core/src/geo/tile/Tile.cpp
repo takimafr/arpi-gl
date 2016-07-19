@@ -29,36 +29,45 @@ namespace dma {
     }
 
 
-    void Tile::setDiffuseMap(std::shared_ptr<Map> diffuseMap) {
-        getMaterial()->setDiffuseMap(diffuseMap, TILE_PASS_INDEX);
-    }
+//    void Tile::setDiffuseMap(std::shared_ptr<Map> diffuseMap) {
+//        getMaterial()->setDiffuseMap(diffuseMap, TILE_PASS_INDEX);
+//    }
+//
+//
+//    std::shared_ptr<Material> Tile::getMaterial() {
+//        return mGeoEntity->getRenderingComponent()->getRenderingPackages()[0]->getMaterial();
+//    }
 
-
-    std::shared_ptr<Material> Tile::getMaterial() {
-        return mGeoEntity->getRenderingComponent()->getRenderingPackages()[0]->getMaterial();
+    std::string Tile::id() {
+        return std::to_string(x) + "/" + std::to_string(y) + "/" + std::to_string(x);
     }
 
     void Tile::xyz(int x, int y, int z)  {
-        LatLng coords(GeoUtils::tiley2lat(y, z), GeoUtils::tilex2long(x, z));
+        mCoords = LatLng(GeoUtils::tiley2lat(y, z), GeoUtils::tilex2long(x, z));
 
         double bottomLat = GeoUtils::tiley2lat(y + 1, z);
         double rightLng = GeoUtils::tilex2long(x + 1, z);
 
-        mWidth = (float) GeoUtils::slc(coords, LatLng(coords.lat, rightLng));
-        mHeight = (float) GeoUtils::slc(coords, LatLng(bottomLat, coords.lng));
+        mWidth = (float) GeoUtils::slc(mCoords, LatLng(mCoords.lat, rightLng));
+        mHeight = (float) GeoUtils::slc(mCoords, LatLng(bottomLat, mCoords.lng));
 
-        mGeoEntity->setCoords(coords);
-        mQuad->setSize(mWidth, mHeight);
-        mGeoEntity->setScale(mQuad->getScale());
-
-        // Shifts the quad position since its origin is the center
-        glm::vec3 pos = mGeoEntity->getPosition();
-        pos.x += mWidth / 2.0f;
-        pos.z += mHeight / 2.0f;
-        mGeoEntity->setPosition(pos);
+//        for (auto ge : mGeoEntities) {
+//
+//        }
+//        mGeoEntity->setCoords(coords);
+//        mQuad->setSize(mWidth, mHeight);
+//        mGeoEntity->setScale(mQuad->getScale());
+//
+//        // Shifts the quad position since its origin is the center
+//        glm::vec3 pos = mGeoEntity->getPosition();
+//        pos.x += mWidth / 2.0f;
+//        pos.z += mHeight / 2.0f;
+//        mGeoEntity->setPosition(pos);
 
         this->x = x;
         this->y = y;
         this->z = z;
     }
+
+
 }

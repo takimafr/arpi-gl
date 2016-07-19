@@ -18,18 +18,24 @@
 
 #include <utils/GeoUtils.hpp>
 #include <utils/ExceptionUtils.hpp>
+#include <geo/tile/mvt/vector_tile.hpp>
+#include <shape/ShapeFactory.hpp>
+#include <shape/GeometryUtils.hpp>
+#include <geo/tile/mvt/GeometryMapper.hpp>
 #include "geo/tile/TileMap.hpp"
 #include "geo/tile/Tile.hpp"
+#include "geo/GeoSceneManager.hpp"
 
 #define DEFAULT_TILE_DIFFUSE_MAP "damier"
 
+constexpr auto TAG = "TileMap";
+constexpr int SIZE = 13;
+constexpr int OFFSET = SIZE / 2;
+
+
 namespace dma {
 
-    constexpr char TileMap::TAG[];
-    constexpr char TileMap::TILE_MATERIAL[];
-    constexpr int TileMap::SIZE;
-    constexpr int TileMap::OFFSET;
-    constexpr int TileMap::ZOOM;
+    //constexpr int TileMap::ZOOM;
 
 
     bool TileMap::isInRange(int x, int y, int x0, int y0) {
@@ -43,9 +49,10 @@ namespace dma {
     /*                                 MEMBERS                                  */
     /****************************************************************************/
 
-    TileMap::TileMap(ResourceManager& resourceManager, LatLng& geoSceneOrigin) :
+    TileMap::TileMap(ResourceManager& resourceManager, GeoSceneManager& geoSceneManager) :
+            mGeoSceneManager(geoSceneManager),
             mResourceManager(resourceManager),
-            mTileFactory(resourceManager, geoSceneOrigin),
+            mTileFactory(resourceManager),
             mLastX(-1),
             mLastY(-1),
             mNullCallbacks(new GeoEngineCallbacks()),
@@ -62,7 +69,7 @@ namespace dma {
         mLastX = mLastY = -1;
         // Create TILE_MAP_SIZE * TILE_MAP_SIZE tiles
         for (int i = 0; i < SIZE * SIZE; ++i) {
-            mTiles.push_back(mTileFactory.create());
+            mTiles.push_back(std::make_shared<Tile>());
         }
     }
 
@@ -121,25 +128,50 @@ namespace dma {
         }
         std::string sid = tileSid(x, y, z);
         std::shared_ptr<Map> diffuseMap = mResourceManager.acquireMap(sid);
-        tile->setDiffuseMap(diffuseMap);
+        //tile->setDiffuseMap(diffuseMap);
         return STATUS_OK;
     }
 
     //TODO use a tile pool
     void TileMap::updateTile(std::shared_ptr<Tile> tile, int x, int y, int z) {
-        tile->xyz(x, y, z);
 
-
-        for (const auto& kv : mStyle.getSources()) {
-            auto& source = kv.second;
-            source.fetch(x, y, z);
-
+        for (auto ge : tile->mGeoEntities) {
+            mGeoSceneManager.removeGeoEntity(ge);
         }
+
+        tile->xyz(x, y, z);
 
         for (auto& layer : mStyle.getLayers()) {
             switch (layer.getType()) {
-                case Layer::Type::EXTRUDE:
+                case Layer::Type::EXTRUDE: {
+                    const auto &source = mStyle.getSources().at(layer.getSource());
+                    auto tileData = source.fetch(x, y, z);
+                    if (!tileData.empty()) {
+                        vector_tile::Tile vectorTile;
+                        vectorTile.ParseFromArray(tileData.data(), (int) tileData.size());
+                        for (auto& f : vectorTile.layers(0).features()) {
+                            std::vector<Polygon> polygons = GeometryMapper::polygons(f.geometry());
+
+                            float scaleX = tile->mWidth / vectorTile.layers(0).extent();
+                            float scaleY = tile->mHeight / vectorTile.layers(0).extent();
+                            for (auto& p : polygons) {
+                                GeometryUtils::scale(p, scaleX, scaleY);
+                            }
+
+                            ShapeFactory shapeFactory(mResourceManager);
+
+                            auto mesh = shapeFactory.polygon(polygons[0]);
+                            auto material = mResourceManager.acquireMaterial("building");
+                            auto building = std::make_shared<GeoEntity>(mesh, material);
+
+                            building->setCoords(tile->mCoords);
+
+                            tile->mGeoEntities.push_back(building);
+                        }
+                    }
+
                     break;
+                }
                 case Layer::Type::BACKGROUND:
                     break;
                 case Layer::Type::FILL:
@@ -149,17 +181,32 @@ namespace dma {
                 case Layer::Type::SYMBOL:
                     break;
                 case Layer::Type::RASTER: {
-                    const std::string &source = layer.getSource();
-                    std::string sid = "tiles/" + source + "/" + std::to_string(z) + "/" + std::to_string(x) + "/" + std::to_string(y);
-                    std::shared_ptr<Map> diffuseMap;
-                    diffuseMap = mResourceManager.acquireMap(DEFAULT_TILE_DIFFUSE_MAP);
-                    if (mResourceManager.hasMap(sid)) {
-                        diffuseMap = mResourceManager.acquireMap(sid);
-                    } else if (!mNamespace.empty()) {
-                        Log::trace(TAG, "No tile found with sid %s", sid.c_str());
-                        mCallbacks->onTileRequest(x, y, z);
+                    std::shared_ptr<Quad> quad = mResourceManager.createQuad(tile->mWidth, tile->mHeight);
+                    auto material = mResourceManager.createMaterial("tile");
+                    auto rasterTile = std::make_shared<GeoEntity>(quad, material);
+                    rasterTile->pitch(-90.0f);
+                    rasterTile->setScale(quad->getScale());
+
+                    rasterTile->setCoords(tile->mCoords);
+
+                    // Shifts the quad position since its origin is the center
+                    glm::vec3 pos = rasterTile->getPosition();
+                    pos.x += tile->mWidth / 2.0f;
+                    pos.z += tile->mHeight / 2.0f;
+                    rasterTile->setPosition(pos);
+
+                    tile->mGeoEntities.push_back(rasterTile);
+
+                    const auto& source = mStyle.getSources().at(layer.getSource());
+                    auto tileData = source.fetch(x, y, z);
+                    if (!tileData.empty()) {
+                        Image image;
+                        image.loadAsPNG(tileData);
+                        auto diffuseMap = mResourceManager.createMap(image);
+                        material->setDiffuseMap(diffuseMap, 0);
+                    } else {
+                        material->setDiffuseMap(mResourceManager.acquireMap(DEFAULT_TILE_DIFFUSE_MAP), 0);
                     }
-                    tile->setDiffuseMap(diffuseMap);
                     break;
                 }
                 case Layer::Type::CIRCLE:
@@ -169,12 +216,19 @@ namespace dma {
             }
         }
 
-
+        for (auto ge : tile->mGeoEntities) {
+            mGeoSceneManager.addGeoEntity(ge);
+        }
 
         //Log::trace(TAG, "Tile (%d, %d, %d) updated, diffuse map: %s", x, y, z, diffuseMap->getSID().c_str());
     }
 
     void TileMap::mRemoveAllTiles() {
+        for (auto t : mTiles) {
+            for (auto ge : t->mGeoEntities) {
+                mGeoSceneManager.removeGeoEntity(ge);
+            }
+        }
         mTiles.clear();
     }
 
@@ -209,9 +263,9 @@ namespace dma {
         for (std::shared_ptr<Tile> tile : mTiles) {
             std::string sid = tileSid(tile->x, tile->y, tile->z);
             if (mResourceManager.hasMap(sid)) {
-                tile->setDiffuseMap(mResourceManager.acquireMap(sid));
+                //TODO tile->setDiffuseMap(mResourceManager.acquireMap(sid));
             } else {
-                tile->setDiffuseMap(mResourceManager.acquireMap(DEFAULT_TILE_DIFFUSE_MAP));
+                //TODO tile->setDiffuseMap(mResourceManager.acquireMap(DEFAULT_TILE_DIFFUSE_MAP));
                 mCallbacks->onTileRequest(tile->x, tile->y, tile->z);
             }
         }

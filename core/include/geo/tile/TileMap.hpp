@@ -29,23 +29,19 @@
 
 namespace dma {
     class Tile;
-//    class TileFactory
+    class GeoSceneManager;
 
     class TileMap {
 
         /* ****
          * CONSTANTS
          */
-        static constexpr char TAG[] = "TileMap";
-        static constexpr char TILE_MATERIAL[] = "tile";
-        static constexpr int SIZE = 13;
-        static constexpr int OFFSET = SIZE / 2;
         static constexpr int ZOOM = 20;
 
 
     public:
 
-        TileMap(ResourceManager& resourceManager, LatLng& geoSceneOrigin);
+        TileMap(ResourceManager& resourceManager, GeoSceneManager& geoSceneManager);
         TileMap(const TileMap&) = delete;
         void operator=(const TileMap&) = delete;
         virtual ~TileMap();
@@ -111,6 +107,7 @@ namespace dma {
         std::shared_ptr<Tile> findTile(int x, int y, int z);
 
         //Fields
+        GeoSceneManager& mGeoSceneManager;
         ResourceManager& mResourceManager;
         TileFactory mTileFactory;
         /** the last known center position. */

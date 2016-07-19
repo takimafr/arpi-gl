@@ -58,7 +58,7 @@ namespace dma {
         static Status bufferize(const std::string& path, std::string& buffer);
 
 
-        static Status bufferize(const std::string& path, std::vector<BYTE>& buffer);
+        static std::vector<BYTE> bufferize(const std::string& path);
 
         static bool dirExists(const char *path);
 
@@ -78,6 +78,8 @@ namespace dma {
         static std::string& addFileExt(std::string& filename, const std::string& ext);
 
         static std::string& addTrailingSlash(std::string& filename);
+
+        static std::string replace(std::string& str, const std::string& target, const std::string& replacement);
 
     };
 

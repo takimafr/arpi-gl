@@ -38,8 +38,7 @@ namespace dma {
 
 
 
-    PoiFactory::PoiFactory(GeoSceneManager& geoSceneManager, ResourceManager &resourceManager) :
-            mGeoSceneManager(geoSceneManager),
+    PoiFactory::PoiFactory(ResourceManager &resourceManager) :
             mResourceManager(resourceManager)
     {}
 
@@ -51,13 +50,12 @@ namespace dma {
 
 
     PoiFactory::Builder PoiFactory::builder() {
-        return Builder(mGeoSceneManager, mResourceManager);
+        return Builder(mResourceManager);
     }
 
 
 
-    PoiFactory::Builder::Builder(GeoSceneManager& geoSceneManager, ResourceManager& resourceManager) :
-            mGeoSceneManager(geoSceneManager),
+    PoiFactory::Builder::Builder(ResourceManager& resourceManager) :
             mResourceManager(resourceManager)
     {
     }
@@ -116,7 +114,7 @@ namespace dma {
             poiPass.setLightingMode(Pass::Func::LIGHTING_SMOOTH);
         }
 
-        return std::make_shared<Poi>(mSid, mesh, material, mAnimated, mGeoSceneManager.getOrigin());
+        return std::make_shared<Poi>(mSid, mesh, material, mAnimated);
     }
 
 } /* namespace dma */

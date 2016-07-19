@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <common/Types.hpp>
+#include "TileProvider.hpp"
 
 namespace dma {
     class Source {
@@ -15,6 +16,10 @@ namespace dma {
 
         static Type type(const std::string& type);
 
+        ~Source();
+
+        std::vector<BYTE> fetch(int x, int y, int z) const;
+
     private:
         std::string mId;
         Type mType;
@@ -22,6 +27,7 @@ namespace dma {
         std::vector<std::string> mTiles;
         U8 mMinZoom;
         U8 mMaxZoom;
+        std::shared_ptr<TileProvider> mTileProvider;
     };
 }
 

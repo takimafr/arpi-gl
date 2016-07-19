@@ -21,8 +21,6 @@
 #include "utils/ExceptionHandler.hpp"
 #include "utils/Utils.hpp"
 #include <fstream>
-
-#include <stdexcept>
 #include <cstring>
 
 
@@ -32,14 +30,14 @@ namespace dma {
 
     struct ByteBuffer {
         U32 offset;
-        BYTE* data;
+        std::vector<BYTE> data;
     };
 
     //============================ ROUTINES ================================//
 
     void memoryReadCallback(png_structp png, png_bytep data, png_size_t size) {
         ByteBuffer* userData = ((ByteBuffer*)png_get_io_ptr(png));
-        std::memcpy(data, userData->data + userData->offset, size);
+        std::memcpy(data, &userData->data[userData->offset], size);
         userData->offset += size;
     }
 
@@ -369,17 +367,18 @@ namespace dma {
 
 
 //TODO clean ?
-    Status Image::loadAsPNG(BYTE* data) {
+    Status Image::loadAsPNG(const std::vector<BYTE>& data) {
         png_byte header[8];
         png_structp pngPtr = NULL;
         png_infop infoPtr = NULL;
         png_bytep* rowPtrs = NULL;
-        png_int_32 rowSize;
+        png_size_t rowSize;
         bool transparency;
+        ByteBuffer bb;
 
         ///////////////////////////////////////////////:
         // Check the header signature
-        memcpy(header, data, sizeof(header));
+        memcpy(header, &data[0], sizeof(header));
         if (png_sig_cmp(header, 0, 8) != 0) goto ERROR;
 
         pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
@@ -395,7 +394,6 @@ namespace dma {
 
         ////////////////////////////////////////////////////////////////////////
         // Create the read structure and set the read function from a memory pointer
-        ByteBuffer bb;
         bb.offset = 8; //sig
         bb.data = data;
         png_set_read_fn(pngPtr, &bb, memoryReadCallback);
@@ -485,9 +483,9 @@ namespace dma {
         png_read_update_info(pngPtr, infoPtr);
 
         rowSize = png_get_rowbytes(pngPtr, infoPtr);
-        if(rowSize <= 0) goto ERROR;
+        if (rowSize <= 0) goto ERROR;
         mPixels = new BYTE[rowSize * height];
-        if(!mPixels) goto ERROR;
+        if (!mPixels) goto ERROR;
         rowPtrs = new png_bytep[height];
         if(!rowPtrs) goto ERROR;
 

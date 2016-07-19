@@ -64,7 +64,7 @@ void main() {
     float sDotN0 = max(dot(s0,normal), 0.0);
     float sDotN1 = max(dot(-s0,normal), 0.0);
 
-    vec3 diffuse = u_light0.Ld * material.Kd * (sDotN0 + sDotN1/2);
+    vec3 diffuse = u_light0.Ld * material.Kd * (sDotN0 + sDotN1/2.0);
 //    vec3 diffuse = u_light0.Ld * material.Kd * sDotN0;
 
 //    float opacity = (dot(vec3(0, 0, 1), normalize(vec3(v_eyePosition))) / 2.0);

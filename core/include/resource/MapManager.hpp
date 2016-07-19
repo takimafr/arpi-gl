@@ -36,6 +36,8 @@ namespace dma {
 
         bool hasResource(const std::string& sid) const;
 
+        std::shared_ptr<Map> create(const Image &image);
+
     private:
         void load(std::shared_ptr<Map>, const std::string& sid);
     };

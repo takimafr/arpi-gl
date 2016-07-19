@@ -33,7 +33,6 @@
 
 #include "utils/Color.hpp"
 #include "utils/Log.hpp"
-#include "GeoSceneManager.hpp"
 
 namespace dma {
     class EntityFactory;
@@ -52,7 +51,7 @@ namespace dma {
 
         class Builder {
         public:
-            Builder(GeoSceneManager& geoSceneManager, ResourceManager& resourceManager);
+            Builder(ResourceManager& resourceManager);
         public:
             Builder& sid(const std::string& sid);
             Builder& shape(const std::string& shape);
@@ -61,7 +60,6 @@ namespace dma {
             Builder &animation(bool animated);
             std::shared_ptr<Poi> build();
         protected:
-            GeoSceneManager& mGeoSceneManager;
             ResourceManager& mResourceManager;
             std::string mSid;
             std::string mShape;
@@ -72,7 +70,7 @@ namespace dma {
         };
 
     public:
-        PoiFactory(GeoSceneManager& geoSceneManager, ResourceManager& resourceManager);
+        PoiFactory(ResourceManager& resourceManager);
         virtual ~PoiFactory();
         PoiFactory(const PoiFactory&) = delete;
         PoiFactory& operator=(const PoiFactory&) = delete;
@@ -80,7 +78,6 @@ namespace dma {
         Builder builder();
 
     private:
-        GeoSceneManager& mGeoSceneManager;
         ResourceManager& mResourceManager;
     };
 

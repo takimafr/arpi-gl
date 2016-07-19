@@ -23,6 +23,7 @@
 #include <GLES2/gl2ext.h>
 #include <libpng16/png.h>
 #include <string>
+#include <vector>
 
 namespace dma {
     class Image {
@@ -39,7 +40,7 @@ namespace dma {
     public:
         void loadAsPNG(const std::string& filename);
         void loadAsPNG(const std::string&filename, bool reverse);
-        Status loadAsPNG(BYTE* data);
+        Status loadAsPNG(const std::vector<BYTE>& data);
 
         U32 getWidth();
         U32 getHeight();

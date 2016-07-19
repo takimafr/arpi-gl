@@ -20,6 +20,7 @@
 #include <iterator>
 #include <sys/stat.h>
 #include <stdexcept>
+#include <utils/ExceptionUtils.hpp>
 #include "utils/Utils.hpp"
 #include "utils/ExceptionHandler.hpp"
 
@@ -99,24 +100,25 @@ namespace dma {
 
 
 
-    Status Utils::bufferize(const std::string& path, std::vector<BYTE>& buffer) {
-        I64 length;
-        std::ifstream is(path.c_str(), std::ios::binary | std::ios::ate);
+    std::vector<BYTE> Utils::bufferize(const std::string& path) {
+        unsigned long length;
+        std::ifstream is(path, std::ios::in | std::ios::binary | std::ios::ate);
         if (!is.is_open()) {
-            Log::error(TAG, "Cannot open file %s", path.c_str());
-            return throwException(TAG, ExceptionType::IO, "Cannot open file " + path);
+            ExceptionUtils::runtime(TAG, "Cannot open file " + path);
         }
         // Stop eating new lines in binary mode
         is.unsetf(std::ios::skipws);
 
         length = is.tellg();
         is.seekg(0);
-        buffer.reserve((unsigned long) length);
+
+        std::vector<BYTE> buffer;
+        buffer.reserve(length);
         // read the data:
         buffer.assign(std::istream_iterator<BYTE>(is),
                       std::istream_iterator<BYTE>());
         is.close();
-        return STATUS_OK;
+        return std::move(buffer);
     }
 
 
@@ -149,4 +151,10 @@ namespace dma {
         }
         return dir;
     }
+
+    std::string Utils::replace(std::string &str, const std::string &target, const std::string &replacement) {
+        return str.replace(str.find(target), target.length(), replacement);
+    }
+
+
 }

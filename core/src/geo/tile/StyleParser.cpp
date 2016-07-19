@@ -2,6 +2,8 @@
 #include <algorithm>
 
 #include <utils/ExceptionUtils.hpp>
+#include <geo/tile/FileTileProvider.hpp>
+#include <utils/Utils.hpp>
 #include "geo/tile/StyleParser.hpp"
 
 constexpr auto TAG = "StyleParser";
@@ -9,8 +11,15 @@ constexpr auto VERSION = 8;
 
 namespace dma {
 
-    Style dma::StyleParser::parse(const std::string& json) {
+    StyleParser::StyleParser()
+    {}
+
+    Style dma::StyleParser::parse(const std::string& file) {
         Style style;
+
+        std::string json;
+        Utils::bufferize(file, json);
+        mFile = file;
 
         rapidjson::Document document;
 
@@ -58,6 +67,7 @@ namespace dma {
             ExceptionUtils::runtime(TAG, "sources must be an object");
         }
 
+        // For each sources
         for (auto it = value.MemberBegin(); it != value.MemberEnd(); ++it) {
             Source source;
 
@@ -201,14 +211,25 @@ namespace dma {
             source.mTiles.push_back(it->GetString());
         }
 
+        auto& uri = source.mTiles[0];
+        auto protocol = uri.substr(0, uri.find("://"));
+        if (protocol == "file") {
+            // make the path relative to the style dir
+            std::string dir = mFile.substr(0, mFile.rfind("/"));
+            uri.insert(uri.find("://") + 3, dir + "/");
+            source.mTileProvider = std::make_shared<FileTileProvider>(FileTileProvider(uri));
+        } else {
+            ExceptionUtils::runtime(TAG, "Invalid protocol: " + protocol);
+        }
+
         // 2. Parse minzoom
         //TODO
 
         // 3. Parse maxzoom
         if (value.HasMember("maxzoom")) {
             const auto& maxzoomValue = value["maxzoom"];
-            if (!maxzoomValue.IsString()) {
-                ExceptionUtils::runtime(TAG, "tileJSON: 'maxzoom' must be a string");
+            if (!maxzoomValue.IsInt()) {
+                ExceptionUtils::runtime(TAG, "tileJSON: 'maxzoom' must be an integer");
             }
             source.mMaxZoom = (U8) maxzoomValue.GetInt();
         }
@@ -216,5 +237,6 @@ namespace dma {
 
         //TODO parse other values...
     }
+
 }
 

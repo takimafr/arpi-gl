@@ -32,7 +32,7 @@ namespace dma {
     GeoEngine::GeoEngine(const std::string &resourceDir) :
             mRootDir(resourceDir),
             mEngine(resourceDir),
-            mPoiFactory(mGeoSceneManager, mEngine.getResourceManager()),
+            mPoiFactory(mEngine.getResourceManager()),
             mGeoSceneManager(mEngine.getScene(), mEngine.getResourceManager()),
             mDefaultCallbacks(new GeoEngineCallbacks()),
             mCallbacks(mDefaultCallbacks)
@@ -57,30 +57,6 @@ namespace dma {
         //TODO remove: used for buildings/tracks demo
         mGeoSceneManager.placeCamera(LatLngAlt(48.8708735, 2.3036656, 5.0));
 
-        // 1. Stringify the file
-        std::string json;
-        std::string path = mRootDir + "/buildings.json";
-        Utils::bufferize(path, json);
-
-        rapidjson::Document document;
-        // 2. Create the DOM
-//            if (document.Parse(json.c_str()).HasParseError()) {
-        if (document.Parse(json.c_str()).HasParseError()) {
-            std::string error = "Unable to parse buildings " + path;
-            Log::error(TAG, error);
-            throw std::runtime_error(error);
-        }
-        for (rapidjson::Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr) {
-            double lat = itr->value["lat"].GetDouble();
-            double lng = itr->value["lng"].GetDouble();
-            std::string id = itr->name.GetString();
-
-            std::string sid = "building/" + id;
-            std::shared_ptr<GeoEntity> building = mGeoSceneManager.createGeoEntity(sid, "building");
-            building->setCoords(LatLngAlt(lat, lng, 0.1));
-            mGeoSceneManager.addGeoEntity(sid, building);
-        }
-
         float height = 1.0f;
 
         LatLngAlt origin = LatLngAlt(48.870690, 2.303191, height);
@@ -104,16 +80,16 @@ namespace dma {
 
         std::shared_ptr<Material> trackMaterial = mEngine.getTrackFactory().generateMaterial(Color(0.1098f, 0.6f, 1.0f));
 
-        auto track = mGeoSceneManager.createGeoEntity(trackMesh, trackMaterial);
+        auto track = std::make_shared<GeoEntity>(trackMesh, trackMaterial);
         track->setCoords(origin);
         track->addAnimationComponent();
         AnimationComponent* animationComponent = track->getAnimationComponent();
         TransformComponent& transformComponent = track->getTransformComponent();
-        animationComponent->add(std::make_shared<TranslationAnimation>(transformComponent, //TODO remove: that is a leak
+        animationComponent->add(std::make_shared<TranslationAnimation>(transformComponent,
                                                                        transformComponent.getPosition(),
                                                                        transformComponent.getPosition() + glm::vec3(0.0f, 2.0f, 0.0f),
                                                                        6.0f, TranslationAnimation::Function::EASE, true, true));
-        mGeoSceneManager.addGeoEntity("track0", track);
+        mGeoSceneManager.addGeoEntity(track);
 
         std::vector<LatLngAlt> points;
         points.push_back(LatLngAlt(48.871069 , 2.303543, 15.0));
@@ -129,9 +105,6 @@ namespace dma {
         points.push_back(LatLngAlt(48.870706 , 2.304672, 15.0));
         points.push_back(LatLngAlt(48.870926 , 2.303964, 15.0));
 
-//            Camera& camera = mGeoSceneManager.getScene().getCamera();
-//            camera.getAnimationComponent().add(std::make_shared<GeoPathAnimation>(camera.getTransformComponent(), points, 25.0f, true, mGeoSceneManager));
-
         auto flag = mPoiFactory.builder()
                 .icon("flag")
                 .shape("flag")
@@ -140,44 +113,10 @@ namespace dma {
                 .animation(false)
                 .build();
         flag->setCoords(LatLngAlt(48.871069 , 2.303543, 0.0));
-        mGeoSceneManager.addGeoEntity("flag", flag);
+        mGeoSceneManager.addGeoEntity(flag);
 
         GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-//            std::string mvt;
-//            Utils::bufferize(mRootDir + "/mvt/b.mvt", mvt);
-        vector_tile::Tile tile;
-//            tile.ParseFromString(mvt);
-        std::fstream input(mRootDir + "/mvt/d.mvt", std::ios::in | std::ios::binary);
-        tile.ParseFromIstream(&input);
-        VectorTile t(tile);
-
-//        for (auto f : tile.layers(0).features()) {
-        auto f = tile.layers(0).features(3);
-        std::vector<Polygon> polygons = GeometryMapper::polygons(f.geometry());
-
-        float scaleX = 20.0f / tile.layers(0).extent();
-        float scaleY = 20.0f / tile.layers(0).extent();
-        for (auto& p : polygons) {
-            GeometryUtils::scale(p, scaleX, scaleY);
-        }
-
-        ShapeFactory shapeFactory(mEngine.getResourceManager());
-
-//                std::vector<glm::vec2> poly;
-//                poly.push_back(glm::vec2(0, 0));
-//                poly.push_back(glm::vec2(10, 0));
-//                poly.push_back(glm::vec2(10, 10));
-//                poly.push_back(glm::vec2(0, 10));
-//                Polygon polygon;
-//                polygon.push_back(poly);
-
-        auto mesh = shapeFactory.polygon(polygons[0]);
-        auto material = mEngine.getResourceManager().acquireMaterial("building");
-        auto building = std::make_shared<Entity>(mesh, material, 0.0f, 25.0f, 0.0f);
-//            building->setScale(glm::vec3(0.05));
-        mEngine.getScene().addEntity(building);
-//        }
         return res;
     }
 

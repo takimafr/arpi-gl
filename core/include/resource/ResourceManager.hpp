@@ -119,6 +119,10 @@ namespace dma {
             return mMapManager.acquire(sid);
         }
 
+        inline std::shared_ptr<Map> createMap(const Image& image) {
+            return mMapManager.create(image);
+        }
+
         /**
          * @param const std::string&
          *                  SID of the texture.

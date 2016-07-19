@@ -33,6 +33,7 @@
 #include "geo/LatLng.hpp"
 #include "geo/GeoEngineCallbacks.hpp"
 #include "geo/LatLngAlt.hpp"
+#include "geo/tile/TileMap.hpp"
 
 
 namespace dma {
@@ -66,12 +67,10 @@ namespace dma {
             return mOrigin;
         }
 
-        std::shared_ptr<GeoEntity> createGeoEntity(const std::string& meshSid, const std::string& materialSid);
-        std::shared_ptr<GeoEntity> createGeoEntity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
-
-        void addGeoEntity(const std::string& sid, std::shared_ptr<GeoEntity> geoEntity);
+        void addGeoEntity(std::shared_ptr<GeoEntity> geoEntity);
 
         void removeGeoEntity(const std::string& sid);
+        void removeGeoEntity(std::shared_ptr<GeoEntity> ge);
 
         std::shared_ptr<GeoEntity> getGeoEntity(const std::string& sid);
 
@@ -115,7 +114,7 @@ namespace dma {
          */
         Status notifyTileAvailable(int x, int y, int z);
 
-        void setStyle(const std::string& style);
+        void setStyle(const std::string& file);
 
         void setCallbacks(GeoEngineCallbacks* callbacks);
 
@@ -142,13 +141,16 @@ namespace dma {
         ResourceManager& mResourceManager;
         Scene& mScene;
         TileMap mTileMap;
-        std::map<std::string, std::shared_ptr<GeoEntity>> mGeoEntities;
+        //std::map<std::string, std::shared_ptr<GeoEntity>> mGeoEntities;
+        std::vector<std::shared_ptr<GeoEntity>> mGeoEntities;
         LatLng mOrigin;
         LatLngAlt mCameraCoords;
         int mLastX;
         int mLastY;
         std::shared_ptr<Poi> mSelected;
     };
+
+
 }
 
 #endif // _DMA_GEOSCENEMANAGER_HPP_

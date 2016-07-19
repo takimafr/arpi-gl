@@ -38,6 +38,7 @@ namespace dma {
 
         virtual ~Tile();
 
+        std::string id();
 
     private:
 
@@ -49,9 +50,9 @@ namespace dma {
 ////            setScale(mQuad->getScale());
 //        }
 
-        void setDiffuseMap(std::shared_ptr<Map> diffuseMap);
+        //void setDiffuseMap(std::shared_ptr<Map> diffuseMap);
 
-        std::shared_ptr<Material> getMaterial();
+        //std::shared_ptr<Material> getMaterial();
 
     public:
         //FIELDS
@@ -61,9 +62,10 @@ namespace dma {
     private:
         float mWidth;
         float mHeight;
-        std::shared_ptr<GeoEntity> mGeoEntity;
-        std::shared_ptr<Quad> mQuad;
-        //        std::vector<std::shared_ptr<GeoEntity>> mGeoEntities;
+        LatLng mCoords;
+        //std::shared_ptr<GeoEntity> mGeoEntity;
+        //std::shared_ptr<Quad> mQuad;
+        std::vector<std::shared_ptr<GeoEntity>> mGeoEntities;
     };
 }
 

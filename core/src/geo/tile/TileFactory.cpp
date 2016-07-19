@@ -6,9 +6,8 @@
 namespace dma {
 
 
-    TileFactory::TileFactory(ResourceManager &resourceManager, LatLng& geoSceneOrigin) :
-            mResourceManager(resourceManager),
-            mGeoSceneOrigin(geoSceneOrigin)
+    TileFactory::TileFactory(ResourceManager &resourceManager) :
+            mResourceManager(resourceManager)
     {}
 
     std::shared_ptr<Tile> TileFactory::create() {
@@ -16,13 +15,13 @@ namespace dma {
         std::shared_ptr<Material> mat = mResourceManager.createMaterial(TILE_MATERIAL); //material with default tile texture
 
         std::shared_ptr<Tile> tile = std::make_shared<Tile>();
-        auto geoEntity = std::make_shared<GeoEntity>(quad, mat, mGeoSceneOrigin);
+        auto geoEntity = std::make_shared<GeoEntity>(quad, mat);
 
         geoEntity->pitch(-90.0f);
         geoEntity->setScale(quad->getScale());
 
-        tile->mGeoEntity = geoEntity;
-        tile->mQuad = quad;
+        //tile->mGeoEntity = geoEntity;
+        //tile->mQuad = quad;
 
         return tile;
     }

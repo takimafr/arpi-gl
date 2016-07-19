@@ -40,7 +40,7 @@ namespace dma {
     class Poi : public GeoEntity, public Selectable {
 
     public:
-        Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, bool animated, LatLng& geoSceneOrigin);
+        Poi(const std::string& sid, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, bool animated);
         Poi(const Poi &) = delete;
         void operator=(const Poi &) = delete;
         virtual ~Poi();
@@ -49,9 +49,6 @@ namespace dma {
         /* ***
          * GETTERS
          */
-
-        /** /!\ CAN BE EMPTY */
-        inline const std::string& getSid() const { return mSID; }
 
         virtual void setCoords(const LatLngAlt &coords) override;
 
@@ -82,7 +79,6 @@ namespace dma {
          */
 
     protected:
-        const std::string mSID;
         bool mAnimated;
         std::shared_ptr<TranslationAnimation> mCurrentTranslationAnimation;
         std::shared_ptr<RotationAnimation> mCurrentRotationAnimation;

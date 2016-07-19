@@ -4,15 +4,22 @@
 #include <engine/Entity.hpp>
 #include "LatLngAlt.hpp"
 #include "geo/GeoSceneManager.hpp"
+#include "geo/OriginListener.hpp"
 
 
 namespace dma {
-    class GeoEntity : public Entity {
+    class GeoEntity : public Entity, public OriginListener {
 
     public:
         GeoEntity(const std::shared_ptr<Mesh> &mesh,
-                  const std::shared_ptr<Material> &material,
-                  LatLng& geoSceneOrigin);
+                  const std::shared_ptr<Material> &material);
+
+        GeoEntity(const std::string& sid, const std::shared_ptr<Mesh> &mesh,
+                  const std::shared_ptr<Material> &material);
+
+        inline std::string& getSid() {
+            return mSid;
+        }
 
         inline LatLngAlt &getCoords() { return mCoords; }
 
@@ -20,9 +27,12 @@ namespace dma {
 
         virtual void setCoords(const LatLng &coords);
 
+        virtual void onOriginChanged(const LatLng& newOrigin) override;
+
     protected:
+        std::string mSid;
         LatLngAlt mCoords;
-        LatLng& mGeoSceneOrigin;
+        LatLng mGeoSceneOrigin;
     };
 }
 

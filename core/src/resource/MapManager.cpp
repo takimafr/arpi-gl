@@ -33,6 +33,10 @@ namespace dma {
 
 
     void MapManager::load(std::shared_ptr<Map> map, const std::string &sid) {
+        if (sid == "_anonymous_") {
+            map->load("_anonymous_");
+            return;
+        }
         std::string filename = mLocalDir + "/" + sid + ".png";
         if (!Utils::fileExists(filename)) {
             Log::error(TAG, "2D texture %s doesn't exist", sid.c_str());
@@ -40,4 +44,14 @@ namespace dma {
         }
         map->load(filename);
     }
+
+    std::shared_ptr<Map> MapManager::create(const Image &image) {
+        // Load the anonymous map
+        std::shared_ptr<Map> map = std::make_shared<Map>();
+        map->load(image);
+        mAnonymousResources.push_back(map);
+        return map;
+    }
+
+
 }
