@@ -22,6 +22,7 @@
 #include "utils/Utils.hpp"
 #include <fstream>
 #include <cstring>
+#include <stdexcept>
 
 
 constexpr auto TAG = "Image";

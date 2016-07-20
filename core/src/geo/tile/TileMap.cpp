@@ -22,6 +22,7 @@
 #include <shape/ShapeFactory.hpp>
 #include <shape/GeometryUtils.hpp>
 #include <geo/tile/mvt/GeometryMapper.hpp>
+#include <geo/tile/RasterTile.hpp>
 #include "geo/tile/TileMap.hpp"
 #include "geo/tile/Tile.hpp"
 #include "geo/GeoSceneManager.hpp"
@@ -183,18 +184,8 @@ namespace dma {
                 case Layer::Type::RASTER: {
                     std::shared_ptr<Quad> quad = mResourceManager.createQuad(tile->mWidth, tile->mHeight);
                     auto material = mResourceManager.createMaterial("tile");
-                    auto rasterTile = std::make_shared<GeoEntity>(quad, material);
-                    rasterTile->pitch(-90.0f);
-                    rasterTile->setScale(quad->getScale());
-
+                    auto rasterTile = std::make_shared<RasterTile>(quad, material);
                     rasterTile->setCoords(tile->mCoords);
-
-                    // Shifts the quad position since its origin is the center
-                    glm::vec3 pos = rasterTile->getPosition();
-                    pos.x += tile->mWidth / 2.0f;
-                    pos.z += tile->mHeight / 2.0f;
-                    rasterTile->setPosition(pos);
-
                     tile->mGeoEntities.push_back(rasterTile);
 
                     const auto& source = mStyle.getSources().at(layer.getSource());
